@@ -1,8 +1,6 @@
 ﻿using ApprovalTests.Reporters;
-using MonFloatParser;
+using FastFloat;
 using System;
-using System.Collections.Generic;
-using System.DirectoryServices.Protocols;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -68,7 +66,7 @@ namespace TestParser
       //s.resize(written);
       s = d.ToString().Replace(",", ".");
 
-      double? x = MonFloatParser.DoubleParser.parse_number(s);
+      double? x = FastFloat.DoubleParser.parse_number(s);
       if (!x.HasValue)
       {
         throw new ParseException(s, "refused", 0, 0);
@@ -82,7 +80,7 @@ namespace TestParser
 
     private void check_string(string s)
     {
-      double? x = MonFloatParser.DoubleParser.parse_number(s);
+      double? x = FastFloat.DoubleParser.parse_number(s);
       double? d = Double.Parse(s, CultureInfo.InvariantCulture);
 
       if (!x.HasValue)

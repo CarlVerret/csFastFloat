@@ -1,5 +1,5 @@
 using ApprovalTests.Reporters;
-using MonFloatParser;
+using FastFloat;
 using System;
 using Xunit;
 

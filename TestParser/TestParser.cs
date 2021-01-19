@@ -1,4 +1,4 @@
-﻿using MonFloatParser;
+﻿using FastFloat;
 using System;
 using System.Collections.Generic;
 using System.Text;

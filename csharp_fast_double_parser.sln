@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30803.129
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonFloatParser", "MonFloatParser\MonFloatParser.csproj", "{C1AB1894-D301-46F6-A189-AFF325AFB035}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "csharp_fast_double_parser", "MonFloatParser\csharp_fast_double_parser.csproj", "{C1AB1894-D301-46F6-A189-AFF325AFB035}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestParser", "TestParser\TestParser.csproj", "{4223166C-54D6-40E6-B8DC-9A8C0E9986F8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestParser", "TestParser\TestParser.csproj", "{4223166C-54D6-40E6-B8DC-9A8C0E9986F8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

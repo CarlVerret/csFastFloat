@@ -1,11 +1,10 @@
-﻿using Microsoft.VisualBasic;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace MonFloatParser
+namespace FastFloat
 {
   public struct value128
   {
