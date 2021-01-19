@@ -164,26 +164,15 @@ namespace TestParser
             x = rng((ulong)i + offset);
             Buffer.MemoryCopy(&x, &d, sizeof(double), sizeof(double));
           }
-          try
-          {
-            did += 1;
-            // DoubleParser.parse_number(d.ToString().Replace(",", "."));
-            Double.Parse(d.ToString());
-          }
-          catch (ParseException ex)
-          {
-            if (ex.Reason == "refused") refused += 1;
-            if (ex.Reason == "disagree") disagree += 1;
-          }
-          catch
-          {
-            throw;
-          }
+
+          did += 1;
+          // DoubleParser.parse_number(d.ToString().Replace(",", "."));
+          Double.Parse(d.ToString());
         }
 
         var end = DateTime.Now;
 
-        sb.AppendLine($"Did :{did} Refused: {refused} Disagree{disagree} time {end - start}");
+        sb.AppendLine($"Did :{did} time {end - start}");
       }
       ApprovalTests.Approvals.Verify(sb.ToString());
     }
