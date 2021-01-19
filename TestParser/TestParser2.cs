@@ -148,7 +148,7 @@ namespace TestParser
       var did = 0;
       for (var j = 1; j <= 20; j++)
       {
-        var start = DateTime.Now.Millisecond;
+        var start = DateTime.Now.Ticks;
         for (var i = 1; i <= howmany; i++)
         {
           // mix bits
@@ -164,11 +164,11 @@ namespace TestParser
           }
 
           did += 1;
-          // DoubleParser.parse_number(d.ToString().Replace(",", "."));
-          Double.Parse(d.ToString());
+          DoubleParser.parse_number(d.ToString().Replace(",", "."));
+          //  Double.Parse(d.ToString());
         }
 
-        sb.AppendLine($"Did :{did} time { (DateTime.Now.Millisecond - start) / 1000.0}");
+        sb.AppendLine($"{did};ticks;{ (DateTime.Now.Ticks - start)};");
       }
       ApprovalTests.Approvals.Verify(sb.ToString());
     }
