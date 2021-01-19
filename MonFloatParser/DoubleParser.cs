@@ -4,7 +4,7 @@ using System.Numerics;
 
 namespace MonFloatParser
 {
-  public static class FloatParser
+  public static class DoubleParser
   {
     /// <summary>
     /// Parse a string representation of a number

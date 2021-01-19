@@ -1,0 +1,39 @@
+Scenario : Nan -1 
+Valeur   : 1a 
+Resultat : 1
+Scenario : Nan -2 
+Valeur   : -a 
+Resultat : 
+Scenario : Nan -3 
+Valeur   : 1.1a 
+Resultat : 1,1
+Scenario : Nan -4 
+Valeur   : 001 
+Resultat : 
+Scenario : Nan -5 
+Valeur   : 0.000a1 
+Resultat : 0
+Scenario : Nan -6 
+Valeur   : 0a 
+Resultat : 0
+Scenario : Nan -7 
+Valeur   : 1.a 
+Resultat : 
+Scenario : Nan -8a 
+Valeur   : 4.56E+ 
+Resultat : 
+Scenario : Nan -8b 
+Valeur   : 4.56E 
+Resultat : 
+Scenario : Nan -8c 
+Valeur   : 4.56E* 
+Resultat : 
+Scenario : Nan -8d 
+Valeur   : 4.56E+a 
+Resultat : 
+Scenario : nan 
+Valeur   : a 
+Resultat : 
+Scenario : nan neg 
+Valeur   : -a 
+Resultat : 

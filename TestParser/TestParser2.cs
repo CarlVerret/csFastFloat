@@ -68,7 +68,7 @@ namespace TestParser
       //s.resize(written);
       s = d.ToString().Replace(",", ".");
 
-      double? x = MonFloatParser.FloatParser.parse_number(s);
+      double? x = MonFloatParser.DoubleParser.parse_number(s);
       if (!x.HasValue)
       {
         throw new ParseException(s, "refused", 0, 0);
@@ -82,7 +82,7 @@ namespace TestParser
 
     private void check_string(string s)
     {
-      double? x = MonFloatParser.FloatParser.parse_number(s);
+      double? x = MonFloatParser.DoubleParser.parse_number(s);
       double? d = Double.Parse(s, CultureInfo.InvariantCulture);
 
       if (!x.HasValue)
@@ -137,7 +137,7 @@ namespace TestParser
       ApprovalTests.Approvals.Verify($"Did :{did} Refused: {refused} Disagree{disagree}");
     }
 
-    [Fact]
+    [Fact(Skip = "on demand")]
     private unsafe void Benchmark_1()
     {
       var did = 0;
@@ -164,7 +164,7 @@ namespace TestParser
         try
         {
           did += 1;
-          FloatParser.parse_number(d.ToString().Replace(",", "."));
+          DoubleParser.parse_number(d.ToString().Replace(",", "."));
         }
         catch (ParseException ex)
         {
@@ -182,7 +182,7 @@ namespace TestParser
       ApprovalTests.Approvals.Verify($"Did :{did} Refused: {refused} Disagree{disagree} time {end - start}");
     }
 
-    [Fact]
+    [Fact(Skip = "on demand")]
     private unsafe void Benchmark_2()
     {
       var did = 0;

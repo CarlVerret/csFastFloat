@@ -9,7 +9,7 @@ namespace TestParser
   public class TestParser : BaseTestClass
   {
     [Fact]
-    public void parse_number_casException()
+    public void parse_number_casException_NaN()
     {
       Dictionary<string, string> sut = new Dictionary<string, string>();
 
@@ -25,13 +25,16 @@ namespace TestParser
       sut.Add("Nan -8c", "4.56E*");
       sut.Add("Nan -8d", "4.56E+a");
 
+      sut.Add("nan", "a");
+      sut.Add("nan neg", "-a");
+
       StringBuilder sb = new StringBuilder();
 
       foreach (KeyValuePair<string, string> kv in sut)
       {
         sb.AppendLine($"Scenario : {kv.Key} ");
         sb.AppendLine($"Valeur   : {kv.Value} ");
-        sb.AppendLine($"Resultat : {FloatParser.parse_number(kv.Value)}");
+        sb.AppendLine($"Resultat : {DoubleParser.parse_number(kv.Value)}");
       }
 
       ApprovalTests.Approvals.Verify(sb.ToString());
@@ -42,7 +45,7 @@ namespace TestParser
     {
       Dictionary<string, double> sut = new Dictionary<string, double>();
 
-      // sut.Add("1090544144181609348835077142190", 0x1.b8779f2474dfbp + 99);
+      // sut.Add("1090544144181609348835077142190", 0x1.b8779f2474dfbp + 99); // TODO
       sut.Add("4503599627370496.5", 4503599627370496.5);
       sut.Add("4503599627370497.5", 4503599627370497.5);
       sut.Add("0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000044501477170144022721148195934182639518696390927032912960468522194496444440421538910330590478162701758282983178260792422137401728773891892910553144148156412434867599762821265346585071045737627442980259622449029037796981144446145705102663115100318287949527959668236039986479250965780342141637013812613333119898765515451440315261253813266652951306000184917766328660755595837392240989947807556594098101021612198814605258742579179000071675999344145086087205681577915435923018910334964869420614052182892431445797605163650903606514140377217442262561590244668525767372446430075513332450079650686719491377688478005309963967709758965844137894433796621993967316936280457084866613206797017728916080020698679408551343728867675409720757232455434770912461317493580281734466552734375", 0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000044501477170144022721148195934182639518696390927032912960468522194496444440421538910330590478162701758282983178260792422137401728773891892910553144148156412434867599762821265346585071045737627442980259622449029037796981144446145705102663115100318287949527959668236039986479250965780342141637013812613333119898765515451440315261253813266652951306000184917766328660755595837392240989947807556594098101021612198814605258742579179000071675999344145086087205681577915435923018910334964869420614052182892431445797605163650903606514140377217442262561590244668525767372446430075513332450079650686719491377688478005309963967709758965844137894433796621993967316936280457084866613206797017728916080020698679408551343728867675409720757232455434770912461317493580281734466552734375);
@@ -54,7 +57,7 @@ namespace TestParser
       {
         sb.AppendLine($"Valeur   : {kv.Key} ");
         sb.AppendLine($"Expected : {kv.Value} ");
-        sb.AppendLine($"Resultat : {FloatParser.parse_number(kv.Key)}");
+        sb.AppendLine($"Resultat : {DoubleParser.parse_number(kv.Key)}");
       }
 
       ApprovalTests.Approvals.Verify(sb.ToString());
@@ -69,7 +72,7 @@ namespace TestParser
           p++;
 
         bool success;
-        double? d = FloatParser.compute_float_64(p, 1, false, out success);
+        double? d = DoubleParser.compute_float_64(p, 1, false, out success);
 
         if (!d.HasValue)
           throw new ApplicationException($"Can't parse p=> {p}");
@@ -84,7 +87,7 @@ namespace TestParser
     {
       for (int p = -306; p <= 308; p++)
       {
-        double? d = FloatParser.parse_number($"1e{p}");
+        double? d = DoubleParser.parse_number($"1e{p}");
 
         if (!d.HasValue)
         {
@@ -101,9 +104,6 @@ namespace TestParser
     public void parse_number_fonctionne()
     {
       Dictionary<string, string> sut = new Dictionary<string, string>();
-
-      sut.Add("nan", "a");
-      sut.Add("nan neg", "-a");
 
       sut.Add("zero", "0");
       sut.Add("zero neg", "-0");
@@ -139,7 +139,7 @@ namespace TestParser
       {
         sb.AppendLine($"Scenario : {kv.Key} ");
         sb.AppendLine($"Valeur   : {kv.Value} ");
-        sb.AppendLine($"Resultat : {FloatParser.parse_number(kv.Value)}");
+        sb.AppendLine($"Resultat : {DoubleParser.parse_number(kv.Value)}");
       }
 
       ApprovalTests.Approvals.Verify(sb.ToString());
@@ -160,7 +160,7 @@ namespace TestParser
       {
         sb.AppendLine($"Scenario : {kv.Key} ");
         sb.AppendLine($"Valeur   : {kv.Value} ");
-        sb.AppendLine($"Resultat : {FloatParser.parse_number(kv.Value)}");
+        sb.AppendLine($"Resultat : {DoubleParser.parse_number(kv.Value)}");
       }
 
       ApprovalTests.Approvals.Verify(sb.ToString());
@@ -169,7 +169,7 @@ namespace TestParser
     [Fact]
     private void issue13()
     {
-      double? x = FloatParser.parse_number("0");
+      double? x = DoubleParser.parse_number("0");
       Assert.True(x.HasValue, "Parsed");
       Assert.True(x == 0, "Maps to 0");
     }
@@ -179,14 +179,14 @@ namespace TestParser
     {
       //https://tools.ietf.org/html/rfc7159
       // A fraction part is a decimal point followed by one or more digits.
-      double? x = FloatParser.parse_number("0.");
+      double? x = DoubleParser.parse_number("0.");
       Assert.False(x.HasValue, "Shouldn't parse");
     }
 
     [Fact]
     private void issue32()
     {
-      double? x = FloatParser.parse_number("-0");
+      double? x = DoubleParser.parse_number("-0");
       Assert.True(x.HasValue, "could not parse -zero.");
       Assert.True(x == 0, "-zero does not map to zero.");
     }
@@ -194,7 +194,7 @@ namespace TestParser
     [Fact]
     private void issue23()
     {
-      double? x = FloatParser.parse_number("0e+42949672970");
+      double? x = DoubleParser.parse_number("0e+42949672970");
 
       Assert.True(x.HasValue, "could not parse zero.");
       Assert.True(x == 0, "zero does not map to zero.");
@@ -203,7 +203,7 @@ namespace TestParser
     [Fact]
     private void issue23_2()
     {
-      double? x = FloatParser.parse_number("5e0012");
+      double? x = DoubleParser.parse_number("5e0012");
 
       Assert.True(x.HasValue, "could not parse 5e0012.");
       Assert.True(x == 5e12, "does not map to 5e0012.");

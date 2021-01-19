@@ -1,9 +1,3 @@
-Scenario : nan 
-Valeur   : a 
-Resultat : 
-Scenario : nan neg 
-Valeur   : -a 
-Resultat : 
 Scenario : zero 
 Valeur   : 0 
 Resultat : 0
