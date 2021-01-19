@@ -2,7 +2,7 @@
 using ApprovalTests.Namers;
 using ApprovalTests.Reporters;
 
-namespace TestParser
+namespace cs_FastFloat.Tests
 {
   [UseReporter(typeof(DiffReporter))]
   public class BaseTestClass

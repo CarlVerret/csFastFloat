@@ -4,7 +4,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace FastFloat
+namespace cs_FastFloat
 {
   public struct value128
   {

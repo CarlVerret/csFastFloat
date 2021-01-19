@@ -3,7 +3,7 @@ using FastFloat;
 using System;
 using Xunit;
 
-namespace TestParser
+namespace cs_FastFloat.Tests
 {
   public class TestUtils : BaseTestClass
   {

@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30803.129
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "csharp_fast_double_parser", "MonFloatParser\csharp_fast_double_parser.csproj", "{C1AB1894-D301-46F6-A189-AFF325AFB035}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestParser", "TestParser\TestParser.csproj", "{4223166C-54D6-40E6-B8DC-9A8C0E9986F8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "cs_FastFloat", "csharp_fast_double_parser\cs_FastFloat.csproj", "{A6FE52AC-10CC-4D55-A07B-36F7CDC1BCE9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,14 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C1AB1894-D301-46F6-A189-AFF325AFB035}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C1AB1894-D301-46F6-A189-AFF325AFB035}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C1AB1894-D301-46F6-A189-AFF325AFB035}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C1AB1894-D301-46F6-A189-AFF325AFB035}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4223166C-54D6-40E6-B8DC-9A8C0E9986F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4223166C-54D6-40E6-B8DC-9A8C0E9986F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4223166C-54D6-40E6-B8DC-9A8C0E9986F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4223166C-54D6-40E6-B8DC-9A8C0E9986F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6FE52AC-10CC-4D55-A07B-36F7CDC1BCE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6FE52AC-10CC-4D55-A07B-36F7CDC1BCE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6FE52AC-10CC-4D55-A07B-36F7CDC1BCE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6FE52AC-10CC-4D55-A07B-36F7CDC1BCE9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

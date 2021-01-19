@@ -1,52 +1,54 @@
 ﻿using System.Collections.Generic;
 
-public static class Constants
+namespace cs_FastFloat
 {
-  /**
-	* The smallest non-zero float (binary64) is 2^−1074.
-	* We take as input numbers of the form w x 10^q where w < 2^64.
-	* We have that w * 10^-343 < 2^(64-344) 5^-343 < 2^-1076.
-	* However, we have that
-	* (2^64-1) * 10^-342 = (2^64-1) * 2^-342 * 5^-342 > 2^−1074.
-	* Thus it is possible for a number of the form w * 10^-342 where
-	* w is a 64-bit value to be a non-zero floating-point number.
-	*********
-	* If we are solely interested in the *normal* numbers then the
-	* smallest value is 2^-1022. We can generate a value larger
-	* than 2^-1022 with expressions of the form w * 10^-326.
-	* Thus we need to pick FASTFLOAT_SMALLEST_POWER >= -326.
-	*********
-	* Any number of form w * 10^309 where w>= 1 is going to be
-	* infinite in binary64 so we never need to worry about powers
-	* of 5 greater than 308.
-	*/
-  public static int FASTFLOAT_SMALLEST_POWER = -325;
-  public static int FASTFLOAT_LARGEST_POWER = 308;
+  public static class Constants
+  {
+    /**
+    * The smallest non-zero float (binary64) is 2^−1074.
+    * We take as input numbers of the form w x 10^q where w < 2^64.
+    * We have that w * 10^-343 < 2^(64-344) 5^-343 < 2^-1076.
+    * However, we have that
+    * (2^64-1) * 10^-342 = (2^64-1) * 2^-342 * 5^-342 > 2^−1074.
+    * Thus it is possible for a number of the form w * 10^-342 where
+    * w is a 64-bit value to be a non-zero floating-point number.
+    *********
+    * If we are solely interested in the *normal* numbers then the
+    * smallest value is 2^-1022. We can generate a value larger
+    * than 2^-1022 with expressions of the form w * 10^-326.
+    * Thus we need to pick FASTFLOAT_SMALLEST_POWER >= -326.
+    *********
+    * Any number of form w * 10^309 where w>= 1 is going to be
+    * infinite in binary64 so we never need to worry about powers
+    * of 5 greater than 308.
+    */
+    public static int FASTFLOAT_SMALLEST_POWER = -325;
+    public static int FASTFLOAT_LARGEST_POWER = 308;
 
-  // Precomputed powers of ten from 10^0 to 10^22. These
-  // can be represented exactly using the double type.
-  internal static List<double> power_of_ten = new List<double>{
+    // Precomputed powers of ten from 10^0 to 10^22. These
+    // can be represented exactly using the double type.
+    internal static double[] power_of_ten = new double[]{
       1e0,  1e1,  1e2,  1e3,  1e4,  1e5,  1e6,  1e7,  1e8,  1e9,  1e10, 1e11,
       1e12, 1e13, 1e14, 1e15, 1e16, 1e17, 1e18, 1e19, 1e20, 1e21, 1e22 };
 
-  /**
-	 * When mapping numbers from decimal to binary,
-	 * we go from w * 10^q to m * 2^p but we have
-	 * 10^q = 5^q * 2^q, so effectively
-	 * we are trying to match
-	 * w * 2^q * 5^q to m * 2^p. Thus the powers of two
-	 * are not a concern since they can be represented
-	 * exactly using the binary notation, only the powers of five
-	 * affect the binary significand.
-	 */
+    /**
+     * When mapping numbers from decimal to binary,
+     * we go from w * 10^q to m * 2^p but we have
+     * 10^q = 5^q * 2^q, so effectively
+     * we are trying to match
+     * w * 2^q * 5^q to m * 2^p. Thus the powers of two
+     * are not a concern since they can be represented
+     * exactly using the binary notation, only the powers of five
+     * affect the binary significand.
+     */
 
-  // The mantissas of powers of ten from -308 to 308, extended out to sixty four
-  // bits. The array contains the powers of ten approximated
-  // as a 64-bit mantissa. It goes from 10^FASTFLOAT_SMALLEST_POWER to
-  // 10^FASTFLOAT_LARGEST_POWER (inclusively).
-  // The mantissa is truncated, and
-  // never rounded up. Uses about 5KB.
-  internal static List<ulong> mantissa_64 = new List<ulong> {
+    // The mantissas of powers of ten from -308 to 308, extended out to sixty four
+    // bits. The array contains the powers of ten approximated
+    // as a 64-bit mantissa. It goes from 10^FASTFLOAT_SMALLEST_POWER to
+    // 10^FASTFLOAT_LARGEST_POWER (inclusively).
+    // The mantissa is truncated, and
+    // never rounded up. Uses about 5KB.
+    internal static ulong[] mantissa_64 = new ulong[] {
     0xa5ced43b7e3e9188, 0xcf42894a5dce35ea,
     0x818995ce7aa0e1b2, 0xa1ebfb4219491a1f,
     0xca66fa129f9b60a6, 0xfd00b897478238d0,
@@ -365,10 +367,10 @@ public static class Constants
     0x91d28b7416cdd27e, 0xb6472e511c81471d,
     0xe3d8f9e563a198e5, 0x8e679c2f5e44ff8f };
 
-  // A complement to mantissa_64
-  // complete to a 128-bit mantissa.
-  // Uses about 5KB but is rarely accessed.
-  internal static List<ulong> mantissa_128 = new List<ulong> {
+    // A complement to mantissa_64
+    // complete to a 128-bit mantissa.
+    // Uses about 5KB but is rarely accessed.
+    internal static ulong[] mantissa_128 = new ulong[] {
     0x419ea3bd35385e2d, 0x52064cac828675b9,
     0x7343efebd1940993, 0x1014ebe6c5f90bf8,
     0xd41a26e077774ef6, 0x8920b098955522b4,
@@ -686,4 +688,5 @@ public static class Constants
     0xd30560258f54e6ba, 0x47c6b82ef32a2069,
     0x4cdc331d57fa5441, 0xe0133fe4adf8e952,
     0x58180fddd97723a6, 0x570f09eaa7ea7648 };
+  }
 }

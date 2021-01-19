@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Xunit;
 
-namespace TestParser
+namespace cs_FastFloat.Tests
 {
   [UseReporter(typeof(DiffReporter))]
   public class ParseException : Exception

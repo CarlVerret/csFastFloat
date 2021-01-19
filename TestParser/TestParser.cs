@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-namespace TestParser
+namespace cs_FastFloat.Tests
 {
   public class TestParser : BaseTestClass
   {
