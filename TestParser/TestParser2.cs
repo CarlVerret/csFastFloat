@@ -137,49 +137,55 @@ namespace TestParser
       ApprovalTests.Approvals.Verify($"Did :{did} Refused: {refused} Disagree{disagree}");
     }
 
-    [Fact(Skip = "on demand")]
+    [Fact]
     private unsafe void Benchmark_1()
     {
+      StringBuilder sb = new StringBuilder();
+      sb.Append("Start");
+
+      ulong offset = 1190;
+      var howmany = 10000000;
       var did = 0;
       var refused = 0;
       var disagree = 0;
-      var start = DateTime.Now;
-
-      ulong offset = 1190;
-      var howmany = 50000000;
-
-      for (var i = 1; i <= howmany; i++)
+      for (var j = 1; j <= 20; j++)
       {
-        // mix bits
-        ulong x = rng((ulong)i + offset);
-        double d;
-        Buffer.MemoryCopy(&x, &d, sizeof(double), sizeof(double));
-        // paranoid
-        while ((!double.IsNormal(d)) || double.IsNaN(d) || double.IsInfinity(d))
+        var start = DateTime.Now;
+        for (var i = 1; i <= howmany; i++)
         {
-          offset++;
-          x = rng((ulong)i + offset);
+          // mix bits
+          ulong x = rng((ulong)i + offset);
+          double d;
           Buffer.MemoryCopy(&x, &d, sizeof(double), sizeof(double));
+          // paranoid
+          while ((!double.IsNormal(d)) || double.IsNaN(d) || double.IsInfinity(d))
+          {
+            offset++;
+            x = rng((ulong)i + offset);
+            Buffer.MemoryCopy(&x, &d, sizeof(double), sizeof(double));
+          }
+          try
+          {
+            did += 1;
+            // DoubleParser.parse_number(d.ToString().Replace(",", "."));
+            Double.Parse(d.ToString());
+          }
+          catch (ParseException ex)
+          {
+            if (ex.Reason == "refused") refused += 1;
+            if (ex.Reason == "disagree") disagree += 1;
+          }
+          catch
+          {
+            throw;
+          }
         }
-        try
-        {
-          did += 1;
-          DoubleParser.parse_number(d.ToString().Replace(",", "."));
-        }
-        catch (ParseException ex)
-        {
-          if (ex.Reason == "refused") refused += 1;
-          if (ex.Reason == "disagree") disagree += 1;
-        }
-        catch
-        {
-          throw;
-        }
+
+        var end = DateTime.Now;
+
+        sb.AppendLine($"Did :{did} Refused: {refused} Disagree{disagree} time {end - start}");
       }
-
-      var end = DateTime.Now;
-
-      ApprovalTests.Approvals.Verify($"Did :{did} Refused: {refused} Disagree{disagree} time {end - start}");
+      ApprovalTests.Approvals.Verify(sb.ToString());
     }
 
     [Fact(Skip = "on demand")]
