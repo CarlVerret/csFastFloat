@@ -1,12 +1,12 @@
 ﻿using ApprovalTests.Reporters;
-using FastFloat;
+using cs_fast_double_parser;
 using System;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Xunit;
 
-namespace cs_FastFloat.Tests
+namespace cs_fast_double_parser.Tests
 {
   [UseReporter(typeof(DiffReporter))]
   public class ParseException : Exception
@@ -66,7 +66,7 @@ namespace cs_FastFloat.Tests
       //s.resize(written);
       s = d.ToString().Replace(",", ".");
 
-      double? x = FastFloat.DoubleParser.parse_number(s);
+      double? x = cs_fast_double_parser.DoubleParser.parse_number(s);
       if (!x.HasValue)
       {
         throw new ParseException(s, "refused", 0, 0);
@@ -80,7 +80,7 @@ namespace cs_FastFloat.Tests
 
     private void check_string(string s)
     {
-      double? x = FastFloat.DoubleParser.parse_number(s);
+      double? x = cs_fast_double_parser.DoubleParser.parse_number(s);
       double? d = Double.Parse(s, CultureInfo.InvariantCulture);
 
       if (!x.HasValue)

@@ -1,10 +1,10 @@
-﻿using FastFloat;
+﻿using cs_fast_double_parser;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-namespace cs_FastFloat.Tests
+namespace cs_fast_double_parser.Tests
 {
   public class TestParser : BaseTestClass
   {

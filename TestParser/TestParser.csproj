@@ -29,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MonFloatParser\csharp_fast_double_parser.csproj" />
+    <ProjectReference Include="..\csharp_fast_double_parser\cs_fast_double_parser.csproj" />
   </ItemGroup>
 
   <ItemGroup>

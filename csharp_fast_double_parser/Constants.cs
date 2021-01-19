@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace cs_FastFloat
+namespace cs_fast_double_parser
 {
   public static class Constants
   {

@@ -4,7 +4,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace cs_FastFloat
+namespace cs_fast_double_parser
 {
   public struct value128
   {
