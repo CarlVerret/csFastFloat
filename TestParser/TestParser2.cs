@@ -146,11 +146,9 @@ namespace TestParser
       ulong offset = 1190;
       var howmany = 10000000;
       var did = 0;
-      var refused = 0;
-      var disagree = 0;
       for (var j = 1; j <= 20; j++)
       {
-        var start = DateTime.Now;
+        var start = DateTime.Now.Millisecond;
         for (var i = 1; i <= howmany; i++)
         {
           // mix bits
@@ -170,9 +168,7 @@ namespace TestParser
           Double.Parse(d.ToString());
         }
 
-        var end = DateTime.Now;
-
-        sb.AppendLine($"Did :{did} time {end - start}");
+        sb.AppendLine($"Did :{did} time { (DateTime.Now.Millisecond - start) / 1000.0}");
       }
       ApprovalTests.Approvals.Verify(sb.ToString());
     }
