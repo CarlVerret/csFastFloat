@@ -33,25 +33,34 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="TestParser2.parse_number_casException.approved.txt">
-      <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
-      <ParentExtension>$(ProjectExt.Replace('proj', ''))</ParentExtension>
-      <DependentUpon>TestParser2.cs</DependentUpon>
+    <None Update="TestBenchMark.Benchmark_1.approved.txt">
+      <DependentUpon>TestBenchmark.cs</DependentUpon>
     </None>
-    <None Update="TestParser2.parse_number_falback.approved.txt">
-      <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
-      <ParentExtension>$(ProjectExt.Replace('proj', ''))</ParentExtension>
-      <DependentUpon>TestParser2.cs</DependentUpon>
+    <None Update="TestBenchMark.Benchmark_2.approved.txt">
+      <DependentUpon>TestBenchmark.cs</DependentUpon>
     </None>
-    <None Update="TestParser2.parse_number_fonctionne.approved.txt">
+    <None Update="TestBenchMark.parse_number_casException.approved.txt">
       <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
       <ParentExtension>$(ProjectExt.Replace('proj', ''))</ParentExtension>
-      <DependentUpon>TestParser2.cs</DependentUpon>
+      <DependentUpon>TestBenchmark.cs</DependentUpon>
     </None>
-    <None Update="TestParser2.parse_number_fonctionne.ForScenario.test.approved.txt">
+    <None Update="TestBenchMark.parse_number_falback.approved.txt">
       <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
       <ParentExtension>$(ProjectExt.Replace('proj', ''))</ParentExtension>
-      <DependentUpon>TestParser2.cs</DependentUpon>
+      <DependentUpon>TestBenchmark.cs</DependentUpon>
+    </None>
+    <None Update="TestBenchMark.parse_number_fonctionne.approved.txt">
+      <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
+      <ParentExtension>$(ProjectExt.Replace('proj', ''))</ParentExtension>
+      <DependentUpon>TestBenchmark.cs</DependentUpon>
+    </None>
+    <None Update="TestBenchMark.parse_number_fonctionne.ForScenario.test.approved.txt">
+      <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
+      <ParentExtension>$(ProjectExt.Replace('proj', ''))</ParentExtension>
+      <DependentUpon>TestBenchmark.cs</DependentUpon>
+    </None>
+    <None Update="TestBenchMark.Test_Charge.approved.txt">
+      <DependentUpon>TestBenchmark.cs</DependentUpon>
     </None>
   </ItemGroup>
 </Project>

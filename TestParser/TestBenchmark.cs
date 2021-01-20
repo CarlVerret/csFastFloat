@@ -25,7 +25,7 @@ namespace cs_fast_double_parser.Tests
     }
   }
 
-  public class TestParser2 : BaseTestClass
+  public class TestBenchmark : BaseTestClass
   {
     //// ulp distance
     //// Marc B. Reynolds, 2016-2019
@@ -66,7 +66,7 @@ namespace cs_fast_double_parser.Tests
       //s.resize(written);
       s = d.ToString().Replace(",", ".");
 
-      double? x = cs_fast_double_parser.DoubleParser.parse_number(s);
+      double? x = cs_fast_double_parser.DoubleParser.parse_number2(s);
       if (!x.HasValue)
       {
         throw new ParseException(s, "refused", 0, 0);
@@ -80,7 +80,7 @@ namespace cs_fast_double_parser.Tests
 
     private void check_string(string s)
     {
-      double? x = cs_fast_double_parser.DoubleParser.parse_number(s);
+      double? x = cs_fast_double_parser.DoubleParser.parse_number2(s);
       double? d = Double.Parse(s, CultureInfo.InvariantCulture);
 
       if (!x.HasValue)
@@ -135,7 +135,7 @@ namespace cs_fast_double_parser.Tests
       ApprovalTests.Approvals.Verify($"Did :{did} Refused: {refused} Disagree{disagree}");
     }
 
-    [Fact]
+    [Fact(Skip = "o")]
     private unsafe void Benchmark_1()
     {
       StringBuilder sb = new StringBuilder();
@@ -144,9 +144,9 @@ namespace cs_fast_double_parser.Tests
       ulong offset = 1190;
       var howmany = 10000000;
       var did = 0;
-      for (var j = 1; j <= 20; j++)
+      for (var j = 1; j <= 10; j++)
       {
-        var start = DateTime.Now.Ticks;
+        var start = DateTime.Now;
         for (var i = 1; i <= howmany; i++)
         {
           // mix bits
@@ -162,11 +162,11 @@ namespace cs_fast_double_parser.Tests
           }
 
           did += 1;
-          DoubleParser.parse_number(d.ToString().Replace(",", "."));
+          DoubleParser.parse_number2(d.ToString().Replace(",", "."));
           //  Double.Parse(d.ToString());
         }
 
-        sb.AppendLine($"{did};ticks;{ (DateTime.Now.Ticks - start)};");
+        sb.AppendLine($"{did}; time;{ (DateTime.Now - start)};");
       }
       ApprovalTests.Approvals.Verify(sb.ToString());
     }

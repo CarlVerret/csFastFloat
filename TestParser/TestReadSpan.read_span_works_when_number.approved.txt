@@ -1,0 +1,57 @@
+Scenario : leading zeros 
+Valeur   : 001 
+Resultat : 1
+Scenario : leading zeros neg 
+Valeur   : -001 
+Resultat : -1
+Scenario : zero 
+Valeur   : 0 
+Resultat : 0
+Scenario : zero neg 
+Valeur   : -0 
+Resultat : -0
+Scenario : double 
+Valeur   : 0.00000000000000212312312 
+Resultat : 2,12312312E-15
+Scenario : double neg 
+Valeur   : -0.00000000000000212312312 
+Resultat : -2,12312312E-15
+Scenario : int 
+Valeur   : 1 
+Resultat : 1
+Scenario : int neg 
+Valeur   : -1 
+Resultat : -1
+Scenario : autreint  
+Valeur   : 123124 
+Resultat : 123124
+Scenario : autreint neg 
+Valeur   : -123124 
+Resultat : -123124
+Scenario : notation scientifique 
+Valeur   : 4.56E+2 
+Resultat : 456
+Scenario : notation scientifique neg 
+Valeur   : -4.56E-2 
+Resultat : -0,0456
+Scenario : notation scientifique 2 
+Valeur   : 4.5644E+2 
+Resultat : 456,44
+Scenario : notation scientifique 2 neg 
+Valeur   : -4.5644E-2 
+Resultat : -0,045644
+Scenario : notation scientifique 3 
+Valeur   : 4424.5644E+22 
+Resultat : 4,4245644E+25
+Scenario : notation scientifique 3 neg 
+Valeur   : -4424.5644E-22 
+Resultat : -4,4245644E-19
+Scenario : notation scientifique 4 
+Valeur   : 4424.5644E+223 
+Resultat : 4,4245644E+226
+Scenario : notation scientifique 4 neg 
+Valeur   : -4424.5644E-223 
+Resultat : -4,4245644E-220
+Scenario : overflow 
+Valeur   : 7.2057594037927933e+16 
+Resultat : 72057594037927940

@@ -1,6 +1,8 @@
 ﻿using ApprovalTests;
 using ApprovalTests.Namers;
 using ApprovalTests.Reporters;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace cs_fast_double_parser.Tests
 {

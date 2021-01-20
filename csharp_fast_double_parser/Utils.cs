@@ -22,8 +22,13 @@ namespace cs_fast_double_parser
   {
     // this gets compiled to (uint8_t)(c - '0') <= 9 on all decent compilers
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool is_integer(string s, int pos) => (
-      pos < s.Length && s[pos] >= '0' && s[pos] <= '9');
+    public static bool is_integer(string s, int pos) => (pos < s.Length && s[pos] >= '0' && s[pos] <= '9');
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool is_integer(char c) => (c >= '0' && c <= '9');
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int as_digit(char c) => c - '0';
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int as_digit(string s, int pos) => s[pos] - '0';
