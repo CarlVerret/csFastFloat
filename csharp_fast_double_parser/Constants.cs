@@ -27,7 +27,7 @@ namespace cs_fast_double_parser
 
     // Precomputed powers of ten from 10^0 to 10^22. These
     // can be represented exactly using the double type.
-    internal static double[] power_of_ten = new double[]{
+    internal readonly static double[] power_of_ten = new double[]{
       1e0,  1e1,  1e2,  1e3,  1e4,  1e5,  1e6,  1e7,  1e8,  1e9,  1e10, 1e11,
       1e12, 1e13, 1e14, 1e15, 1e16, 1e17, 1e18, 1e19, 1e20, 1e21, 1e22 };
 
@@ -48,7 +48,7 @@ namespace cs_fast_double_parser
     // 10^FASTFLOAT_LARGEST_POWER (inclusively).
     // The mantissa is truncated, and
     // never rounded up. Uses about 5KB.
-    internal static ulong[] mantissa_64 = new ulong[] {
+    internal readonly static ulong[] mantissa_64 = new ulong[] {
     0xa5ced43b7e3e9188, 0xcf42894a5dce35ea,
     0x818995ce7aa0e1b2, 0xa1ebfb4219491a1f,
     0xca66fa129f9b60a6, 0xfd00b897478238d0,
@@ -370,7 +370,7 @@ namespace cs_fast_double_parser
     // A complement to mantissa_64
     // complete to a 128-bit mantissa.
     // Uses about 5KB but is rarely accessed.
-    internal static ulong[] mantissa_128 = new ulong[] {
+    internal readonly static ulong[] mantissa_128 = new ulong[] {
     0x419ea3bd35385e2d, 0x52064cac828675b9,
     0x7343efebd1940993, 0x1014ebe6c5f90bf8,
     0xd41a26e077774ef6, 0x8920b098955522b4,

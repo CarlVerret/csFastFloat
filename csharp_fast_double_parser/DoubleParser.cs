@@ -528,7 +528,6 @@ namespace cs_fast_double_parser
     /// <param name="success"> bool : true indicates sucesfull calculation</param>
     /// <returns></returns>
     ///
-
     internal unsafe static double? compute_float_64(parsing_info infos)
     {
       double d;
