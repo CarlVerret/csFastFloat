@@ -135,7 +135,7 @@ namespace cs_fast_double_parser.Tests
       ApprovalTests.Approvals.Verify($"Did :{did} Refused: {refused} Disagree{disagree}");
     }
 
-    [Fact()]
+    [Fact(Skip = "o")]
     private unsafe void Benchmark_1()
     {
       StringBuilder sb = new StringBuilder();
