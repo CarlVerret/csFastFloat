@@ -30,7 +30,18 @@ namespace cs_fast_double_parser.Tests
     [InlineData("-a")]
     [Theory]
     public void parse_throws_NaN(string sut)
-                       => Assert.Throws<System.FormatException>(() => DoubleParser.try_read_span(sut));
+    {
+      unsafe
+      {
+        Assert.Throws<System.FormatException>(() =>
+        {
+          fixed (char* p = sut)
+          {
+            DoubleParser.try_read_span2(p);
+          }
+        });
+      }
+    }
 
     [InlineData("1a")]
     [InlineData("-1a")]
@@ -63,7 +74,18 @@ namespace cs_fast_double_parser.Tests
     [InlineData("1.1e310")]
     [Theory]
     public void parse_throws_ParseRefused(string sut)
-                        => Assert.Throws<DoubleParser.ParsingRefusedException>(() => DoubleParser.try_read_span(sut));
+    {
+      unsafe
+      {
+        Assert.Throws<DoubleParser.ParsingRefusedException>(() =>
+        {
+          fixed (char* p = sut)
+          {
+            DoubleParser.try_read_span2(p);
+          }
+        });
+      }
+    }
 
     [Fact]
     public void read_span_works_when_number()

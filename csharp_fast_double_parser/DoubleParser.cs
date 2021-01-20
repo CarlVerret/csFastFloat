@@ -21,30 +21,186 @@ namespace cs_fast_double_parser
 
     internal class ParsingRefusedException : Exception { }
 
-    internal static parsing_info try_read_span(string p)
+    //internal static parsing_info try_read_span(ReadOnlySpan<char> p)
+    //{
+    //  parsing_info pi = new parsing_info() { i = 0 };
+
+    //  int pos = 0;
+    //  int first_after_period, start_digits;
+    //  int digit_count;
+
+    //  // an unsigned int avoids signed overflows (which are bad)
+
+    //  // parse the number at p
+    //  // return the null on error
+
+    //  if (p.StartsWith("-"))
+    //  {
+    //    pi.negative = true; pos++;
+    //  }
+    //  // a negative sign must be followed by an integer
+    //  start_digits = pos;
+
+    //  if (!Utils.is_integer(p[pos])) throw new System.FormatException();
+
+    //  // case -starts with a zero
+    //  if (p[pos] == '0')
+    //  {
+    //    pos += 1;
+    //    //if (Utils.is_integer(p, pos)) throw new System.FormatException();
+    //  }
+    //  else
+    //  {
+    //    pi.i = (ulong)Utils.as_digit(p[pos]);
+    //    pos++;
+    //  }
+
+    //  while (Utils.is_integer(p[pos]))
+    //  {
+    //    var digit = Utils.as_digit(p[pos]);
+    //    // a multiplication by 10 is cheaper than an arbitrary integer
+    //    // multiplication
+    //    pi.i = 10 * pi.i + (ulong)digit; // might overflow, we will handle the overflow later
+    //    pos++;
+    //  }
+
+    //  // case '.'
+    //  if (p[pos] == '.')
+    //  {
+    //    pos++;
+    //    first_after_period = pos;
+    //    if (!Utils.is_integer(p[pos])) throw new System.FormatException();
+
+    //    var digit = (ulong)Utils.as_digit(p[pos]);
+    //    pi.i = pi.i * 10 + digit; // might overflow + multiplication by 10 is likely
+    //                              // cheaper than arbitrary mult.
+    //                              // we will handle the overflow later
+    //    pos++;
+
+    //    while (Utils.is_integer(p[pos]))
+    //    {
+    //      digit = (ulong)Utils.as_digit(p[pos]);
+    //      pi.i = pi.i * 10 + digit; // might overflow + multiplication by 10 is likely
+    //                                // cheaper than arbitrary mult.
+    //                                // we will handle the overflow later
+    //      pos++;
+    //    }
+    //    pi.power = (first_after_period - pos);
+    //  }
+
+    //  digit_count = pos - start_digits - 1; // used later to guard against overflows
+
+    //  // case 'e' / 'E'
+    //  if ("Ee".Contains(p[pos]))
+    //  {
+    //    pos++;
+    //    bool neg_exp = false;
+    //    if ("+-".Contains(p[pos]))
+    //    {
+    //      neg_exp = p[pos] == '-';
+    //      pos++;
+    //    }
+    //    // at least one integer after + /- ...
+    //    if (!Utils.is_integer(p[pos])) throw new System.FormatException();
+
+    //    long exp_number = Utils.as_digit(p[pos]);
+    //    pos++;
+
+    //    if (Utils.is_integer(p[pos]))
+    //    {
+    //      exp_number = 10 * exp_number + Utils.as_digit(p[pos]); // might overflow + multiplication by 10 is likely
+    //                                                             // cheaper than arbitrary mult.
+    //                                                             // we will handle the overflow later
+    //      pos++;
+    //    }
+    //    if (Utils.is_integer(p[pos]))
+    //    {
+    //      exp_number = 10 * exp_number + Utils.as_digit(p[pos]);
+    //      pos++;
+    //    }
+    //    while (Utils.is_integer(p[pos]))
+    //    {
+    //      if (exp_number < 0x100000000)
+    //      { // we need to check for overflows
+    //        exp_number = 10 * exp_number + Utils.as_digit(p[pos]);
+    //      }
+    //      pos++;
+    //    }
+
+    //    if (neg_exp)
+    //    {
+    //      pi.power -= exp_number;
+    //    }
+    //    else
+    //    {
+    //      pi.power += exp_number;
+    //    }
+    //  }
+
+    //  // If we frequently had to deal with long strings of digits,
+    //  // we could extend our code by using a 128-bit integer instead
+    //  // of a 64-bit integer. However, this is uncommon.
+    //  if (digit_count >= 19)
+    //  { // this is uncommon
+    //    // It is possible that the integer had an overflow.
+    //    // We have to handle the case where we have 0.0000somenumber.
+    //    int start = start_digits;
+    //    while ("0.".Contains(p[start]))
+    //    {
+    //      start++;
+    //    }
+    //    // we over-decrement by one when there is a decimal separator
+    //    digit_count -= (start - start_digits);
+
+    //    if (digit_count >= 19)
+    //    {
+    //      // Chances are good that we had an overflow!
+    //      // We start anew.
+    //      // This will happen in the following examples:
+    //      // 10000000000000000000000000000000000000000000e+308
+    //      // 3.1415926535897932384626433832795028841971693993751
+    //      //
+    //      throw new ParsingRefusedException();
+    //    }
+    //  }
+    //  if ((int)pi.power < Constants.FASTFLOAT_SMALLEST_POWER || (int)pi.power > Constants.FASTFLOAT_LARGEST_POWER)
+    //  {
+    //    // this is almost never going to get called!!!
+    //    // exponent could be as low as 325
+    //    throw new ParsingRefusedException();
+    //    //return parse_float_strtod(pinit, outDouble);
+    //  }
+    //  // from this point forward, exponent between FASTFLOAT_SMALLEST_POWER and FASTFLOAT_LARGEST_POWER
+
+    //  if (pos < p.Length)
+    //    throw new System.FormatException();
+
+    //  return pi;
+    //}
+
+    internal unsafe static parsing_info try_read_span2(char* p)
     {
       parsing_info pi = new parsing_info() { i = 0 };
 
-      int pos = 0;
-      int first_after_period, start_digits;
-      int digit_count;
+      char* first_after_period = null;
+      char* start_digits = null;
 
       // an unsigned int avoids signed overflows (which are bad)
 
       // parse the number at p
       // return the null on error
 
-      if (p.StartsWith("-"))
+      if (*p == '-')
       {
-        pi.negative = true; pos++;
+        pi.negative = true; p++;
       }
       // a negative sign must be followed by an integer
-      start_digits = pos;
+      start_digits = p;
 
-      if (!Utils.is_integer(p, pos)) throw new System.FormatException();
+      if (!Utils.is_integer(*p)) throw new System.FormatException();
 
       // case - starts with a zero
-      //if (p[pos] == '0')
+      //if (*p == '0')
       //{
       //  pos += 1;
       //  //if (Utils.is_integer(p, pos)) throw new System.FormatException();
@@ -54,76 +210,75 @@ namespace cs_fast_double_parser
       //  pi.i = (ulong)Utils.as_digit(p, pos);
       //  pos++;
       //}
-      while (Utils.is_integer(p, pos))
+      while (Utils.is_integer(*p))
       {
-        var digit = Utils.as_digit(p, pos);
+        var digit = Utils.as_digit(*p);
         // a multiplication by 10 is cheaper than an arbitrary integer
         // multiplication
         pi.i = 10 * pi.i + (ulong)digit; // might overflow, we will handle the overflow later
-        pos++;
+        p++;
       }
 
       // case '.'
-      if (Utils.as_char(p, pos) == '.')
+      if (*p == '.')
       {
-        pos++;
-        first_after_period = pos;
-        if (!Utils.is_integer(p, pos)) throw new System.FormatException();
+        p++;
+        first_after_period = p;
+        if (!Utils.is_integer(*p)) throw new System.FormatException();
 
-        var digit = (ulong)Utils.as_digit(p, pos);
+        var digit = (ulong)Utils.as_digit(*p);
         pi.i = pi.i * 10 + digit; // might overflow + multiplication by 10 is likely
                                   // cheaper than arbitrary mult.
                                   // we will handle the overflow later
-        pos++;
+        p++;
 
-        while (Utils.is_integer(p, pos))
+        while (Utils.is_integer(*p))
         {
-          digit = (ulong)Utils.as_digit(p, pos);
+          digit = (ulong)Utils.as_digit(*p);
           pi.i = pi.i * 10 + digit; // might overflow + multiplication by 10 is likely
                                     // cheaper than arbitrary mult.
                                     // we will handle the overflow later
-          pos++;
+          p++;
         }
-        pi.power = (first_after_period - pos);
+        pi.power = (first_after_period - p);
       }
 
-      digit_count = pos - start_digits - 1; // used later to guard against overflows
-
+      int digit_count = (int)(p - start_digits - 1); // used later to guard against overflows
       // case 'e' / 'E'
-      if ("Ee".Contains(Utils.as_char(p, pos)))
+      if ("Ee".Contains(*p))
       {
-        pos++;
+        p++;
         bool neg_exp = false;
-        if ("+-".Contains(Utils.as_char(p, pos)))
+        if ("+-".Contains(*p))
         {
-          neg_exp = Utils.as_char(p, pos) == '-';
-          pos++;
+          neg_exp = *p == '-';
+          p++;
         }
         // at least one integer after + /- ...
-        if (!Utils.is_integer(p, pos)) throw new System.FormatException();
+        if (!Utils.is_integer(*p)) throw new System.FormatException();
 
-        long exp_number = Utils.as_digit(p, pos);
-        pos++;
+        long exp_number = Utils.as_digit(*p);
+        p++;
 
-        if (Utils.is_integer(p, pos))
+        if (Utils.is_integer(*p))
         {
-          exp_number = 10 * exp_number + Utils.as_digit(p, pos); // might overflow + multiplication by 10 is likely
-                                                                 // cheaper than arbitrary mult.
-                                                                 // we will handle the overflow later
-          pos++;
+          exp_number = 10 * exp_number + Utils.as_digit(*p); // might overflow + multiplication by 10 is likely
+                                                             // cheaper than arbitrary mult.
+                                                             // we will handle the overflow later
+          p++;
         }
-        if (Utils.is_integer(p, pos))
+        if (Utils.is_integer(*p))
         {
-          exp_number = 10 * exp_number + Utils.as_digit(p, pos);
-          pos++;
+          exp_number = 10 * exp_number + Utils.as_digit(*p);
+          p++;
         }
-        while (Utils.is_integer(p, pos))
+        while (Utils.is_integer(*p))
         {
           if (exp_number < 0x100000000)
           { // we need to check for overflows
-            exp_number = 10 * exp_number + Utils.as_digit(p, pos);
+            exp_number = 10 * exp_number + Utils.as_digit(*p);
           }
-          pos++;
+          p++;
         }
 
         if (neg_exp)
@@ -143,13 +298,13 @@ namespace cs_fast_double_parser
       { // this is uncommon
         // It is possible that the integer had an overflow.
         // We have to handle the case where we have 0.0000somenumber.
-        int start = start_digits;
-        while ("0.".Contains(Utils.as_char(p, start)))
+        char* start = start_digits;
+        while ("0.".Contains(*start))
         {
           start++;
         }
         // we over-decrement by one when there is a decimal separator
-        digit_count -= (start - start_digits);
+        digit_count -= (int)(start - start_digits);
 
         if (digit_count >= 19)
         {
@@ -171,186 +326,191 @@ namespace cs_fast_double_parser
       }
       // from this point forward, exponent between FASTFLOAT_SMALLEST_POWER and FASTFLOAT_LARGEST_POWER
 
-      if (pos < p.Length)
+      if (*p != '\0')
         throw new System.FormatException();
 
       return pi;
     }
 
-    public static double? parse_number(string p)
-    {
-      double? res;
+    //public static double? parse_number(string p)
+    //{
+    //  double? res;
 
-      int pos = 0;
-      int first_after_period, start_digits;
-      long exponent = 0;
-      int digit_count;
+    //  int pos = 0;
+    //  int first_after_period, start_digits;
+    //  long exponent = 0;
+    //  int digit_count;
 
-      // an unsigned int avoids signed overflows (which are bad)
-      ulong i = 0;
-      bool negative = false;
+    //  // an unsigned int avoids signed overflows (which are bad)
+    //  ulong i = 0;
+    //  bool negative = false;
 
-      // parse the number at p
-      // return the null on error
+    //  // parse the number at p
+    //  // return the null on error
 
-      if (p.StartsWith("-"))
-      {
-        negative = true; pos++;
-      }
-      // a negative sign must be followed by an integer
-      start_digits = pos;
+    //  if (p.StartsWith("-"))
+    //  {
+    //    negative = true; pos++;
+    //  }
+    //  // a negative sign must be followed by an integer
+    //  start_digits = pos;
 
-      if (!Utils.is_integer(p, pos)) return null;
+    //  if (!Utils.is_integer(p, pos)) return null;
 
-      while (p[pos] == '0')
-      {
-        pos += 1;
-      }
-      // case - starts with a zero
-      //if (p[pos] == '0')
-      //{
-      //  i = 0;
-      //  pos += 1;
+    //  while (p[pos] == '0')
+    //  {
+    //    pos += 1;
+    //  }
+    //  // case - starts with a zero
+    //  //if (p[pos] == '0')
+    //  //{
+    //  //  i = 0;
+    //  //  pos += 1;
 
-      //  if (Utils.is_integer(p, pos))
-      //    return null;
-      //}
-      //else
-      //{
-      //  if (!Utils.is_integer(p, pos)) return null;
-      //  i = (ulong)Utils.as_digit(p, pos);
-      //  pos++;
-      //}
+    //  //  if (Utils.is_integer(p, pos))
+    //  //    return null;
+    //  //}
+    //  //else
+    //  //{
+    //  //  if (!Utils.is_integer(p, pos)) return null;
+    //  //  i = (ulong)Utils.as_digit(p, pos);
+    //  //  pos++;
+    //  //}
 
-      while (Utils.is_integer(p, pos))
-      {
-        var digit = Utils.as_digit(p, pos);
-        // a multiplication by 10 is cheaper than an arbitrary integer
-        // multiplication
-        i = 10 * i + (ulong)digit; // might overflow, we will handle the overflow later
-        pos++;
-      }
+    //  while (Utils.is_integer(p, pos))
+    //  {
+    //    var digit = Utils.as_digit(p, pos);
+    //    // a multiplication by 10 is cheaper than an arbitrary integer
+    //    // multiplication
+    //    i = 10 * i + (ulong)digit; // might overflow, we will handle the overflow later
+    //    pos++;
+    //  }
 
-      // case '.'
-      if (Utils.as_char(p, pos) == '.')
-      {
-        pos++;
-        first_after_period = pos;
-        if (!Utils.is_integer(p, pos))
-          return null;
+    //  // case '.'
+    //  if (Utils.as_char(p, pos) == '.')
+    //  {
+    //    pos++;
+    //    first_after_period = pos;
+    //    if (!Utils.is_integer(p, pos))
+    //      return null;
 
-        var digit = (ulong)Utils.as_digit(p, pos);
-        i = i * 10 + digit; // might overflow + multiplication by 10 is likely
-                            // cheaper than arbitrary mult.
-                            // we will handle the overflow later
-        pos++;
+    //    var digit = (ulong)Utils.as_digit(p, pos);
+    //    i = i * 10 + digit; // might overflow + multiplication by 10 is likely
+    //                        // cheaper than arbitrary mult.
+    //                        // we will handle the overflow later
+    //    pos++;
 
-        while (Utils.is_integer(p, pos))
-        {
-          digit = (ulong)Utils.as_digit(p, pos);
-          i = i * 10 + digit; // might overflow + multiplication by 10 is likely
-                              // cheaper than arbitrary mult.
-                              // we will handle the overflow later
-          pos++;
-        }
-        exponent = (first_after_period - pos);
-      }
+    //    while (Utils.is_integer(p, pos))
+    //    {
+    //      digit = (ulong)Utils.as_digit(p, pos);
+    //      i = i * 10 + digit; // might overflow + multiplication by 10 is likely
+    //                          // cheaper than arbitrary mult.
+    //                          // we will handle the overflow later
+    //      pos++;
+    //    }
+    //    exponent = (first_after_period - pos);
+    //  }
 
-      digit_count = pos - start_digits - 1; // used later to guard against overflows
+    //  digit_count = pos - start_digits - 1; // used later to guard against overflows
 
-      // case 'e' / 'E'
-      if ("Ee".Contains(Utils.as_char(p, pos)))
-      {
-        pos++;
-        bool neg_exp = false;
-        if ("+-".Contains(Utils.as_char(p, pos)))
-        {
-          neg_exp = Utils.as_char(p, pos) == '-';
-          pos++;
-        }
-        // at least one integer after + /- ...
-        if (!Utils.is_integer(p, pos)) return null;
+    //  // case 'e' / 'E'
+    //  if ("Ee".Contains(Utils.as_char(p, pos)))
+    //  {
+    //    pos++;
+    //    bool neg_exp = false;
+    //    if ("+-".Contains(Utils.as_char(p, pos)))
+    //    {
+    //      neg_exp = Utils.as_char(p, pos) == '-';
+    //      pos++;
+    //    }
+    //    // at least one integer after + /- ...
+    //    if (!Utils.is_integer(p, pos)) return null;
 
-        long exp_number = Utils.as_digit(p, pos);
-        pos++;
+    //    long exp_number = Utils.as_digit(p, pos);
+    //    pos++;
 
-        if (Utils.is_integer(p, pos))
-        {
-          exp_number = 10 * exp_number + Utils.as_digit(p, pos); // might overflow + multiplication by 10 is likely
-                                                                 // cheaper than arbitrary mult.
-                                                                 // we will handle the overflow later
-          pos++;
-        }
-        if (Utils.is_integer(p, pos))
-        {
-          exp_number = 10 * exp_number + Utils.as_digit(p, pos);
-          pos++;
-        }
-        while (Utils.is_integer(p, pos))
-        {
-          if (exp_number < 0x100000000)
-          { // we need to check for overflows
-            exp_number = 10 * exp_number + Utils.as_digit(p, pos);
-          }
-          pos++;
-        }
+    //    if (Utils.is_integer(p, pos))
+    //    {
+    //      exp_number = 10 * exp_number + Utils.as_digit(p, pos); // might overflow + multiplication by 10 is likely
+    //                                                             // cheaper than arbitrary mult.
+    //                                                             // we will handle the overflow later
+    //      pos++;
+    //    }
+    //    if (Utils.is_integer(p, pos))
+    //    {
+    //      exp_number = 10 * exp_number + Utils.as_digit(p, pos);
+    //      pos++;
+    //    }
+    //    while (Utils.is_integer(p, pos))
+    //    {
+    //      if (exp_number < 0x100000000)
+    //      { // we need to check for overflows
+    //        exp_number = 10 * exp_number + Utils.as_digit(p, pos);
+    //      }
+    //      pos++;
+    //    }
 
-        if (neg_exp)
-        {
-          exponent -= exp_number;
-        }
-        else
-        {
-          exponent += exp_number;
-        }
-      }
+    //    if (neg_exp)
+    //    {
+    //      exponent -= exp_number;
+    //    }
+    //    else
+    //    {
+    //      exponent += exp_number;
+    //    }
+    //  }
 
-      // If we frequently had to deal with long strings of digits,
-      // we could extend our code by using a 128-bit integer instead
-      // of a 64-bit integer. However, this is uncommon.
-      if (digit_count >= 19)
-      { // this is uncommon
-        // It is possible that the integer had an overflow.
-        // We have to handle the case where we have 0.0000somenumber.
-        int start = start_digits;
-        while ("0.".Contains(Utils.as_char(p, start)))
-        {
-          start++;
-        }
-        // we over-decrement by one when there is a decimal separator
-        digit_count -= (start - start_digits);
-        if (digit_count >= 19)
-        {
-          // Chances are good that we had an overflow!
-          // We start anew.
-          // This will happen in the following examples:
-          // 10000000000000000000000000000000000000000000e+308
-          // 3.1415926535897932384626433832795028841971693993751
-          //
-          return parse_float_strtod(p);
-        }
-      }
-      if ((int)exponent < Constants.FASTFLOAT_SMALLEST_POWER || (int)exponent > Constants.FASTFLOAT_LARGEST_POWER)
-      {
-        // this is almost never going to get called!!!
-        // exponent could be as low as 325
-        return parse_float_strtod(p);
-        //return parse_float_strtod(pinit, outDouble);
-      }
-      // from this point forward, exponent between FASTFLOAT_SMALLEST_POWER and FASTFLOAT_LARGEST_POWER
+    //  // If we frequently had to deal with long strings of digits,
+    //  // we could extend our code by using a 128-bit integer instead
+    //  // of a 64-bit integer. However, this is uncommon.
+    //  if (digit_count >= 19)
+    //  { // this is uncommon
+    //    // It is possible that the integer had an overflow.
+    //    // We have to handle the case where we have 0.0000somenumber.
+    //    int start = start_digits;
+    //    while ("0.".Contains(Utils.as_char(p, start)))
+    //    {
+    //      start++;
+    //    }
+    //    // we over-decrement by one when there is a decimal separator
+    //    digit_count -= (start - start_digits);
+    //    if (digit_count >= 19)
+    //    {
+    //      // Chances are good that we had an overflow!
+    //      // We start anew.
+    //      // This will happen in the following examples:
+    //      // 10000000000000000000000000000000000000000000e+308
+    //      // 3.1415926535897932384626433832795028841971693993751
+    //      //
+    //      return parse_float_strtod(p);
+    //    }
+    //  }
+    //  if ((int)exponent < Constants.FASTFLOAT_SMALLEST_POWER || (int)exponent > Constants.FASTFLOAT_LARGEST_POWER)
+    //  {
+    //    // this is almost never going to get called!!!
+    //    // exponent could be as low as 325
+    //    return parse_float_strtod(p);
+    //    //return parse_float_strtod(pinit, outDouble);
+    //  }
+    //  // from this point forward, exponent between FASTFLOAT_SMALLEST_POWER and FASTFLOAT_LARGEST_POWER
 
-      return compute_float_64(new parsing_info() { power = (int)exponent, i = i, negative = negative })
-         ?? parse_float_strtod(p);
-    }
+    //  return compute_float_64(new parsing_info() { power = (int)exponent, i = i, negative = negative })
+    //     ?? parse_float_strtod(p);
+    //}
 
     public static double? parse_number2(string s)
     {
       try
       {
-        var pi = DoubleParser.try_read_span(s);
-
-        return DoubleParser.compute_float_64(pi)
-                  ?? parse_float_strtod(s);
+        unsafe
+        {
+          fixed (char* p = s)
+          {
+            var pi = DoubleParser.try_read_span2(p);
+            return DoubleParser.compute_float_64(pi)
+                   ?? parse_float_strtod(s);
+          }
+        }
       }
       catch (ParsingRefusedException)
       {
