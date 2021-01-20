@@ -180,7 +180,7 @@ namespace cs_fast_double_parser
 
     internal unsafe static parsing_info try_read_span2(char* p)
     {
-      parsing_info pi = new parsing_info() { i = 0 };
+      parsing_info info = new parsing_info() { i = 0 };
 
       char* first_after_period = null;
       char* start_digits = null;
@@ -192,7 +192,7 @@ namespace cs_fast_double_parser
 
       if (*p == '-')
       {
-        pi.negative = true; p++;
+        info.negative = true; p++;
       }
       // a negative sign must be followed by an integer
       start_digits = p;
@@ -215,7 +215,7 @@ namespace cs_fast_double_parser
         var digit = Utils.as_digit(*p);
         // a multiplication by 10 is cheaper than an arbitrary integer
         // multiplication
-        pi.i = 10 * pi.i + (ulong)digit; // might overflow, we will handle the overflow later
+        info.i = 10 * info.i + (ulong)digit; // might overflow, we will handle the overflow later
         p++;
       }
 
@@ -227,20 +227,20 @@ namespace cs_fast_double_parser
         if (!Utils.is_integer(*p)) throw new System.FormatException();
 
         var digit = (ulong)Utils.as_digit(*p);
-        pi.i = pi.i * 10 + digit; // might overflow + multiplication by 10 is likely
-                                  // cheaper than arbitrary mult.
-                                  // we will handle the overflow later
+        info.i = info.i * 10 + digit; // might overflow + multiplication by 10 is likely
+                                      // cheaper than arbitrary mult.
+                                      // we will handle the overflow later
         p++;
 
         while (Utils.is_integer(*p))
         {
           digit = (ulong)Utils.as_digit(*p);
-          pi.i = pi.i * 10 + digit; // might overflow + multiplication by 10 is likely
-                                    // cheaper than arbitrary mult.
-                                    // we will handle the overflow later
+          info.i = info.i * 10 + digit; // might overflow + multiplication by 10 is likely
+                                        // cheaper than arbitrary mult.
+                                        // we will handle the overflow later
           p++;
         }
-        pi.power = (first_after_period - p);
+        info.power = (first_after_period - p);
       }
 
       int digit_count = (int)(p - start_digits - 1); // used later to guard against overflows
@@ -283,11 +283,11 @@ namespace cs_fast_double_parser
 
         if (neg_exp)
         {
-          pi.power -= exp_number;
+          info.power -= exp_number;
         }
         else
         {
-          pi.power += exp_number;
+          info.power += exp_number;
         }
       }
 
@@ -317,7 +317,7 @@ namespace cs_fast_double_parser
           throw new ParsingRefusedException();
         }
       }
-      if ((int)pi.power < Constants.FASTFLOAT_SMALLEST_POWER || (int)pi.power > Constants.FASTFLOAT_LARGEST_POWER)
+      if ((int)info.power < Constants.FASTFLOAT_SMALLEST_POWER || (int)info.power > Constants.FASTFLOAT_LARGEST_POWER)
       {
         // this is almost never going to get called!!!
         // exponent could be as low as 325
@@ -329,7 +329,7 @@ namespace cs_fast_double_parser
       if (*p != '\0')
         throw new System.FormatException();
 
-      return pi;
+      return info;
     }
 
     //public static double? parse_number(string p)
