@@ -477,7 +477,7 @@ namespace csFastFloat
         // If it scientific and not fixed, we have to bail out.
         if ((expectedFormat.HasFlag(chars_format.is_scientific)) && !(expectedFormat.HasFlag(chars_format.is_fixed))) { return answer; }
       }
-      answer.lastmatch = p;
+      //answer.lastmatch = p;
       answer.valid = true;
 
       // If we frequently had to deal with long strings of digits,

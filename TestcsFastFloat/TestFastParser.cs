@@ -60,6 +60,18 @@ namespace TestcsFastFloat.Tests
     }
 
     [Fact]
+    unsafe public void Test()
+    {
+      var sut = "0.00000000000000212312312";
+
+      fixed (char* p = sut)
+      {
+        char* pend = p + sut.Length;
+        var res = new DoubleParser().ParseNumber(p, pend, chars_format.is_general);
+      }
+    }
+
+    [Fact]
     unsafe public void ParseNumberString_Works_Scnenarios()
     {
       Dictionary<string, string> sut = new Dictionary<string, string>();

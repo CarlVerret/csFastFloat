@@ -43,7 +43,7 @@ namespace csFastFloat
 
     public override int largest_power_of_ten() => 38;
 
-    public override int smallest_power_of_ten() => 65;
+    public override int smallest_power_of_ten() => -65;
 
     public override float exact_power_of_ten(long power) => Constants.powers_of_ten_float[power];
 
