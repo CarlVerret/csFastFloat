@@ -29,38 +29,40 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\csharp_fast_double_parser\cs_fast_double_parser.csproj" />
+    <ProjectReference Include="..\csFastFloat\csFastFloat.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="TestBenchMark.Benchmark_1.approved.txt">
-      <DependentUpon>TestBenchmark.cs</DependentUpon>
-    </None>
-    <None Update="TestBenchMark.Benchmark_2.approved.txt">
-      <DependentUpon>TestBenchmark.cs</DependentUpon>
-    </None>
-    <None Update="TestBenchMark.parse_number_casException.approved.txt">
+    <None Update="Test_NonRegr.cas_ProfLemire.approved.txt">
       <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
       <ParentExtension>$(ProjectExt.Replace('proj', ''))</ParentExtension>
-      <DependentUpon>TestBenchmark.cs</DependentUpon>
+      <DependentUpon>%(ParentFile)%(ParentExtension)</DependentUpon>
     </None>
-    <None Update="TestBenchMark.parse_number_falback.approved.txt">
+    <None Update="Test_NonRegr.parse_number_casException.approved.txt">
       <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
       <ParentExtension>$(ProjectExt.Replace('proj', ''))</ParentExtension>
-      <DependentUpon>TestBenchmark.cs</DependentUpon>
+      <DependentUpon>%(ParentFile)%(ParentExtension)</DependentUpon>
     </None>
-    <None Update="TestBenchMark.parse_number_fonctionne.approved.txt">
+    <None Update="Test_NonRegr.parse_number_casException_NaN.approved.txt">
       <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
       <ParentExtension>$(ProjectExt.Replace('proj', ''))</ParentExtension>
-      <DependentUpon>TestBenchmark.cs</DependentUpon>
+      <DependentUpon>%(ParentFile)%(ParentExtension)</DependentUpon>
     </None>
-    <None Update="TestBenchMark.parse_number_fonctionne.ForScenario.test.approved.txt">
+    <None Update="Test_NonRegr.parse_number_falback.approved.txt">
       <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
       <ParentExtension>$(ProjectExt.Replace('proj', ''))</ParentExtension>
-      <DependentUpon>TestBenchmark.cs</DependentUpon>
+      <DependentUpon>%(ParentFile)%(ParentExtension)</DependentUpon>
     </None>
-    <None Update="TestBenchMark.Test_Charge.approved.txt">
-      <DependentUpon>TestBenchmark.cs</DependentUpon>
+    <None Update="Test_NonRegr.parse_number_fonctionne.approved.txt">
+      <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
+      <ParentExtension>$(ProjectExt.Replace('proj', ''))</ParentExtension>
+      <DependentUpon>%(ParentFile)%(ParentExtension)</DependentUpon>
+    </None>
+    <None Update="Test_NonRegr.parse_number_fonctionne.ForScenario.test.approved.txt">
+      <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
+      <ParentExtension>$(ProjectExt.Replace('proj', ''))</ParentExtension>
+      <DependentUpon>%(ParentFile)%(ParentExtension)</DependentUpon>
     </None>
   </ItemGroup>
+
 </Project>

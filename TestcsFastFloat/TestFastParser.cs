@@ -1,12 +1,165 @@
-﻿using System;
+using csFastFloat;
+using csFastFloat.Enums;
+using csFastFloat.Structures;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-namespace cs_fast_double_parser.Tests
+namespace TestcsFastFloat.Tests
 {
-  public class TestComputeFloat : BaseTestClass
+  public class TestFastParser : BaseTestClass
   {
+    [InlineData("a", "A", 1, true)]
+    [InlineData("a", "a", 1, true)]
+    [InlineData("a", "b", 1, false)]
+    [Theory]
+    unsafe public void Test1(string a, string b, int len, bool res)
+    {
+      fixed (char* pa = a)
+      fixed (char* pb = b)
+      {
+        Assert.Equal(res, Utils.strncasecmp(pa, pb, len));
+      }
+    }
+
+    [Theory]
+    [InlineData("nan", double.NaN)]
+    [InlineData("inf", double.PositiveInfinity)]
+    [InlineData("+nan", double.NaN)]
+    [InlineData("-nan", double.NaN)]
+    [InlineData("+inf", double.PositiveInfinity)]
+    [InlineData("-inf", double.NegativeInfinity)]
+    [InlineData("infinity", double.PositiveInfinity)]
+    [InlineData("+infinity", double.PositiveInfinity)]
+    [InlineData("-infinity", double.NegativeInfinity)]
+    unsafe public void DoubleParser_HandleInvalidInput_works(string input, double res)
+    {
+      fixed (char* p = input)
+      {
+        Assert.Equal(res, new DoubleParser().HandleInvalidInput(p, p + input.Length));
+      }
+    }
+
+    [Theory]
+    [InlineData("nan", float.NaN)]
+    [InlineData("inf", float.PositiveInfinity)]
+    [InlineData("+nan", float.NaN)]
+    [InlineData("-nan", float.NaN)]
+    [InlineData("+inf", float.PositiveInfinity)]
+    [InlineData("-inf", float.NegativeInfinity)]
+    [InlineData("infinity", float.PositiveInfinity)]
+    [InlineData("+infinity", float.PositiveInfinity)]
+    [InlineData("-infinity", float.NegativeInfinity)]
+    unsafe public void FloatParser_HandleInvalidInput_works(string input, float res)
+    {
+      fixed (char* p = input)
+      {
+        Assert.Equal(res, new FloatParser().HandleInvalidInput(p, p + input.Length));
+      }
+    }
+
+    [Fact]
+    unsafe public void ParseNumberString_Works_Scnenarios()
+    {
+      Dictionary<string, string> sut = new Dictionary<string, string>();
+
+      sut.Add("leading zeros", "001");
+      sut.Add("leading zeros neg", "-001");
+
+      sut.Add("zero", "0");
+      sut.Add("zero neg", "-0");
+
+      sut.Add("double", "0.00000000000000212312312");
+      sut.Add("double neg", "-0.00000000000000212312312");
+      sut.Add("int", "1");
+      sut.Add("int neg", "-1");
+
+      sut.Add("autreint ", "123124");
+      sut.Add("autreint neg", "-123124");
+
+      sut.Add("notation scientifique", "4.56E+2");
+      sut.Add("notation scientifique neg", "-4.56E-2");
+
+      sut.Add("notation scientifique 2", "4.5644E+2");
+      sut.Add("notation scientifique 2 neg", "-4.5644E-2");
+
+      sut.Add("notation scientifique 3", "4424.5644E+22");
+      sut.Add("notation scientifique 3 neg", "-4424.5644E-22");
+
+      sut.Add("notation scientifique 4", "4424.5644E+223");
+      sut.Add("notation scientifique 4 neg", "-4424.5644E-223");
+      StringBuilder sb = new StringBuilder();
+
+      foreach (KeyValuePair<string, string> kv in sut)
+      {
+        sb.AppendLine($"Scenario : {kv.Key} ");
+        sb.AppendLine($"Valeur   : {kv.Value} ");
+
+        fixed (char* p = kv.Value)
+        {
+          char* pend = p + kv.Value.Length;
+          var res = new DoubleParser().ParseNumberString(p, pend, chars_format.is_general);
+
+          sb.AppendLine($"Resultat : {res.exponent} {res.mantissa} {res.negative} {res.valid}");
+          sb.AppendLine();
+        }
+      }
+
+      VerifyData(sb.ToString());
+    }
+
+    [Fact]
+    unsafe public void ParseNumber_Works_Scnenarios()
+    {
+      Dictionary<string, string> sut = new Dictionary<string, string>();
+
+      // TODO:
+      sut.Add("leading zeros", "001");
+      sut.Add("leading zeros neg", "-001");
+
+      sut.Add("zero", "0");
+      sut.Add("zero neg", "-0");
+
+      sut.Add("double", "0.00000000000000212312312");
+      sut.Add("double neg", "-0.00000000000000212312312");
+      sut.Add("int", "1");
+      sut.Add("int neg", "-1");
+
+      sut.Add("autreint ", "123124");
+      sut.Add("autreint neg", "-123124");
+
+      sut.Add("notation scientifique", "4.56E+2");
+      sut.Add("notation scientifique neg", "-4.56E-2");
+
+      sut.Add("notation scientifique 2", "4.5644E+2");
+      sut.Add("notation scientifique 2 neg", "-4.5644E-2");
+
+      sut.Add("notation scientifique 3", "4424.5644E+22");
+      sut.Add("notation scientifique 3 neg", "-4424.5644E-22");
+
+      sut.Add("notation scientifique 4", "4424.5644E+223");
+      sut.Add("notation scientifique 4 neg", "-4424.5644E-223");
+      StringBuilder sb = new StringBuilder();
+
+      foreach (KeyValuePair<string, string> kv in sut)
+      {
+        sb.AppendLine($"Scenario : {kv.Key} ");
+        sb.AppendLine($"Valeur   : {kv.Value} ");
+
+        fixed (char* p = kv.Value)
+        {
+          char* pend = p + kv.Value.Length;
+          var res = new DoubleParser().ParseNumber(p, pend, chars_format.is_general);
+
+          sb.AppendLine($"Resultat : {res}");
+          sb.AppendLine();
+        }
+      }
+
+      VerifyData(sb.ToString());
+    }
+
     [Fact]
     public void cas_compute_float_64_1()
     {
@@ -15,7 +168,9 @@ namespace cs_fast_double_parser.Tests
         if (p == 23)
           p++;
 
-        double? d = DoubleParser.compute_float_64(new DoubleParser.parsing_info() { power = p, i = 1, negative = false });
+        var sut = new DoubleParser();
+
+        double? d = sut.ToFloat(false, sut.ComputeFloat(p, 1));
 
         if (!d.HasValue)
           throw new ApplicationException($"Can't parse p=> {p}");
@@ -26,19 +181,23 @@ namespace cs_fast_double_parser.Tests
     }
 
     [Fact]
-    public void cas_compute_float_64_2()
+    unsafe public void cas_compute_float_64_2()
     {
       for (int p = -306; p <= 308; p++)
       {
-        double? d = DoubleParser.parse_number2($"1e{p}");
+        string sut = $"1e{p}";
+        fixed (char* pstart = sut)
+        {
+          double? d = new DoubleParser().ParseNumber(pstart, pstart + sut.Length, chars_format.is_general);
 
-        if (!d.HasValue)
-        {
-          throw new ApplicationException($"Can't parse p=> 1e{p}");
-        }
-        if (d != testing_power_of_ten[p + 307])
-        {
-          throw new ApplicationException($"bad parsing p=> {p}");
+          if (!d.HasValue)
+          {
+            throw new ApplicationException($"Can't parse p=> 1e{p}");
+          }
+          if (d != testing_power_of_ten[p + 307])
+          {
+            throw new ApplicationException($"bad parsing p=> {p}");
+          }
         }
       }
     }

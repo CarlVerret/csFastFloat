@@ -4,7 +4,7 @@ using ApprovalTests.Reporters;
 using Newtonsoft.Json;
 using System.Text;
 
-namespace cs_fast_double_parser.Tests
+namespace TestcsFastFloat.Tests
 {
   [UseReporter(typeof(DiffReporter))]
   public class BaseTestClass

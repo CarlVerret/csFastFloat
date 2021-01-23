@@ -1,11 +1,105 @@
-﻿using cs_fast_double_parser;
+﻿using csFastFloat;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Xunit;
 
-namespace cs_fast_double_parser.Tests
+namespace TestcsFastFloat.Tests
 {
+  public class ParseException : Exception
+  {
+    public string Value;
+    public string Reason;
+    private double _x;
+    private double _d;
+
+    public ParseException(string v, string reason, double x, double d)
+    {
+      Value = v;
+      Reason = reason;
+      _x = x;
+      _d = d;
+    }
+  }
+
+  public class TestCharge : BaseTestClass
+  {
+    // Bit mixer
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static ulong rng(ulong h)
+    {
+      h ^= h >> 33;
+      h *= (ulong)(0xff51afd7ed558ccd);
+      h ^= h >> 33;
+      h *= (ulong)(0xc4ceb9fe1a85ec53);
+      h ^= h >> 33;
+      return h;
+    }
+
+    private static void check(double d)
+    {
+      //std::string s(64, '\0');
+      string s = new string('\0', 64);
+
+      //auto written = std::snprintf(&s[0], s.size(), "%.*e", DBL_DIG + 1, d);
+      //s.resize(written);
+      s = d.ToString().Replace(",", ".");
+
+      double? x = new DoubleParser().ParseNumber(s);
+      if (!x.HasValue)
+      {
+        throw new ParseException(s, "refused", 0, 0);
+      }
+      // if (isok != s.data() + s.size()) throw std::runtime_error("does not point at the end");
+      if (d != x)
+      {
+        throw new ParseException(s, "disagree", x.Value, d);
+      }
+    }
+
+    [Fact]
+    private unsafe void Test_Charge()
+    {
+      var did = 0;
+      var refused = 0;
+      var disagree = 0;
+
+      ulong offset = 1190;
+      var howmany = 10000000;
+
+      for (var i = 1; i <= howmany; i++)
+      {
+        // mix bits
+        ulong x = rng((ulong)i + offset);
+        double d;
+        Buffer.MemoryCopy(&x, &d, sizeof(double), sizeof(double));
+        // paranoid
+        while ((!double.IsNormal(d)) || double.IsNaN(d) || double.IsInfinity(d))
+        {
+          offset++;
+          x = rng((ulong)i + offset);
+          Buffer.MemoryCopy(&x, &d, sizeof(double), sizeof(double));
+        }
+        try
+        {
+          did += 1;
+          check(d);
+        }
+        catch (ParseException ex)
+        {
+          if (ex.Reason == "refused") refused += 1;
+          if (ex.Reason == "disagree") disagree += 1;
+        }
+        catch
+        {
+          throw;
+        }
+      }
+      ApprovalTests.Approvals.Verify($"Did :{did} Refused: {refused} Disagree{disagree}");
+    }
+  }
+
   public class Test_NonRegr : BaseTestClass
   {
     [Fact]
@@ -25,7 +119,7 @@ namespace cs_fast_double_parser.Tests
       {
         sb.AppendLine($"Valeur   : {kv.Key} ");
         sb.AppendLine($"Expected : {kv.Value} ");
-        sb.AppendLine($"Resultat : {DoubleParser.parse_number2(kv.Key)}");
+        sb.AppendLine($"Resultat : {new DoubleParser().ParseNumber(kv.Key)}");
       }
 
       ApprovalTests.Approvals.Verify(sb.ToString());
@@ -34,7 +128,7 @@ namespace cs_fast_double_parser.Tests
     [Fact]
     private void issue13()
     {
-      double? x = DoubleParser.parse_number2("0");
+      double? x = new DoubleParser().ParseNumber("0");
       Assert.True(x.HasValue, "Parsed");
       Assert.True(x == 0, "Maps to 0");
     }
@@ -50,7 +144,7 @@ namespace cs_fast_double_parser.Tests
     [Fact]
     private void issue32()
     {
-      double? x = DoubleParser.parse_number2("-0");
+      double? x = new DoubleParser().ParseNumber("-0");
       Assert.True(x.HasValue, "could not parse -zero.");
       Assert.True(x == 0, "-zero does not map to zero.");
     }
@@ -58,7 +152,7 @@ namespace cs_fast_double_parser.Tests
     [Fact]
     private void issue23()
     {
-      double? x = DoubleParser.parse_number2("0e+42949672970");
+      double? x = new DoubleParser().ParseNumber("0e+42949672970");
 
       Assert.True(x.HasValue, "could not parse zero.");
       Assert.True(x == 0, "zero does not map to zero.");
@@ -67,7 +161,7 @@ namespace cs_fast_double_parser.Tests
     [Fact]
     private void issue23_2()
     {
-      double? x = DoubleParser.parse_number2("5e0012");
+      double? x = new DoubleParser().ParseNumber("5e0012");
 
       Assert.True(x.HasValue, "could not parse 5e0012.");
       Assert.True(x == 5e12, "does not map to 5e0012.");
