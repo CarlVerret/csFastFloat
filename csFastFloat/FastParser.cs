@@ -53,7 +53,7 @@ namespace csFastFloat
       }
     }
 
-    unsafe public T ParseNumber(char* first, char* last, chars_format expectedFormat)
+    unsafe public T ParseNumber(char* first, char* last, chars_format expectedFormat = chars_format.is_general)
     {
       while ((first != last) && Utils.is_space((byte)(*first)))
       {
@@ -380,7 +380,7 @@ namespace csFastFloat
       throw new ArgumentException();
     }
 
-    unsafe internal ParsedNumberString ParseNumberString(char* p, char* pend, chars_format expectedFormat)
+    unsafe internal ParsedNumberString ParseNumberString(char* p, char* pend, chars_format expectedFormat = chars_format.is_general)
     {
       ParsedNumberString answer = new ParsedNumberString();
       answer.valid = false;

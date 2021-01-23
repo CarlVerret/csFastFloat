@@ -99,7 +99,7 @@ namespace TestcsFastFloat.Tests
         fixed (char* p = kv.Value)
         {
           char* pend = p + kv.Value.Length;
-          var res = new DoubleParser().ParseNumberString(p, pend, chars_format.is_general);
+          var res = new DoubleParser().ParseNumberString(p, pend);
 
           sb.AppendLine($"Resultat : {res.exponent} {res.mantissa} {res.negative} {res.valid}");
           sb.AppendLine();
@@ -150,7 +150,7 @@ namespace TestcsFastFloat.Tests
         fixed (char* p = kv.Value)
         {
           char* pend = p + kv.Value.Length;
-          var res = new DoubleParser().ParseNumber(p, pend, chars_format.is_general);
+          var res = new DoubleParser().ParseNumber(p, pend);
 
           sb.AppendLine($"Resultat : {res}");
           sb.AppendLine();
