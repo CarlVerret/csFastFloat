@@ -46,7 +46,7 @@ namespace TestcsFastFloat.Tests
       //s.resize(written);
       s = d.ToString().Replace(",", ".");
 
-      double? x = new DoubleParser().ParseNumber(s);
+      double? x = FastParser.ParseDouble(s);
       if (!x.HasValue)
       {
         throw new ParseException(s, "refused", 0, 0);
@@ -119,7 +119,7 @@ namespace TestcsFastFloat.Tests
       {
         sb.AppendLine($"Valeur   : {kv.Key} ");
         sb.AppendLine($"Expected : {kv.Value} ");
-        sb.AppendLine($"Resultat : {new DoubleParser().ParseNumber(kv.Key)}");
+        sb.AppendLine($"Resultat : { FastParser.ParseDouble(kv.Key)}");
       }
 
       ApprovalTests.Approvals.Verify(sb.ToString());
@@ -128,7 +128,7 @@ namespace TestcsFastFloat.Tests
     [Fact]
     private void issue13()
     {
-      double? x = new DoubleParser().ParseNumber("0");
+      double? x = FastParser.ParseDouble("0");
       Assert.True(x.HasValue, "Parsed");
       Assert.True(x == 0, "Maps to 0");
     }
@@ -144,7 +144,7 @@ namespace TestcsFastFloat.Tests
     [Fact]
     private void issue32()
     {
-      double? x = new DoubleParser().ParseNumber("-0");
+      double? x = FastParser.ParseDouble("-0");
       Assert.True(x.HasValue, "could not parse -zero.");
       Assert.True(x == 0, "-zero does not map to zero.");
     }
@@ -152,7 +152,7 @@ namespace TestcsFastFloat.Tests
     [Fact]
     private void issue23()
     {
-      double? x = new DoubleParser().ParseNumber("0e+42949672970");
+      double? x = FastParser.ParseDouble("0e+42949672970");
 
       Assert.True(x.HasValue, "could not parse zero.");
       Assert.True(x == 0, "zero does not map to zero.");
@@ -161,7 +161,7 @@ namespace TestcsFastFloat.Tests
     [Fact]
     private void issue23_2()
     {
-      double? x = new DoubleParser().ParseNumber("5e0012");
+      double? x = FastParser.ParseDouble("5e0012");
 
       Assert.True(x.HasValue, "could not parse 5e0012.");
       Assert.True(x == 5e12, "does not map to 5e0012.");

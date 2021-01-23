@@ -10,50 +10,37 @@ using System.Text;
 
 namespace csFastFloat
 {
-  public abstract class FastParser<T> : IBinaryFormat<T>
+  public abstract class FastParser
   {
-    #region abstract stuff
-
-    internal abstract T FastPath(ParsedNumberString pns);
-
-    public abstract T exact_power_of_ten(long power);
-
-    public abstract int infinite_power();
-
-    public abstract int largest_power_of_ten();
-
-    public abstract int mantissa_explicit_bits();
-
-    public abstract int max_exponent_fast_path();
-
-    public abstract int max_exponent_round_to_even();
-
-    public abstract ulong max_mantissa_fast_path();
-
-    public abstract int minimum_exponent();
-
-    public abstract int min_exponent_fast_path();
-
-    public abstract int min_exponent_round_to_even();
-
-    public abstract int sign_index();
-
-    public abstract int smallest_power_of_ten();
-
-    #endregion abstract stuff
-
-    public T ParseNumber(string s, chars_format expectedFormat = chars_format.is_general)
+    public static double ParseDouble(string s, chars_format expectedFormat = chars_format.is_general)
     {
       unsafe
       {
         fixed (char* pStart = s)
         {
-          return ParseNumber(pStart, pStart + s.Length, expectedFormat);
+          return FastParser.ParseDouble(pStart, pStart + s.Length, expectedFormat);
         }
       }
     }
 
-    unsafe public T ParseNumber(char* first, char* last, chars_format expectedFormat)
+    public static float ParseFloat(string s, chars_format expectedFormat = chars_format.is_general)
+    {
+      unsafe
+      {
+        fixed (char* pStart = s)
+        {
+          return ParseFloat(pStart, pStart + s.Length, expectedFormat);
+        }
+      }
+    }
+
+    unsafe static public double ParseDouble(char* first, char* last, chars_format expectedFormat = chars_format.is_general)
+      => ParseNumber<double>(first, last, new DoubleBinaryFormat(), expectedFormat);
+
+    unsafe static public float ParseFloat(char* first, char* last, chars_format expectedFormat = chars_format.is_general)
+                  => ParseNumber<float>(first, last, new FloatBinaryFormat(), expectedFormat);
+
+    unsafe static internal T ParseNumber<T>(char* first, char* last, IBinaryFormat<T> binaryFormat, chars_format expectedFormat = chars_format.is_general)
     {
       while ((first != last) && Utils.is_space((byte)(*first)))
       {
@@ -66,30 +53,28 @@ namespace csFastFloat
       ParsedNumberString pns = ParseNumberString(first, last, expectedFormat);
       if (!pns.valid)
       {
-        return HandleInvalidInput(first, last);
+        return HandleInvalidInput<T>(first, last, binaryFormat);
       }
 
       // Next is Clinger's fast path.
-      if (min_exponent_fast_path() <= pns.exponent && pns.exponent <= max_exponent_fast_path() && pns.mantissa <= max_mantissa_fast_path() && !pns.too_many_digits)
+      if (binaryFormat.min_exponent_fast_path() <= pns.exponent && pns.exponent <= binaryFormat.max_exponent_fast_path() && pns.mantissa <= binaryFormat.max_mantissa_fast_path() && !pns.too_many_digits)
       {
-        return FastPath(pns);
+        return binaryFormat.FastPath(pns);
       }
 
-      AdjustedMantissa am = ComputeFloat(pns.exponent, pns.mantissa);
+      AdjustedMantissa am = ComputeFloat(pns.exponent, pns.mantissa, binaryFormat);
       if (pns.too_many_digits)
       {
-        if (am != ComputeFloat(pns.exponent, pns.mantissa + 1))
+        if (am != ComputeFloat(pns.exponent, pns.mantissa + 1, binaryFormat))
         {
           am.power2 = -1; // value is invalid.
         }
       }
       // If we called compute_float<binary_format<T>>(pns.exponent, pns.mantissa) and we have an invalid power (am.power2 < 0),
       // then we need to go the long way around again. This is very uncommon.
-      if (am.power2 < 0) { am = ParseLongMantissa(first, last); }
-      return ToFloat(pns.negative, am);
+      if (am.power2 < 0) { am = ParseLongMantissa(first, last, binaryFormat); }
+      return binaryFormat.ToFloat(pns.negative, am);
     }
-
-    unsafe abstract internal T ToFloat(bool negative, AdjustedMantissa am);
 
     /// <summary>
     ///
@@ -97,21 +82,21 @@ namespace csFastFloat
     /// <param name="q"></param>
     /// <param name="w"></param>
     /// <returns></returns>
-    internal AdjustedMantissa ComputeFloat(long q, ulong w)
+    internal static AdjustedMantissa ComputeFloat<T>(long q, ulong w, IBinaryFormat<T> binaryFormat)
     {
       var answer = new AdjustedMantissa();
 
-      if ((w == 0) || (q < smallest_power_of_ten()))
+      if ((w == 0) || (q < binaryFormat.smallest_power_of_ten()))
       {
         answer.power2 = 0;
         answer.mantissa = 0;
         // result should be zero
         return answer;
       }
-      if (q > largest_power_of_ten())
+      if (q > binaryFormat.largest_power_of_ten())
       {
         // we want to get infinity:
-        answer.power2 = infinite_power();
+        answer.power2 = binaryFormat.infinite_power();
         answer.mantissa = 0;
         return answer;
       }
@@ -126,7 +111,7 @@ namespace csFastFloat
       // 2. We need an extra bit for rounding purposes
       // 3. We might lose a bit due to the "upperbit" routine (result too small, requiring a shift)
 
-      value128 product = Utils.compute_product_approximation(mantissa_explicit_bits() + 3, q, w);
+      value128 product = Utils.compute_product_approximation(binaryFormat.mantissa_explicit_bits() + 3, q, w);
       if (product.low == 0xFFFFFFFFFFFFFFFF)
       { //  could guard it further
         // In some very rare cases, this could happen, in which case we might need a more accurate
@@ -146,9 +131,9 @@ namespace csFastFloat
       // is easily predicted. Which is best is data specific.
       int upperbit = (int)(product.high >> 63);
 
-      answer.mantissa = product.high >> (upperbit + 64 - mantissa_explicit_bits() - 3);
+      answer.mantissa = product.high >> (upperbit + 64 - binaryFormat.mantissa_explicit_bits() - 3);
 
-      answer.power2 = (int)(Utils.power((int)(q)) + upperbit - lz - minimum_exponent());
+      answer.power2 = (int)(Utils.power((int)(q)) + upperbit - lz - binaryFormat.minimum_exponent());
       if (answer.power2 <= 0)
       { // we have a subnormal?
         // Here have that answer.power2 <= 0 so -answer.power2 >= 0
@@ -172,20 +157,20 @@ namespace csFastFloat
         // up 0x3fffffffffffff x 2^-1023-53  and once we do, we are no longer
         // subnormal, but we can only know this after rounding.
         // So we only declare a subnormal if we are smaller than the threshold.
-        answer.power2 = (answer.mantissa < ((ulong)(1) << mantissa_explicit_bits())) ? 0 : 1;
+        answer.power2 = (answer.mantissa < ((ulong)(1) << binaryFormat.mantissa_explicit_bits())) ? 0 : 1;
         return answer;
       }
 
       // usually, we round *up*, but if we fall right in between and and we have an
       // even basis, we need to round down
       // We are only concerned with the cases where 5**q fits in single 64-bit word.
-      if ((product.low <= 1) && (q >= min_exponent_round_to_even()) && (q <= max_exponent_round_to_even()) &&
+      if ((product.low <= 1) && (q >= binaryFormat.min_exponent_round_to_even()) && (q <= binaryFormat.max_exponent_round_to_even()) &&
           ((answer.mantissa & 3) == 1))
       { // we may fall between two floats!
         // To be in-between two floats we need that in doing
         //   answer.mantissa = product.high >> (upperbit + 64 - mantissa_explicit_bits() - 3);
         // ... we dropped out only zeroes. But if this happened, then we can go back!!!
-        if ((answer.mantissa << (upperbit + 64 - mantissa_explicit_bits() - 3)) == product.high)
+        if ((answer.mantissa << (upperbit + 64 - binaryFormat.mantissa_explicit_bits() - 3)) == product.high)
         {
           answer.mantissa &= ~(ulong)(1);          // flip it so that we do not round up
         }
@@ -193,22 +178,22 @@ namespace csFastFloat
 
       answer.mantissa += (answer.mantissa & 1); // round up
       answer.mantissa >>= 1;
-      if (answer.mantissa >= ((ulong)(2) << mantissa_explicit_bits()))
+      if (answer.mantissa >= ((ulong)(2) << binaryFormat.mantissa_explicit_bits()))
       {
-        answer.mantissa = ((ulong)(1) << mantissa_explicit_bits());
+        answer.mantissa = ((ulong)(1) << binaryFormat.mantissa_explicit_bits());
         answer.power2++; // undo previous addition
       }
 
-      answer.mantissa &= ~((ulong)(1) << mantissa_explicit_bits());
-      if (answer.power2 >= infinite_power())
+      answer.mantissa &= ~((ulong)(1) << binaryFormat.mantissa_explicit_bits());
+      if (answer.power2 >= binaryFormat.infinite_power())
       { // infinity
-        answer.power2 = infinite_power();
+        answer.power2 = binaryFormat.infinite_power();
         answer.mantissa = 0;
       }
       return answer;
     }
 
-    internal AdjustedMantissa ComputeFloat(DecimalInfo d)
+    internal static AdjustedMantissa ComputeFloat<T>(DecimalInfo d, IBinaryFormat<T> binaryFormat)
     {
       AdjustedMantissa answer = new AdjustedMantissa();
       if (d.num_digits == 0)
@@ -239,7 +224,7 @@ namespace csFastFloat
       {
         // We have something at least as large as 0.1e310 which is
         // always infinite.
-        answer.power2 = infinite_power();
+        answer.power2 = binaryFormat.infinite_power();
         answer.mantissa = 0;
         return answer;
       }
@@ -287,7 +272,7 @@ namespace csFastFloat
         if (d.decimal_point > Constants.decimal_point_range)
         {
           // we want to get infinity:
-          answer.power2 = infinite_power();
+          answer.power2 = binaryFormat.infinite_power();
           answer.mantissa = 0;
           return answer;
         }
@@ -296,7 +281,7 @@ namespace csFastFloat
       // We are now in the range [1/2 ... 1] but the binary format uses [1 ... 2].
       exp2--;
 
-      int min_exp = minimum_exponent();
+      int min_exp = binaryFormat.minimum_exponent();
 
       while ((min_exp + 1) > exp2)
       {
@@ -308,14 +293,14 @@ namespace csFastFloat
         d.decimal_right_shift(n);
         exp2 += (int)(n);
       }
-      if ((exp2 - min_exp) >= infinite_power())
+      if ((exp2 - min_exp) >= binaryFormat.infinite_power())
       {
-        answer.power2 = infinite_power();
+        answer.power2 = binaryFormat.infinite_power();
         answer.mantissa = 0;
         return answer;
       }
 
-      int mantissa_size_in_bits = mantissa_explicit_bits() + 1;
+      int mantissa_size_in_bits = binaryFormat.mantissa_explicit_bits() + 1;
       d.decimal_left_shift((int)mantissa_size_in_bits);
 
       ulong mantissa = d.round();
@@ -326,44 +311,44 @@ namespace csFastFloat
         d.decimal_right_shift(1);
         exp2 += 1;
         mantissa = d.round();
-        if ((exp2 - min_exp) >= infinite_power())
+        if ((exp2 - min_exp) >= binaryFormat.infinite_power())
         {
-          answer.power2 = infinite_power();
+          answer.power2 = binaryFormat.infinite_power();
           answer.mantissa = 0;
           return answer;
         }
       }
       answer.power2 = exp2 - min_exp;
-      if (mantissa < ((ulong)(1) << mantissa_explicit_bits())) { answer.power2--; }
-      answer.mantissa = mantissa & (((ulong)(1) << mantissa_explicit_bits()) - 1);
+      if (mantissa < ((ulong)(1) << binaryFormat.mantissa_explicit_bits())) { answer.power2--; }
+      answer.mantissa = mantissa & (((ulong)(1) << binaryFormat.mantissa_explicit_bits()) - 1);
       return answer;
     }
 
-    unsafe internal AdjustedMantissa ParseLongMantissa(char* first, char* last)
+    unsafe static internal AdjustedMantissa ParseLongMantissa<T>(char* first, char* last, IBinaryFormat<T> binaryFormat)
     {
       DecimalInfo d = DecimalInfo.parse_decimal(first, last);
-      return ComputeFloat(d);
+      return ComputeFloat(d, binaryFormat);
     }
 
-    unsafe internal T HandleInvalidInput(char* first, char* last)
+    unsafe static internal T HandleInvalidInput<T>(char* first, char* last, IBinaryFormat<T> binaryFormat)
     {
       if (last - first >= 3)
       {
         if (Utils.strncasecmp(first, "nan", 3))
         {
-          return NaN();
+          return binaryFormat.NaN();
         }
         if (Utils.strncasecmp(first, "inf", 3))
         {
           if ((last - first >= 8) && Utils.strncasecmp(first, "infinity", 8))
-            return PositiveInfinity();
-          return PositiveInfinity();
+            return binaryFormat.PositiveInfinity();
+          return binaryFormat.PositiveInfinity();
         }
         if (last - first >= 4)
         {
           if (Utils.strncasecmp(first, "+nan", 4) || Utils.strncasecmp(first, "-nan", 4))
           {
-            return NaN();
+            return binaryFormat.NaN();
           }
           if (Utils.strncasecmp(first, "+inf", 4) || Utils.strncasecmp(first, "-inf", 4))
           {
@@ -371,16 +356,16 @@ namespace csFastFloat
 
               if (first[0] == '-')
               {
-                return (first[0] == '-') ? NegativeInfinity() : PositiveInfinity();
+                return (first[0] == '-') ? binaryFormat.NegativeInfinity() : binaryFormat.PositiveInfinity();
               }
-            return (first[0] == '-') ? NegativeInfinity() : PositiveInfinity();
+            return (first[0] == '-') ? binaryFormat.NegativeInfinity() : binaryFormat.PositiveInfinity();
           }
         }
       }
       throw new ArgumentException();
     }
 
-    unsafe internal ParsedNumberString ParseNumberString(char* p, char* pend, chars_format expectedFormat)
+    unsafe static internal ParsedNumberString ParseNumberString(char* p, char* pend, chars_format expectedFormat = chars_format.is_general)
     {
       ParsedNumberString answer = new ParsedNumberString();
       answer.valid = false;
@@ -547,11 +532,5 @@ namespace csFastFloat
     // This function could be optimized. In particular, we could stop after 19 digits
     // and try to bail out. Furthermore, we should be able to recover the computed
     // exponent from the pass in parse_number_string.
-
-    public abstract T NaN();
-
-    public abstract T PositiveInfinity();
-
-    public abstract T NegativeInfinity();
   }
 }

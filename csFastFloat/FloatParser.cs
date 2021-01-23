@@ -6,45 +6,54 @@ using System.Runtime.CompilerServices;
 
 namespace csFastFloat
 {
-  public class FloatParser : FastParser<float>, IBinaryFormat<float>
+  public class FloatBinaryFormat : IBinaryFormat<float>
   {
-    unsafe internal override float ToFloat(bool negative, AdjustedMantissa am)
+    public int mantissa_explicit_bits() => 23;
+
+    public int minimum_exponent() => -127;
+
+    public int infinite_power() => 0xFF;
+
+    public int sign_index() => 31;
+
+    public int min_exponent_fast_path() => -10;
+
+    public int max_exponent_fast_path() => 10;
+
+    public int max_exponent_round_to_even() => 10;
+
+    public int min_exponent_round_to_even() => -17;
+
+    public ulong max_mantissa_fast_path() => (ulong)2 << mantissa_explicit_bits();
+
+    public int largest_power_of_ten() => 38;
+
+    public int smallest_power_of_ten() => -65;
+
+    public float exact_power_of_ten(long power) => Constants.powers_of_ten_float[power];
+
+    public float NaN() => float.NaN;
+
+    public float PositiveInfinity() => float.PositiveInfinity;
+
+    public float NegativeInfinity() => float.NegativeInfinity;
+
+    float IBinaryFormat<float>.ToFloat(bool negative, AdjustedMantissa am)
     {
       float f;
       ulong word = am.mantissa;
       word |= (ulong)(am.power2) << mantissa_explicit_bits();
       word = negative ? word | ((ulong)(1) << sign_index()) : word;
 
-      Buffer.MemoryCopy(&word + 4, &f, sizeof(float), sizeof(float));
+      unsafe
+      {
+        Buffer.MemoryCopy(&word + 4, &f, sizeof(float), sizeof(float));
+      }
 
       return f;
     }
 
-    public override int mantissa_explicit_bits() => 23;
-
-    public override int minimum_exponent() => -127;
-
-    public override int infinite_power() => 0xFF;
-
-    public override int sign_index() => 31;
-
-    public override int min_exponent_fast_path() => -10;
-
-    public override int max_exponent_fast_path() => 10;
-
-    public override int max_exponent_round_to_even() => 10;
-
-    public override int min_exponent_round_to_even() => -17;
-
-    public override ulong max_mantissa_fast_path() => (ulong)2 << mantissa_explicit_bits();
-
-    public override int largest_power_of_ten() => 38;
-
-    public override int smallest_power_of_ten() => -65;
-
-    public override float exact_power_of_ten(long power) => Constants.powers_of_ten_float[power];
-
-    internal override float FastPath(ParsedNumberString pns)
+    float IBinaryFormat<float>.FastPath(ParsedNumberString pns)
     {
       float value = (float)pns.mantissa;
       if (pns.exponent < 0)
@@ -58,11 +67,5 @@ namespace csFastFloat
       if (pns.negative) { value = -value; }
       return value;
     }
-
-    public override float NaN() => float.NaN;
-
-    public override float PositiveInfinity() => float.PositiveInfinity;
-
-    public override float NegativeInfinity() => float.NegativeInfinity;
   }
 }
