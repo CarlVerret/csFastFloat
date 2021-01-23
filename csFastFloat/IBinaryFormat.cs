@@ -1,7 +1,13 @@
-﻿namespace csFastFloat
+﻿using csFastFloat.Structures;
+
+namespace csFastFloat
 {
   internal interface IBinaryFormat<T>
   {
+    T ToFloat(bool negative, AdjustedMantissa am);
+
+    T FastPath(ParsedNumberString pns);
+
     T NaN();
 
     T PositiveInfinity();

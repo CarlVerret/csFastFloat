@@ -33,6 +33,22 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="TestFloatParser.ParseNumberString_Works_Scnenarios.approved.txt">
+      <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
+      <ParentExtension>$(ProjectExt.Replace('proj', ''))</ParentExtension>
+      <DependentUpon>TestFloatParser.cs</DependentUpon>
+    </None>
+    <None Update="TestFloatParser.ParseNumber_Works_Scnenarios.approved.txt">
+      <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
+      <ParentExtension>$(ProjectExt.Replace('proj', ''))</ParentExtension>
+      <DependentUpon>TestFloatParser.cs</DependentUpon>
+    </None>
+    <None Update="TestDoubleParser.ParseNumber_Works_Scnenarios.approved.txt">
+      <DependentUpon>TestDoubleParser.cs</DependentUpon>
+    </None>
+    <None Update="TestDoubleParser.ParseNumberString_Works_Scnenarios.approved.txt">
+      <DependentUpon>TestDoubleParser.cs</DependentUpon>
+    </None>
     <None Update="Test_NonRegr.cas_ProfLemire.approved.txt">
       <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
       <ParentExtension>$(ProjectExt.Replace('proj', ''))</ParentExtension>
