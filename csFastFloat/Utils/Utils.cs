@@ -48,7 +48,7 @@ namespace csFastFloat
 
     // credit @aqrit
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    unsafe private static bool is_made_of_eight_digits_fast(char* chars)
+    unsafe internal static bool is_made_of_eight_digits_fast(char* chars)
     {
       ulong val;
       Buffer.MemoryCopy(&chars, &val, 8, 8);

@@ -15,10 +15,7 @@ namespace csFastFloat
       word |= (ulong)(am.power2) << mantissa_explicit_bits();
       word = negative ? word | ((ulong)(1) << sign_index()) : word;
 
-      fixed (ulong* p = &am.mantissa)
-      {
-        Buffer.MemoryCopy(p, &f, sizeof(float), sizeof(float));
-      }
+      Buffer.MemoryCopy(&word + 4, &f, sizeof(float), sizeof(float));
 
       return f;
     }

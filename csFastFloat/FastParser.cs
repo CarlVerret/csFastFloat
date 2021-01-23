@@ -42,6 +42,17 @@ namespace csFastFloat
 
     #endregion abstract stuff
 
+    public T ParseNumber(string s, chars_format expectedFormat = chars_format.is_general)
+    {
+      unsafe
+      {
+        fixed (char* pStart = s)
+        {
+          return ParseNumber(pStart, pStart + s.Length, expectedFormat);
+        }
+      }
+    }
+
     unsafe public T ParseNumber(char* first, char* last, chars_format expectedFormat)
     {
       while ((first != last) && Utils.is_space((byte)(*first)))
@@ -406,17 +417,17 @@ namespace csFastFloat
       {
         ++p;
         //#if FASTFLOAT_IS_BIG_ENDIAN == 0
-        //          // Fast approach only tested under little endian systems
-        //          if ((p + 8 <= pend) && is_made_of_eight_digits_fast(p))
-        //          {
-        //            i = i * 100000000 + parse_eight_digits_unrolled(p); // in rare cases, this will overflow, but that's ok
-        //            p += 8;
-        //            if ((p + 8 <= pend) && is_made_of_eight_digits_fast(p))
-        //            {
-        //              i = i * 100000000 + parse_eight_digits_unrolled(p); // in rare cases, this will overflow, but that's ok
-        //              p += 8;
-        //            }
-        //          }
+        // Fast approach only tested under little endian systems
+        if ((p + 8 <= pend) && Utils.is_made_of_eight_digits_fast(p))
+        {
+          i = i * 100000000 + Utils.parse_eight_digits_unrolled(p); // in rare cases, this will overflow, but that's ok
+          p += 8;
+          if ((p + 8 <= pend) && Utils.is_made_of_eight_digits_fast(p))
+          {
+            i = i * 100000000 + Utils.parse_eight_digits_unrolled(p); // in rare cases, this will overflow, but that's ok
+            p += 8;
+          }
+        }
         //#endif
         while ((p != pend) && Utils.is_integer(*p))
         {

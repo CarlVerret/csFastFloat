@@ -60,23 +60,10 @@ namespace TestcsFastFloat.Tests
     }
 
     [Fact]
-    unsafe public void Test()
-    {
-      var sut = "0.00000000000000212312312";
-
-      fixed (char* p = sut)
-      {
-        char* pend = p + sut.Length;
-        var res = new DoubleParser().ParseNumber(p, pend, chars_format.is_general);
-      }
-    }
-
-    [Fact]
     unsafe public void ParseNumberString_Works_Scnenarios()
     {
       Dictionary<string, string> sut = new Dictionary<string, string>();
 
-      // TODO:
       sut.Add("leading zeros", "001");
       sut.Add("leading zeros neg", "-001");
 
@@ -166,47 +153,54 @@ namespace TestcsFastFloat.Tests
           var res = new DoubleParser().ParseNumber(p, pend, chars_format.is_general);
 
           sb.AppendLine($"Resultat : {res}");
+          sb.AppendLine();
         }
       }
 
       VerifyData(sb.ToString());
     }
 
-    //[Fact]
-    //public void cas_compute_float_64_1()
-    //{
-    //  for (int p = -306; p <= 308; p++)
-    //  {
-    //    if (p == 23)
-    //      p++;
+    [Fact]
+    public void cas_compute_float_64_1()
+    {
+      for (int p = -306; p <= 308; p++)
+      {
+        if (p == 23)
+          p++;
 
-    //    double? d = new DoubleParser().(new DoubleParser.parsing_info() { power = p, i = 1, negative = false });
+        var sut = new DoubleParser();
 
-    //    if (!d.HasValue)
-    //      throw new ApplicationException($"Can't parse p=> {p}");
+        double? d = sut.ToFloat(false, sut.ComputeFloat(p, 1));
 
-    //    if (d != testing_power_of_ten[p + 307])
-    //      throw new ApplicationException($"bad parsing p=> {p}");
-    //  }
-    //}
+        if (!d.HasValue)
+          throw new ApplicationException($"Can't parse p=> {p}");
 
-    //[Fact]
-    //public void cas_compute_float_64_2()
-    //{
-    //  for (int p = -306; p <= 308; p++)
-    //  {
-    //    double? d = DoubleParser.parse_number2($"1e{p}");
+        if (d != testing_power_of_ten[p + 307])
+          throw new ApplicationException($"bad parsing p=> {p}");
+      }
+    }
 
-    //    if (!d.HasValue)
-    //    {
-    //      throw new ApplicationException($"Can't parse p=> 1e{p}");
-    //    }
-    //    if (d != testing_power_of_ten[p + 307])
-    //    {
-    //      throw new ApplicationException($"bad parsing p=> {p}");
-    //    }
-    //  }
-    //}
+    [Fact]
+    unsafe public void cas_compute_float_64_2()
+    {
+      for (int p = -306; p <= 308; p++)
+      {
+        string sut = $"1e{p}";
+        fixed (char* pstart = sut)
+        {
+          double? d = new DoubleParser().ParseNumber(pstart, pstart + sut.Length, chars_format.is_general);
+
+          if (!d.HasValue)
+          {
+            throw new ApplicationException($"Can't parse p=> 1e{p}");
+          }
+          if (d != testing_power_of_ten[p + 307])
+          {
+            throw new ApplicationException($"bad parsing p=> {p}");
+          }
+        }
+      }
+    }
 
     private static List<double> testing_power_of_ten = new List<double> {
     1e-307, 1e-306, 1e-305, 1e-304, 1e-303, 1e-302, 1e-301, 1e-300, 1e-299,
