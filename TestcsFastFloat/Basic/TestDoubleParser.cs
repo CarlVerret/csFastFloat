@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-namespace TestcsFastFloat.Tests
+namespace TestcsFastFloat.Tests.Basic
 {
   public class TestDoubleParser : BaseTestClass
   {

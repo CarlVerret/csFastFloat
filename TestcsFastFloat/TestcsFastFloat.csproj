@@ -8,6 +8,8 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -33,48 +35,48 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="TestFloatParser.ParseNumberString_Works_Scnenarios.approved.txt">
+    <None Update="Basic\TestFloatParser.ParseNumberString_Works_Scnenarios.approved.txt">
       <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
       <ParentExtension>$(ProjectExt.Replace('proj', ''))</ParentExtension>
       <DependentUpon>TestFloatParser.cs</DependentUpon>
     </None>
-    <None Update="TestFloatParser.ParseNumber_Works_Scnenarios.approved.txt">
+    <None Update="Basic\TestFloatParser.ParseNumber_Works_Scnenarios.approved.txt">
       <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
       <ParentExtension>$(ProjectExt.Replace('proj', ''))</ParentExtension>
       <DependentUpon>TestFloatParser.cs</DependentUpon>
     </None>
-    <None Update="TestDoubleParser.ParseNumber_Works_Scnenarios.approved.txt">
+    <None Update="Basic\TestDoubleParser.ParseNumber_Works_Scnenarios.approved.txt">
       <DependentUpon>TestDoubleParser.cs</DependentUpon>
     </None>
-    <None Update="TestDoubleParser.ParseNumberString_Works_Scnenarios.approved.txt">
+    <None Update="Basic\TestDoubleParser.ParseNumberString_Works_Scnenarios.approved.txt">
       <DependentUpon>TestDoubleParser.cs</DependentUpon>
     </None>
-    <None Update="BasicTests.cas_ProfLemire.approved.txt">
+    <None Update="Basic\BasicTests.cas_ProfLemire.approved.txt">
       <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
       <ParentExtension>$(ProjectExt.Replace('proj', ''))</ParentExtension>
       <DependentUpon>BasicTests.cs</DependentUpon>
     </None>
-    <None Update="BasicTests.parse_number_casException.approved.txt">
+    <None Update="Basic\BasicTests.parse_number_casException.approved.txt">
       <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
       <ParentExtension>$(ProjectExt.Replace('proj', ''))</ParentExtension>
       <DependentUpon>BasicTests.cs</DependentUpon>
     </None>
-    <None Update="BasicTests.parse_number_casException_NaN.approved.txt">
+    <None Update="Basic\BasicTests.parse_number_casException_NaN.approved.txt">
       <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
       <ParentExtension>$(ProjectExt.Replace('proj', ''))</ParentExtension>
       <DependentUpon>BasicTests.cs</DependentUpon>
     </None>
-    <None Update="BasicTests.parse_number_falback.approved.txt">
+    <None Update="Basic\BasicTests.parse_number_falback.approved.txt">
       <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
       <ParentExtension>$(ProjectExt.Replace('proj', ''))</ParentExtension>
       <DependentUpon>BasicTests.cs</DependentUpon>
     </None>
-    <None Update="BasicTests.parse_number_fonctionne.approved.txt">
+    <None Update="Basic\BasicTests.parse_number_fonctionne.approved.txt">
       <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
       <ParentExtension>$(ProjectExt.Replace('proj', ''))</ParentExtension>
       <DependentUpon>BasicTests.cs</DependentUpon>
     </None>
-    <None Update="BasicTests.parse_number_fonctionne.ForScenario.test.approved.txt">
+    <None Update="Basic\BasicTests.parse_number_fonctionne.ForScenario.test.approved.txt">
       <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
       <ParentExtension>$(ProjectExt.Replace('proj', ''))</ParentExtension>
       <DependentUpon>BasicTests.cs</DependentUpon>
