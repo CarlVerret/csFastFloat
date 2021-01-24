@@ -2,7 +2,7 @@
 
 C# version of Daniel Lemire's fast_float https://github.com/fastfloat/fast_float  fully ported from C 
 
-1.0.1 Fully managed netcoreapp3.1 library 
+
 
 
 
@@ -12,6 +12,6 @@ slight change...
 
 
 #Requirements
-
+.net 5 framework
 
 #Usage
