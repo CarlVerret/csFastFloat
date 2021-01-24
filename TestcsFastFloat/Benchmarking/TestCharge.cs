@@ -152,6 +152,7 @@ namespace TestcsFastFloat.Tests.Benchmarking
     {
       ulong offset = 1190;
       var howmany = 10000000;
+      //   var start = DateTime.Now;
 
       for (var i = 1; i <= howmany; i++)
       {
@@ -169,6 +170,8 @@ namespace TestcsFastFloat.Tests.Benchmarking
 
         double var = FastParser.ParseDouble(d.ToString(CultureInfo.CurrentCulture));
       }
+
+      //  ApprovalTests.Approvals.Verify(DateTime.Now - start);
     }
 
     [Fact]
