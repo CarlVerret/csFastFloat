@@ -88,7 +88,7 @@ namespace TestcsFastFloat.Tests.Basic
     [InlineData(1u << 63, 1u << 1, 0u, 1u)]
     [InlineData(1u << 63, 1u << 2, 0u, 2u)]
     [InlineData(1u << 63, 1u << 63, 0u, 1u << 62)]
-    [Theory(Skip = "Inconclusive")]
+    [Theory]
     private void FullMultiplication_Works(ulong lhs, ulong rhs, ulong expected_low, ulong expected_high)
     {
       // Inconclusive :(
