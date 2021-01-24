@@ -81,13 +81,13 @@ namespace TestcsFastFloat.Tests.Basic
       Assert.Equal(BitOperations.LeadingZeroCount(bit << shift), val);
     }
 
-    [InlineData(1u << 0, 1u << 0, 1u, 0u)]
-    [InlineData(1u << 0, 1u << 63, 1u << 63, 0u)]
-    [InlineData(1u << 1, 1u << 63, 0u, 1u)]
-    [InlineData(1u << 63, 1u << 0, 1u << 63, 0u)]
-    [InlineData(1u << 63, 1u << 1, 0u, 1u)]
-    [InlineData(1u << 63, 1u << 2, 0u, 2u)]
-    [InlineData(1u << 63, 1u << 63, 0u, 1u << 62)]
+    [InlineData(1ul << 0, 1ul << 0, 1ul, 0ul)]
+    [InlineData(1ul << 0, 1ul << 63, 1ul << 63, 0ul)]
+    [InlineData(1ul << 1, 1ul << 63, 0ul, 1ul)]
+    [InlineData(1ul << 63, 1ul << 0, 1ul << 63, 0ul)]
+    [InlineData(1ul << 63, 1ul << 1, 0ul, 1ul)]
+    [InlineData(1ul << 63, 1ul << 2, 0ul, 2ul)]
+    [InlineData(1ul << 63, 1ul << 63, 0ul, 1ul << 62)]
     [Theory]
     private void FullMultiplication_Works(ulong lhs, ulong rhs, ulong expected_low, ulong expected_high)
     {
