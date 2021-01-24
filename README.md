@@ -6,13 +6,14 @@ C# version of Daniel Lemire's fast_float https://github.com/fastfloat/fast_float
 
 
 
-#Benchmarks
+# Benchmarks
 
 slight change...
 
 
-#Requirements
+# Requirements
 
 .net 5 framework
 
-#Usage
+# Usage
+
