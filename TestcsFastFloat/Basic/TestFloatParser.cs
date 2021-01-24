@@ -6,23 +6,10 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-namespace TestcsFastFloat.Tests
+namespace TestcsFastFloat.Tests.Basic
 {
-  public class TestDoubleParser : BaseTestClass
+  public class TestFloatParser : BaseTestClass
   {
-    [InlineData("a", "A", 1, true)]
-    [InlineData("a", "a", 1, true)]
-    [InlineData("a", "b", 1, false)]
-    [Theory]
-    unsafe public void Test1(string a, string b, int len, bool res)
-    {
-      fixed (char* pa = a)
-      fixed (char* pb = b)
-      {
-        Assert.Equal(res, Utils.strncasecmp(pa, pb, len));
-      }
-    }
-
     [Theory]
     [InlineData("nan", double.NaN)]
     [InlineData("inf", double.PositiveInfinity)]
@@ -38,6 +25,24 @@ namespace TestcsFastFloat.Tests
       fixed (char* p = input)
       {
         Assert.Equal(res, FastParser.HandleInvalidInput<double>(p, p + input.Length, new DoubleBinaryFormat()));
+      }
+    }
+
+    [Theory]
+    [InlineData("nan", float.NaN)]
+    [InlineData("inf", float.PositiveInfinity)]
+    [InlineData("+nan", float.NaN)]
+    [InlineData("-nan", float.NaN)]
+    [InlineData("+inf", float.PositiveInfinity)]
+    [InlineData("-inf", float.NegativeInfinity)]
+    [InlineData("infinity", float.PositiveInfinity)]
+    [InlineData("+infinity", float.PositiveInfinity)]
+    [InlineData("-infinity", float.NegativeInfinity)]
+    unsafe public void FloatParser_HandleInvalidInput_works(string input, float res)
+    {
+      fixed (char* p = input)
+      {
+        Assert.Equal(res, FastParser.HandleInvalidInput<float>(p, p + input.Length, new FloatBinaryFormat())); ;
       }
     }
 
@@ -132,7 +137,7 @@ namespace TestcsFastFloat.Tests
         fixed (char* p = kv.Value)
         {
           char* pend = p + kv.Value.Length;
-          var res = FastParser.ParseDouble(p, pend);
+          var res = FastParser.ParseNumber<double>(p, pend, new DoubleBinaryFormat());
 
           sb.AppendLine($"Resultat : {res}");
           sb.AppendLine();
@@ -142,48 +147,48 @@ namespace TestcsFastFloat.Tests
       VerifyData(sb.ToString());
     }
 
-    [Fact]
-    public void cas_compute_float_64_1()
-    {
-      for (int p = -306; p <= 308; p++)
-      {
-        if (p == 23)
-          p++;
+    //[Fact]
+    //public void cas_compute_float_32_1()
+    //{
+    //  for (int p = -306; p <= 308; p++)
+    //  {
+    //    if (p == 23)
+    //      p++;
 
-        var sut = new DoubleBinaryFormat();
-        var am = FastParser.ComputeFloat(q: p, w: 1, sut);
+    //    var sut = new FloatBinaryFormat();
+    //    var am = FastParser.ComputeFloat(q: p, w: 1, sut);
 
-        double? d = sut.ToFloat(false, am);
+    //    double? d = sut.ToFloat(false, am);
 
-        if (!d.HasValue)
-          throw new ApplicationException($"Can't parse p=> {p}");
+    //    if (!d.HasValue)
+    //      throw new ApplicationException($"Can't parse p=> {p}");
 
-        if (d != testing_power_of_ten[p + 307])
-          throw new ApplicationException($"bad parsing p=> {p}");
-      }
-    }
+    //    if (d != testing_power_of_ten[p + 307])
+    //      throw new ApplicationException($"bad parsing p=> {p}");
+    //  }
+    //}
 
-    [Fact]
-    unsafe public void cas_compute_float_64_2()
-    {
-      for (int p = -306; p <= 308; p++)
-      {
-        string sut = $"1e{p}";
-        fixed (char* pstart = sut)
-        {
-          double? d = FastParser.ParseDouble(pstart, pstart + sut.Length, chars_format.is_general);
+    //[Fact]
+    //unsafe public void cas_compute_float_32_2()
+    //{
+    //  for (int p = -64; p <= 38; p++)
+    //  {
+    //    string sut = $"1e{p}";
+    //    fixed (char* pstart = sut)
+    //    {
+    //      double? d = FastParser.ParseFloat(pstart, pstart + sut.Length, chars_format.is_general);
 
-          if (!d.HasValue)
-          {
-            throw new ApplicationException($"Can't parse p=> 1e{p}");
-          }
-          if (d != testing_power_of_ten[p + 307])
-          {
-            throw new ApplicationException($"bad parsing p=> {p}");
-          }
-        }
-      }
-    }
+    //      if (!d.HasValue)
+    //      {
+    //        throw new ApplicationException($"Can't parse p=> 1e{p}");
+    //      }
+    //      if (d != testing_power_of_ten[p + 307])
+    //      {
+    //        throw new ApplicationException($"bad parsing p=> {p}");
+    //      }
+    //    }
+    //  }
+    //}
 
     private static List<double> testing_power_of_ten = new List<double> {
     1e-307, 1e-306, 1e-305, 1e-304, 1e-303, 1e-302, 1e-301, 1e-300, 1e-299,

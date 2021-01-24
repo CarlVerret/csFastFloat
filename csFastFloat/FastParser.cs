@@ -81,7 +81,9 @@ namespace csFastFloat
     /// </summary>
     /// <param name="q"></param>
     /// <param name="w"></param>
+    ///
     /// <returns></returns>
+
     internal static AdjustedMantissa ComputeFloat<T>(long q, ulong w, IBinaryFormat<T> binaryFormat)
     {
       var answer = new AdjustedMantissa();
@@ -330,6 +332,7 @@ namespace csFastFloat
       return ComputeFloat(d, binaryFormat);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     unsafe static internal T HandleInvalidInput<T>(char* first, char* last, IBinaryFormat<T> binaryFormat)
     {
       if (last - first >= 3)
@@ -350,14 +353,10 @@ namespace csFastFloat
           {
             return binaryFormat.NaN();
           }
-          if (Utils.strncasecmp(first, "+inf", 4) || Utils.strncasecmp(first, "-inf", 4))
+          if (Utils.strncasecmp(first, "+inf", 4) ||
+              Utils.strncasecmp(first, "-inf", 4) ||
+              ((last - first >= 8) && Utils.strncasecmp(first + 1, "infinity", 8)))
           {
-            if ((last - first >= 8) && Utils.strncasecmp(first + 1, "infinity", 8))
-
-              if (first[0] == '-')
-              {
-                return (first[0] == '-') ? binaryFormat.NegativeInfinity() : binaryFormat.PositiveInfinity();
-              }
             return (first[0] == '-') ? binaryFormat.NegativeInfinity() : binaryFormat.PositiveInfinity();
           }
         }
@@ -365,6 +364,7 @@ namespace csFastFloat
       throw new ArgumentException();
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     unsafe static internal ParsedNumberString ParseNumberString(char* p, char* pend, chars_format expectedFormat = chars_format.is_general)
     {
       ParsedNumberString answer = new ParsedNumberString();
@@ -378,7 +378,7 @@ namespace csFastFloat
         {
           return answer;
         }
-        if (!Utils.is_integer(*p) && (*p != '.'))
+        if (!Utils.is_integer(*p) && ((*p != '.') || (*p != ','))) // culture info ?
         { // a  sign must be followed by an integer or the dot
           return answer;
         }

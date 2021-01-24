@@ -38,7 +38,7 @@ namespace csFastFloat
 
     public float NegativeInfinity() => float.NegativeInfinity;
 
-    float IBinaryFormat<float>.ToFloat(bool negative, AdjustedMantissa am)
+    public float ToFloat(bool negative, AdjustedMantissa am)
     {
       float f;
       ulong word = am.mantissa;
@@ -47,7 +47,7 @@ namespace csFastFloat
 
       unsafe
       {
-        Buffer.MemoryCopy(&word + 4, &f, sizeof(float), sizeof(float));
+        Buffer.MemoryCopy(&word, &f, sizeof(float), sizeof(float));
       }
 
       return f;

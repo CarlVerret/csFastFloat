@@ -95,9 +95,9 @@ namespace csFastFloat.Structures
         9, 5, 3, 3, 6, 9, 1, 4, 0, 6, 2, 5,
   };
       byte* pow5 = (byte*)number_of_digits_decimal_left_shift_table_powers_of_5[pow5_a];
-      uint i = 0;
+      ;
       uint n = pow5_b - pow5_a;
-      for (; i < n; i++)
+      for (uint i = 0; i < n; i++)
       {
         if (i >= num_digits)
         {
