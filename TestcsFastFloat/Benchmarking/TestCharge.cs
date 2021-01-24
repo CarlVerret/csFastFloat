@@ -166,14 +166,8 @@ namespace TestcsFastFloat.Tests.Benchmarking
           x = rng((ulong)i + offset);
           Buffer.MemoryCopy(&x, &d, sizeof(double), sizeof(double));
         }
-        try
-        {
-          double var = FastParser.ParseDouble(d.ToString(CultureInfo.CurrentCulture));
-        }
-        catch
-        {
-          throw;
-        }
+
+        double var = FastParser.ParseDouble(d.ToString(CultureInfo.CurrentCulture));
       }
     }
 
