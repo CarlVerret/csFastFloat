@@ -49,35 +49,35 @@
     <None Update="TestDoubleParser.ParseNumberString_Works_Scnenarios.approved.txt">
       <DependentUpon>TestDoubleParser.cs</DependentUpon>
     </None>
-    <None Update="Test_NonRegr.cas_ProfLemire.approved.txt">
+    <None Update="BasicTests.cas_ProfLemire.approved.txt">
       <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
       <ParentExtension>$(ProjectExt.Replace('proj', ''))</ParentExtension>
-      <DependentUpon>%(ParentFile)%(ParentExtension)</DependentUpon>
+      <DependentUpon>BasicTests.cs</DependentUpon>
     </None>
-    <None Update="Test_NonRegr.parse_number_casException.approved.txt">
+    <None Update="BasicTests.parse_number_casException.approved.txt">
       <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
       <ParentExtension>$(ProjectExt.Replace('proj', ''))</ParentExtension>
-      <DependentUpon>%(ParentFile)%(ParentExtension)</DependentUpon>
+      <DependentUpon>BasicTests.cs</DependentUpon>
     </None>
-    <None Update="Test_NonRegr.parse_number_casException_NaN.approved.txt">
+    <None Update="BasicTests.parse_number_casException_NaN.approved.txt">
       <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
       <ParentExtension>$(ProjectExt.Replace('proj', ''))</ParentExtension>
-      <DependentUpon>%(ParentFile)%(ParentExtension)</DependentUpon>
+      <DependentUpon>BasicTests.cs</DependentUpon>
     </None>
-    <None Update="Test_NonRegr.parse_number_falback.approved.txt">
+    <None Update="BasicTests.parse_number_falback.approved.txt">
       <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
       <ParentExtension>$(ProjectExt.Replace('proj', ''))</ParentExtension>
-      <DependentUpon>%(ParentFile)%(ParentExtension)</DependentUpon>
+      <DependentUpon>BasicTests.cs</DependentUpon>
     </None>
-    <None Update="Test_NonRegr.parse_number_fonctionne.approved.txt">
+    <None Update="BasicTests.parse_number_fonctionne.approved.txt">
       <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
       <ParentExtension>$(ProjectExt.Replace('proj', ''))</ParentExtension>
-      <DependentUpon>%(ParentFile)%(ParentExtension)</DependentUpon>
+      <DependentUpon>BasicTests.cs</DependentUpon>
     </None>
-    <None Update="Test_NonRegr.parse_number_fonctionne.ForScenario.test.approved.txt">
+    <None Update="BasicTests.parse_number_fonctionne.ForScenario.test.approved.txt">
       <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
       <ParentExtension>$(ProjectExt.Replace('proj', ''))</ParentExtension>
-      <DependentUpon>%(ParentFile)%(ParentExtension)</DependentUpon>
+      <DependentUpon>BasicTests.cs</DependentUpon>
     </None>
   </ItemGroup>
 

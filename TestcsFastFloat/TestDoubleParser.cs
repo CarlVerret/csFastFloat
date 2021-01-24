@@ -166,7 +166,7 @@ namespace TestcsFastFloat.Tests
     [Fact]
     unsafe public void cas_compute_float_64_2()
     {
-      for (int p = -306; p <= 308; p++)
+      for (int p = -1000; p <= 308; p++)
       {
         string sut = $"1e{p}";
         fixed (char* pstart = sut)
@@ -177,10 +177,9 @@ namespace TestcsFastFloat.Tests
           {
             throw new ApplicationException($"Can't parse p=> 1e{p}");
           }
-          if (d != testing_power_of_ten[p + 307])
-          {
-            throw new ApplicationException($"bad parsing p=> {p}");
-          }
+
+          double expected = ((p >= -307) ? testing_power_of_ten[p + 307] : Math.Pow(10, p));
+          Assert.Equal(expected, d.Value);
         }
       }
     }
