@@ -10,7 +10,7 @@ using System.Text;
 
 namespace csFastFloat
 {
-  public abstract class FastParser
+  public sealed class FastParser
   {
     public static double ParseDouble(string s, chars_format expectedFormat = chars_format.is_general)
     {

@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace csFastFloat.Structures
 {
-  internal class DecimalInfo
+  internal sealed class DecimalInfo
   {
     internal uint num_digits = 0;
     internal int decimal_point = 0;

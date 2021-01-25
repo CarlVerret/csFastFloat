@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 
 namespace csFastFloat
 {
-  public class DoubleBinaryFormat : IBinaryFormat<double>
+  public sealed class DoubleBinaryFormat : IBinaryFormat<double>
   {
     public int mantissa_explicit_bits() => 52;
 
