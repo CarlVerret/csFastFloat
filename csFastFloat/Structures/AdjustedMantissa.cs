@@ -1,6 +1,6 @@
 ﻿namespace csFastFloat.Structures
 {
-  public class AdjustedMantissa
+  public sealed class AdjustedMantissa
   {
     internal ulong mantissa;
     internal int power2; // a negative value indicates an invalid result

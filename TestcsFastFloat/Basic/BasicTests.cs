@@ -312,5 +312,16 @@ namespace TestcsFastFloat.Tests.Basic
     [InlineData("0.00000000000000000000000000000000000001175494210692441075487029444849287348827052428745893333857174530571588870475618904265502351336181163787841796875", 0.00000000000000000000000000000000000001175494210692441075487029444849287348827052428745893333857174530571588870475618904265502351336181163787841796875f)]
     [Theory]
     private void TestGeneral_Float(string sut, float expected_value) => Assert.Equal(expected_value, FastParser.ParseFloat(sut));
+
+    [Fact]
+    unsafe private void test()
+    {
+      fixed (char* p = "1234a678")
+      {
+        bool f = Utils.is_made_of_eight_digits_fast(p);
+      }
+
+      double res = FastParser.ParseDouble("-4.27093505740979E-146");
+    }
   }
 }

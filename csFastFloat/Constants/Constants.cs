@@ -10,10 +10,10 @@ namespace csFastFloat
 
     // Precomputed powers of ten from 10^0 to 10^22. These
     // can be represented exactly using the double type.
-    internal static double[] powers_of_ten_double = { 1e0,  1e1,  1e2,  1e3,  1e4,  1e5,  1e6,  1e7,  1e8,  1e9,  1e10, 1e11,
+    internal readonly static double[] powers_of_ten_double = { 1e0,  1e1,  1e2,  1e3,  1e4,  1e5,  1e6,  1e7,  1e8,  1e9,  1e10, 1e11,
                                               1e12, 1e13, 1e14, 1e15, 1e16, 1e17, 1e18, 1e19, 1e20, 1e21, 1e22};
 
-    internal static float[] powers_of_ten_float = { 1e0F, 1e1F, 1e2F, 1e3F, 1e4F, 1e5F,
+    internal readonly static float[] powers_of_ten_float = { 1e0F, 1e1F, 1e2F, 1e3F, 1e4F, 1e5F,
                                             1e6F, 1e7F, 1e8F, 1e9F, 1e10F};
 
     internal const int smallest_power_of_five = -342;
