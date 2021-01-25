@@ -40,22 +40,22 @@ namespace csFastFloat
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     unsafe internal static uint parse_eight_digits_unrolled(char* chars)
     {
-      throw new NotImplementedException();
-      //ulong val;
-      //::memcpy(&val, chars, sizeof(ulong));
-      //return parse_eight_digits_unrolled(val);
+      ulong val;
+      Buffer.MemoryCopy(chars, &val, sizeof(ulong), sizeof(ulong));
+      return parse_eight_digits_unrolled(val);
     }
 
     // credit @aqrit
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     unsafe internal static bool is_made_of_eight_digits_fast(char* chars)
     {
-      ulong val;
-      Buffer.MemoryCopy(&chars, &val, 8, 8);
+      return false;
+      //ulong val;
+      //Buffer.MemoryCopy(&chars, &val, 8, 8);
 
-      return (((val & 0xF0F0F0F0F0F0F0F0) |
-               (((val + 0x0606060606060606) & 0xF0F0F0F0F0F0F0F0) >> 4)) ==
-              0x3333333333333333);
+      //return !(((val & 0xF0F0F0F0F0F0F0F0) |
+      //         (((val + 0x0606060606060606) & 0xF0F0F0F0F0F0F0F0) >> 4)) ==
+      //        0x3333333333333333);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

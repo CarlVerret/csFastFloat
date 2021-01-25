@@ -95,17 +95,18 @@ namespace csFastFloat.Structures
         9, 5, 3, 3, 6, 9, 1, 4, 0, 6, 2, 5,
   };
       byte* pow5 = (byte*)number_of_digits_decimal_left_shift_table_powers_of_5[pow5_a];
-      ;
+      int i = 0;
       uint n = pow5_b - pow5_a;
-      for (uint i = 0; i < n; i++)
+      while (i < n)
       {
         if (i >= num_digits)
         {
           return num_new_digits - 1;
         }
-        else if (digits[i] == pow5[i])
+        else
+          if (digits[i] == pow5[i])
         {
-          continue;
+          i++; continue;
         }
         else if (digits[i] < pow5[i])
         {
@@ -269,7 +270,7 @@ namespace csFastFloat.Structures
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    unsafe internal static DecimalInfo parse_decimal(char* p, char* pend)
+    unsafe internal static DecimalInfo parse_decimal(char* p, char* pend, char decimal_separator)
     {
       DecimalInfo answer = new DecimalInfo() { num_digits = 0, decimal_point = 0, truncated = false, negative = (*p == '-') };
 
@@ -291,7 +292,7 @@ namespace csFastFloat.Structures
         answer.num_digits++;
         ++p;
       }
-      if ((p != pend) && (*p == '.'))
+      if ((p != pend) && (*p == decimal_separator))
       {
         ++p;
         char* first_after_period = p;
@@ -340,7 +341,7 @@ namespace csFastFloat.Structures
         // we have at least one non-zero digit.
         char* preverse = p - 1;
         int trailing_zeros = 0;
-        while ((*preverse == '0') || (*preverse == '.'))
+        while ((*preverse == '0') || (*preverse == decimal_separator))
         {
           if (*preverse == '0') { trailing_zeros++; };
           --preverse;

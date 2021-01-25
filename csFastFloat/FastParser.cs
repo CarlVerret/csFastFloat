@@ -2,6 +2,7 @@
 using csFastFloat.Structures;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -12,35 +13,35 @@ namespace csFastFloat
 {
   public sealed class FastParser
   {
-    public static double ParseDouble(string s, chars_format expectedFormat = chars_format.is_general)
+    public static double ParseDouble(string s, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
     {
       unsafe
       {
         fixed (char* pStart = s)
         {
-          return FastParser.ParseDouble(pStart, pStart + s.Length, expectedFormat);
+          return FastParser.ParseDouble(pStart, pStart + s.Length, expectedFormat, decimal_separator);
         }
       }
     }
 
-    public static float ParseFloat(string s, chars_format expectedFormat = chars_format.is_general)
+    public static float ParseFloat(string s, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
     {
       unsafe
       {
         fixed (char* pStart = s)
         {
-          return ParseFloat(pStart, pStart + s.Length, expectedFormat);
+          return ParseFloat(pStart, pStart + s.Length, expectedFormat, decimal_separator);
         }
       }
     }
 
-    unsafe static public double ParseDouble(char* first, char* last, chars_format expectedFormat = chars_format.is_general)
-      => ParseNumber<double>(first, last, new DoubleBinaryFormat(), expectedFormat);
+    unsafe static public double ParseDouble(char* first, char* last, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
+      => ParseNumber<double>(first, last, new DoubleBinaryFormat(), expectedFormat, decimal_separator);
 
-    unsafe static public float ParseFloat(char* first, char* last, chars_format expectedFormat = chars_format.is_general)
-                  => ParseNumber<float>(first, last, new FloatBinaryFormat(), expectedFormat);
+    unsafe static public float ParseFloat(char* first, char* last, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
+                  => ParseNumber<float>(first, last, new FloatBinaryFormat(), expectedFormat, decimal_separator);
 
-    unsafe static internal T ParseNumber<T>(char* first, char* last, IBinaryFormat<T> binaryFormat, chars_format expectedFormat = chars_format.is_general)
+    unsafe static internal T ParseNumber<T>(char* first, char* last, IBinaryFormat<T> binaryFormat, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
     {
       while ((first != last) && Utils.is_space((byte)(*first)))
       {
@@ -72,7 +73,7 @@ namespace csFastFloat
       }
       // If we called compute_float<binary_format<T>>(pns.exponent, pns.mantissa) and we have an invalid power (am.power2 < 0),
       // then we need to go the long way around again. This is very uncommon.
-      if (am.power2 < 0) { am = ParseLongMantissa(first, last, binaryFormat); }
+      if (am.power2 < 0) { am = ParseLongMantissa(first, last, binaryFormat, decimal_separator); }
       return binaryFormat.ToFloat(pns.negative, am);
     }
 
@@ -326,9 +327,9 @@ namespace csFastFloat
       return answer;
     }
 
-    unsafe static internal AdjustedMantissa ParseLongMantissa<T>(char* first, char* last, IBinaryFormat<T> binaryFormat)
+    unsafe static internal AdjustedMantissa ParseLongMantissa<T>(char* first, char* last, IBinaryFormat<T> binaryFormat, char decimal_separator)
     {
-      DecimalInfo d = DecimalInfo.parse_decimal(first, last);
+      DecimalInfo d = DecimalInfo.parse_decimal(first, last, decimal_separator);
       return ComputeFloat(d, binaryFormat);
     }
 
@@ -365,9 +366,10 @@ namespace csFastFloat
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    unsafe static internal ParsedNumberString ParseNumberString(char* p, char* pend, chars_format expectedFormat = chars_format.is_general)
+    unsafe static internal ParsedNumberString ParseNumberString(char* p, char* pend, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
     {
       ParsedNumberString answer = new ParsedNumberString();
+
       answer.valid = false;
       answer.too_many_digits = false;
       answer.negative = (*p == '-');
@@ -378,7 +380,7 @@ namespace csFastFloat
         {
           return answer;
         }
-        if (!Utils.is_integer(*p) && ((*p != '.') || (*p != ','))) // culture info ?
+        if (!Utils.is_integer(*p) && (*p != decimal_separator)) // culture info ?
         { // a  sign must be followed by an integer or the dot
           return answer;
         }
@@ -398,22 +400,23 @@ namespace csFastFloat
       char* end_of_integer_part = p;
       long digit_count = (long)(end_of_integer_part - start_digits);
       long exponent = 0;
-      if ((p != pend) && (*p == '.'))
+      if ((p != pend) && (*p == decimal_separator))
       {
         ++p;
-        //#if FASTFLOAT_IS_BIG_ENDIAN == 0
-        // Fast approach only tested under little endian systems
-        if ((p + 8 <= pend) && Utils.is_made_of_eight_digits_fast(p))
-        {
-          i = i * 100000000 + Utils.parse_eight_digits_unrolled(p); // in rare cases, this will overflow, but that's ok
-          p += 8;
-          if ((p + 8 <= pend) && Utils.is_made_of_eight_digits_fast(p))
-          {
-            i = i * 100000000 + Utils.parse_eight_digits_unrolled(p); // in rare cases, this will overflow, but that's ok
-            p += 8;
-          }
-        }
-        //#endif
+        // For the moment
+        ////#if FASTFLOAT_IS_BIG_ENDIAN == 0
+        //// Fast approach only tested under little endian systems
+        //if ((p + 8 <= pend) && Utils.is_made_of_eight_digits_fast(p))
+        //{
+        //  i = i * 100000000 + Utils.parse_eight_digits_unrolled(p); // in rare cases, this will overflow, but that's ok
+        //  p += 8;
+        //  if ((p + 8 <= pend) && Utils.is_made_of_eight_digits_fast(p))
+        //  {
+        //    i = i * 100000000 + Utils.parse_eight_digits_unrolled(p); // in rare cases, this will overflow, but that's ok
+        //    p += 8;
+        //  }
+        //}
+        ////#endif
         while ((p != pend) && Utils.is_integer(*p))
         {
           byte digit = (byte)(*p - '0');
@@ -488,7 +491,7 @@ namespace csFastFloat
         // We need to be mindful of the case where we only have zeroes...
         // E.g., 0.000000000...000.
         char* start = start_digits;
-        while ((start != pend) && (*start == '0' || *start == '.'))
+        while ((start != pend) && (*start == '0' || *start == decimal_separator))
         {
           if (*start == '0') { digit_count--; }
           start++;
