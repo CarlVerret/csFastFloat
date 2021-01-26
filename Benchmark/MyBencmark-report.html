@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>MyBencmark-20210126-175632</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet=v0.12.1, OS=Windows 10.0.18363.1316 (1909/November2018Update/19H2)
+Intel Xeon CPU E3-1285 v6 4.10GHz, 1 CPU, 8 logical and 4 physical cores
+.NET Core SDK=5.0.200-preview.20614.14
+  [Host]        : .NET Core 5.0.1 (CoreCLR 5.0.120.57516, CoreFX 5.0.120.57516), X64 RyuJIT  [AttachedDebugger]
+  .NET Core 5.0 : .NET Core 5.0.1 (CoreCLR 5.0.120.57516, CoreFX 5.0.120.57516), X64 RyuJIT
+</code></pre>
+<pre><code>Job=.NET Core 5.0  Runtime=.NET Core 5.0  
+</code></pre>
+
+<table>
+<thead><tr><th>    Method</th><th>           sut</th><th> Mean</th><th>Error</th><th>StdDev</th><th>Median</th><th>Ratio</th><th>RatioSD</th>
+</tr>
+</thead><tbody><tr><td>ParseADouble</td><td>+1</td><td>50.42 ns</td><td>0.984 ns</td><td>0.920 ns</td><td>50.29 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble_std</td><td>+1</td><td>42.82 ns</td><td>0.846 ns</td><td>1.007 ns</td><td>42.59 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble</td><td>-0</td><td>50.19 ns</td><td>0.802 ns</td><td>0.750 ns</td><td>50.00 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble_std</td><td>-0</td><td>36.55 ns</td><td>0.243 ns</td><td>0.216 ns</td><td>36.51 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble</td><td>-1.00(...)0e+57 [71]</td><td>179.01 ns</td><td>3.371 ns</td><td>2.815 ns</td><td>179.42 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble_std</td><td>-1.00(...)0e+57 [71]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
+</tr><tr><td>ParseADouble</td><td>-1.73(...)0e+42 [71]</td><td>181.71 ns</td><td>2.284 ns</td><td>2.137 ns</td><td>181.69 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble_std</td><td>-1.73(...)0e+42 [71]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
+</tr><tr><td>ParseADouble</td><td>-1.76(...)0e+53 [71]</td><td>177.53 ns</td><td>1.544 ns</td><td>1.369 ns</td><td>177.35 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble_std</td><td>-1.76(...)0e+53 [71]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
+</tr><tr><td>ParseADouble</td><td>-1.86(...)0e+58 [71]</td><td>181.06 ns</td><td>3.118 ns</td><td>2.764 ns</td><td>180.39 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble_std</td><td>-1.86(...)0e+58 [71]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
+</tr><tr><td>ParseADouble</td><td>-1.91(...)0e+52 [71]</td><td>185.66 ns</td><td>3.432 ns</td><td>3.210 ns</td><td>184.75 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble_std</td><td>-1.91(...)0e+52 [71]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
+</tr><tr><td>ParseADouble</td><td>-2.09(...)0e+52 [71]</td><td>179.06 ns</td><td>1.328 ns</td><td>1.109 ns</td><td>179.10 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble_std</td><td>-2.09(...)0e+52 [71]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
+</tr><tr><td>ParseADouble</td><td>-2.14(...)0e+45 [71]</td><td>178.10 ns</td><td>2.391 ns</td><td>2.120 ns</td><td>177.50 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble_std</td><td>-2.14(...)0e+45 [71]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
+</tr><tr><td>ParseADouble</td><td>-2.81(...)0e+54 [71]</td><td>185.69 ns</td><td>3.702 ns</td><td>7.220 ns</td><td>183.08 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble_std</td><td>-2.81(...)0e+54 [71]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
+</tr><tr><td>ParseADouble</td><td>-2402(...)395.2 [22]</td><td>142.97 ns</td><td>0.929 ns</td><td>0.776 ns</td><td>142.80 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble_std</td><td>-2402(...)395.2 [22]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
+</tr><tr><td>ParseADouble</td><td>-4.49(...)0e+61 [71]</td><td>180.62 ns</td><td>3.419 ns</td><td>3.801 ns</td><td>179.26 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble_std</td><td>-4.49(...)0e+61 [71]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
+</tr><tr><td>ParseADouble</td><td>-4282(...)e-128 [26]</td><td>137.62 ns</td><td>1.791 ns</td><td>1.676 ns</td><td>137.00 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble_std</td><td>-4282(...)e-128 [26]</td><td>313.18 ns</td><td>1.890 ns</td><td>1.675 ns</td><td>312.69 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble</td><td>-9266(...)563E3 [23]</td><td>133.54 ns</td><td>1.315 ns</td><td>1.098 ns</td><td>133.50 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble_std</td><td>-9266(...)563E3 [23]</td><td>171.37 ns</td><td>2.856 ns</td><td>2.385 ns</td><td>171.60 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble</td><td>0.00(...)4375 [1076]</td><td>1,477.49 ns</td><td>12.927 ns</td><td>12.092 ns</td><td>1,472.44 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble_std</td><td>0.00(...)4375 [1076]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
+</tr><tr><td>ParseADouble</td><td>0.00(...)4375 [1076]</td><td>1,477.48 ns</td><td>21.143 ns</td><td>18.743 ns</td><td>1,471.77 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble_std</td><td>0.00(...)4375 [1076]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
+</tr><tr><td>ParseADouble</td><td>0e999(...)99999 [30]</td><td>90.86 ns</td><td>2.091 ns</td><td>5.932 ns</td><td>89.66 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble_std</td><td>0e999(...)99999 [30]</td><td>68.14 ns</td><td>1.352 ns</td><td>1.503 ns</td><td>68.07 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble</td><td>1.000(...)21875 [54]</td><td>188.38 ns</td><td>4.315 ns</td><td>12.450 ns</td><td>184.67 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble_std</td><td>1.000(...)21875 [54]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
+</tr><tr><td>ParseADouble</td><td>1.00(...)-309 [135]</td><td>255.05 ns</td><td>5.103 ns</td><td>8.384 ns</td><td>254.30 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble_std</td><td>1.00(...)-309 [135]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
+</tr><tr><td>ParseADouble</td><td>1.192(...)5e-07 [22]</td><td>98.51 ns</td><td>1.977 ns</td><td>3.304 ns</td><td>97.56 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble_std</td><td>1.192(...)5e-07 [22]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
+</tr><tr><td>ParseADouble</td><td>1.797(...)1e308 [39]</td><td>162.77 ns</td><td>3.176 ns</td><td>4.945 ns</td><td>162.06 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble_std</td><td>1.797(...)1e308 [39]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
+</tr><tr><td>ParseADouble</td><td>1125899906842624.125</td><td>98.92 ns</td><td>1.825 ns</td><td>1.524 ns</td><td>98.40 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble_std</td><td>1125899906842624.125</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
+</tr><tr><td>ParseADouble</td><td>1125899906842901.875</td><td>96.39 ns</td><td>1.857 ns</td><td>1.737 ns</td><td>95.90 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble_std</td><td>1125899906842901.875</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
+</tr><tr><td>ParseADouble</td><td>1438(...)-733 [1993]</td><td>1,765.01 ns</td><td>34.513 ns</td><td>67.316 ns</td><td>1,752.96 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble_std</td><td>1438(...)-733 [1993]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
+</tr><tr><td>ParseADouble</td><td>2.225(...)e-308 [23]</td><td>84.24 ns</td><td>1.684 ns</td><td>2.004 ns</td><td>83.61 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble_std</td><td>2.225(...)e-308 [23]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
+</tr><tr><td>ParseADouble</td><td>2251799813685248.25</td><td>91.37 ns</td><td>1.825 ns</td><td>2.373 ns</td><td>91.41 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble_std</td><td>2251799813685248.25</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
+</tr><tr><td>ParseADouble</td><td>2251799813685803.75</td><td>91.66 ns</td><td>1.836 ns</td><td>2.185 ns</td><td>90.69 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble_std</td><td>2251799813685803.75</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
+</tr><tr><td>ParseADouble</td><td>24028(...)395.2 [21]</td><td>145.24 ns</td><td>2.887 ns</td><td>2.559 ns</td><td>145.97 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble_std</td><td>24028(...)395.2 [21]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
+</tr><tr><td>ParseADouble</td><td>45035996.273704985</td><td>87.74 ns</td><td>0.872 ns</td><td>0.773 ns</td><td>87.54 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble_std</td><td>45035996.273704985</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
+</tr><tr><td>ParseADouble</td><td>45035996.273704995</td><td>86.46 ns</td><td>0.861 ns</td><td>0.719 ns</td><td>86.40 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble_std</td><td>45035996.273704995</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
+</tr><tr><td>ParseADouble</td><td>4503599627370496.5</td><td>94.34 ns</td><td>1.880 ns</td><td>2.871 ns</td><td>93.47 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble_std</td><td>4503599627370496.5</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
+</tr><tr><td>ParseADouble</td><td>4503599627370497.5</td><td>89.74 ns</td><td>1.120 ns</td><td>1.048 ns</td><td>89.39 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble_std</td><td>4503599627370497.5</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
+</tr><tr><td>ParseADouble</td><td>4503599627475352.5</td><td>91.22 ns</td><td>1.440 ns</td><td>1.277 ns</td><td>90.81 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble_std</td><td>4503599627475352.5</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
+</tr><tr><td>ParseADouble</td><td>4503599627475353.5</td><td>90.81 ns</td><td>1.733 ns</td><td>1.926 ns</td><td>90.46 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble_std</td><td>4503599627475353.5</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
+</tr><tr><td>ParseADouble</td><td>7.042(...)0e+59 [70]</td><td>177.89 ns</td><td>1.748 ns</td><td>1.549 ns</td><td>177.81 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble_std</td><td>7.042(...)0e+59 [70]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
+</tr><tr><td>ParseADouble</td><td>90054(...)28E72 [23]</td><td>145.49 ns</td><td>2.925 ns</td><td>6.358 ns</td><td>144.47 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParseADouble_std</td><td>90054(...)28E72 [23]</td><td>238.47 ns</td><td>4.663 ns</td><td>5.897 ns</td><td>235.78 ns</td><td>1.00</td><td>0.00</td>
+</tr></tbody></table>
+</body>
+</html>
