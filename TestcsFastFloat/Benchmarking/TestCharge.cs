@@ -2,6 +2,7 @@
 using System;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using System.Text;
 using TestcsFastFloat.Tests.Basic;
 using Xunit;
 
@@ -66,12 +67,14 @@ namespace TestcsFastFloat.Tests.Benchmarking
     [Fact]
     private unsafe void TestCheck_Random_Double()
     {
+      var sb = new StringBuilder();
+
       var did = 0;
       var refused = 0;
       var disagree = 0;
 
       ulong offset = 1190;
-      var howmany = 10000000;
+      var howmany = 30;
 
       for (var i = 1; i <= howmany; i++)
       {
@@ -90,6 +93,7 @@ namespace TestcsFastFloat.Tests.Benchmarking
         {
           did += 1;
           check(d);
+          sb.AppendLine(d.ToString());
         }
         catch (ParseException ex)
         {
