@@ -2,7 +2,7 @@
 <html lang='en'>
 <head>
 <meta charset='utf-8' />
-<title>MyBencmark-20210126-175632</title>
+<title>MyBencmark-20210126-191619</title>
 
 <style type="text/css">
 	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
@@ -23,80 +23,68 @@ Intel Xeon CPU E3-1285 v6 4.10GHz, 1 CPU, 8 logical and 4 physical cores
 </code></pre>
 
 <table>
-<thead><tr><th>    Method</th><th>           sut</th><th> Mean</th><th>Error</th><th>StdDev</th><th>Median</th><th>Ratio</th><th>RatioSD</th>
+<thead><tr><th>Method</th><th>           sut</th><th>Mean</th><th>Error</th><th>StdDev</th><th>Median</th><th>Ratio</th>
 </tr>
-</thead><tbody><tr><td>ParseADouble</td><td>+1</td><td>50.42 ns</td><td>0.984 ns</td><td>0.920 ns</td><td>50.29 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble_std</td><td>+1</td><td>42.82 ns</td><td>0.846 ns</td><td>1.007 ns</td><td>42.59 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble</td><td>-0</td><td>50.19 ns</td><td>0.802 ns</td><td>0.750 ns</td><td>50.00 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble_std</td><td>-0</td><td>36.55 ns</td><td>0.243 ns</td><td>0.216 ns</td><td>36.51 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble</td><td>-1.00(...)0e+57 [71]</td><td>179.01 ns</td><td>3.371 ns</td><td>2.815 ns</td><td>179.42 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble_std</td><td>-1.00(...)0e+57 [71]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
-</tr><tr><td>ParseADouble</td><td>-1.73(...)0e+42 [71]</td><td>181.71 ns</td><td>2.284 ns</td><td>2.137 ns</td><td>181.69 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble_std</td><td>-1.73(...)0e+42 [71]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
-</tr><tr><td>ParseADouble</td><td>-1.76(...)0e+53 [71]</td><td>177.53 ns</td><td>1.544 ns</td><td>1.369 ns</td><td>177.35 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble_std</td><td>-1.76(...)0e+53 [71]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
-</tr><tr><td>ParseADouble</td><td>-1.86(...)0e+58 [71]</td><td>181.06 ns</td><td>3.118 ns</td><td>2.764 ns</td><td>180.39 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble_std</td><td>-1.86(...)0e+58 [71]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
-</tr><tr><td>ParseADouble</td><td>-1.91(...)0e+52 [71]</td><td>185.66 ns</td><td>3.432 ns</td><td>3.210 ns</td><td>184.75 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble_std</td><td>-1.91(...)0e+52 [71]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
-</tr><tr><td>ParseADouble</td><td>-2.09(...)0e+52 [71]</td><td>179.06 ns</td><td>1.328 ns</td><td>1.109 ns</td><td>179.10 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble_std</td><td>-2.09(...)0e+52 [71]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
-</tr><tr><td>ParseADouble</td><td>-2.14(...)0e+45 [71]</td><td>178.10 ns</td><td>2.391 ns</td><td>2.120 ns</td><td>177.50 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble_std</td><td>-2.14(...)0e+45 [71]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
-</tr><tr><td>ParseADouble</td><td>-2.81(...)0e+54 [71]</td><td>185.69 ns</td><td>3.702 ns</td><td>7.220 ns</td><td>183.08 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble_std</td><td>-2.81(...)0e+54 [71]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
-</tr><tr><td>ParseADouble</td><td>-2402(...)395.2 [22]</td><td>142.97 ns</td><td>0.929 ns</td><td>0.776 ns</td><td>142.80 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble_std</td><td>-2402(...)395.2 [22]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
-</tr><tr><td>ParseADouble</td><td>-4.49(...)0e+61 [71]</td><td>180.62 ns</td><td>3.419 ns</td><td>3.801 ns</td><td>179.26 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble_std</td><td>-4.49(...)0e+61 [71]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
-</tr><tr><td>ParseADouble</td><td>-4282(...)e-128 [26]</td><td>137.62 ns</td><td>1.791 ns</td><td>1.676 ns</td><td>137.00 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble_std</td><td>-4282(...)e-128 [26]</td><td>313.18 ns</td><td>1.890 ns</td><td>1.675 ns</td><td>312.69 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble</td><td>-9266(...)563E3 [23]</td><td>133.54 ns</td><td>1.315 ns</td><td>1.098 ns</td><td>133.50 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble_std</td><td>-9266(...)563E3 [23]</td><td>171.37 ns</td><td>2.856 ns</td><td>2.385 ns</td><td>171.60 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble</td><td>0.00(...)4375 [1076]</td><td>1,477.49 ns</td><td>12.927 ns</td><td>12.092 ns</td><td>1,472.44 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble_std</td><td>0.00(...)4375 [1076]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
-</tr><tr><td>ParseADouble</td><td>0.00(...)4375 [1076]</td><td>1,477.48 ns</td><td>21.143 ns</td><td>18.743 ns</td><td>1,471.77 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble_std</td><td>0.00(...)4375 [1076]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
-</tr><tr><td>ParseADouble</td><td>0e999(...)99999 [30]</td><td>90.86 ns</td><td>2.091 ns</td><td>5.932 ns</td><td>89.66 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble_std</td><td>0e999(...)99999 [30]</td><td>68.14 ns</td><td>1.352 ns</td><td>1.503 ns</td><td>68.07 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble</td><td>1.000(...)21875 [54]</td><td>188.38 ns</td><td>4.315 ns</td><td>12.450 ns</td><td>184.67 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble_std</td><td>1.000(...)21875 [54]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
-</tr><tr><td>ParseADouble</td><td>1.00(...)-309 [135]</td><td>255.05 ns</td><td>5.103 ns</td><td>8.384 ns</td><td>254.30 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble_std</td><td>1.00(...)-309 [135]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
-</tr><tr><td>ParseADouble</td><td>1.192(...)5e-07 [22]</td><td>98.51 ns</td><td>1.977 ns</td><td>3.304 ns</td><td>97.56 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble_std</td><td>1.192(...)5e-07 [22]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
-</tr><tr><td>ParseADouble</td><td>1.797(...)1e308 [39]</td><td>162.77 ns</td><td>3.176 ns</td><td>4.945 ns</td><td>162.06 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble_std</td><td>1.797(...)1e308 [39]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
-</tr><tr><td>ParseADouble</td><td>1125899906842624.125</td><td>98.92 ns</td><td>1.825 ns</td><td>1.524 ns</td><td>98.40 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble_std</td><td>1125899906842624.125</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
-</tr><tr><td>ParseADouble</td><td>1125899906842901.875</td><td>96.39 ns</td><td>1.857 ns</td><td>1.737 ns</td><td>95.90 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble_std</td><td>1125899906842901.875</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
-</tr><tr><td>ParseADouble</td><td>1438(...)-733 [1993]</td><td>1,765.01 ns</td><td>34.513 ns</td><td>67.316 ns</td><td>1,752.96 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble_std</td><td>1438(...)-733 [1993]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
-</tr><tr><td>ParseADouble</td><td>2.225(...)e-308 [23]</td><td>84.24 ns</td><td>1.684 ns</td><td>2.004 ns</td><td>83.61 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble_std</td><td>2.225(...)e-308 [23]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
-</tr><tr><td>ParseADouble</td><td>2251799813685248.25</td><td>91.37 ns</td><td>1.825 ns</td><td>2.373 ns</td><td>91.41 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble_std</td><td>2251799813685248.25</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
-</tr><tr><td>ParseADouble</td><td>2251799813685803.75</td><td>91.66 ns</td><td>1.836 ns</td><td>2.185 ns</td><td>90.69 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble_std</td><td>2251799813685803.75</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
-</tr><tr><td>ParseADouble</td><td>24028(...)395.2 [21]</td><td>145.24 ns</td><td>2.887 ns</td><td>2.559 ns</td><td>145.97 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble_std</td><td>24028(...)395.2 [21]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
-</tr><tr><td>ParseADouble</td><td>45035996.273704985</td><td>87.74 ns</td><td>0.872 ns</td><td>0.773 ns</td><td>87.54 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble_std</td><td>45035996.273704985</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
-</tr><tr><td>ParseADouble</td><td>45035996.273704995</td><td>86.46 ns</td><td>0.861 ns</td><td>0.719 ns</td><td>86.40 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble_std</td><td>45035996.273704995</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
-</tr><tr><td>ParseADouble</td><td>4503599627370496.5</td><td>94.34 ns</td><td>1.880 ns</td><td>2.871 ns</td><td>93.47 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble_std</td><td>4503599627370496.5</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
-</tr><tr><td>ParseADouble</td><td>4503599627370497.5</td><td>89.74 ns</td><td>1.120 ns</td><td>1.048 ns</td><td>89.39 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble_std</td><td>4503599627370497.5</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
-</tr><tr><td>ParseADouble</td><td>4503599627475352.5</td><td>91.22 ns</td><td>1.440 ns</td><td>1.277 ns</td><td>90.81 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble_std</td><td>4503599627475352.5</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
-</tr><tr><td>ParseADouble</td><td>4503599627475353.5</td><td>90.81 ns</td><td>1.733 ns</td><td>1.926 ns</td><td>90.46 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble_std</td><td>4503599627475353.5</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
-</tr><tr><td>ParseADouble</td><td>7.042(...)0e+59 [70]</td><td>177.89 ns</td><td>1.748 ns</td><td>1.549 ns</td><td>177.81 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble_std</td><td>7.042(...)0e+59 [70]</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>?</td>
-</tr><tr><td>ParseADouble</td><td>90054(...)28E72 [23]</td><td>145.49 ns</td><td>2.925 ns</td><td>6.358 ns</td><td>144.47 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParseADouble_std</td><td>90054(...)28E72 [23]</td><td>238.47 ns</td><td>4.663 ns</td><td>5.897 ns</td><td>235.78 ns</td><td>1.00</td><td>0.00</td>
+</thead><tbody><tr><td>FastParser_</td><td>-1,49(...)E+236 [23]</td><td>50.32 ns</td><td>1.033 ns</td><td>2.394 ns</td><td>49.46 ns</td><td>1.00</td>
+</tr><tr><td>Double_std</td><td>-1,49(...)E+236 [23]</td><td>410.87 ns</td><td>1.456 ns</td><td>1.291 ns</td><td>410.62 ns</td><td>1.00</td>
+</tr><tr><td>FastParser_</td><td>-1,71(...)E+194 [24]</td><td>49.96 ns</td><td>1.007 ns</td><td>1.034 ns</td><td>49.59 ns</td><td>1.00</td>
+</tr><tr><td>Double_std</td><td>-1,71(...)E+194 [24]</td><td>336.69 ns</td><td>4.387 ns</td><td>3.889 ns</td><td>335.66 ns</td><td>1.00</td>
+</tr><tr><td>FastParser_</td><td>-2,21(...)5E-43 [23]</td><td>47.51 ns</td><td>0.285 ns</td><td>0.253 ns</td><td>47.52 ns</td><td>1.00</td>
+</tr><tr><td>Double_std</td><td>-2,21(...)5E-43 [23]</td><td>290.28 ns</td><td>0.589 ns</td><td>0.460 ns</td><td>290.25 ns</td><td>1.00</td>
+</tr><tr><td>FastParser_</td><td>-2,77(...)7E+75 [22]</td><td>47.78 ns</td><td>0.828 ns</td><td>0.775 ns</td><td>47.60 ns</td><td>1.00</td>
+</tr><tr><td>Double_std</td><td>-2,77(...)7E+75 [22]</td><td>226.57 ns</td><td>0.511 ns</td><td>0.426 ns</td><td>226.42 ns</td><td>1.00</td>
+</tr><tr><td>FastParser_</td><td>-3,89(...)E+202 [24]</td><td>49.09 ns</td><td>0.402 ns</td><td>0.314 ns</td><td>49.10 ns</td><td>1.00</td>
+</tr><tr><td>Double_std</td><td>-3,89(...)E+202 [24]</td><td>376.30 ns</td><td>7.049 ns</td><td>13.748 ns</td><td>370.48 ns</td><td>1.00</td>
+</tr><tr><td>FastParser_</td><td>-4,05(...)1E+89 [22]</td><td>58.76 ns</td><td>3.759 ns</td><td>11.085 ns</td><td>54.18 ns</td><td>1.00</td>
+</tr><tr><td>Double_std</td><td>-4,05(...)1E+89 [22]</td><td>229.23 ns</td><td>4.438 ns</td><td>8.114 ns</td><td>226.63 ns</td><td>1.00</td>
+</tr><tr><td>FastParser_</td><td>-4,12(...)E+142 [24]</td><td>55.09 ns</td><td>1.833 ns</td><td>5.259 ns</td><td>53.68 ns</td><td>1.00</td>
+</tr><tr><td>Double_std</td><td>-4,12(...)E+142 [24]</td><td>323.36 ns</td><td>6.203 ns</td><td>7.384 ns</td><td>323.64 ns</td><td>1.00</td>
+</tr><tr><td>FastParser_</td><td>-4,13(...)E-293 [23]</td><td>66.33 ns</td><td>3.324 ns</td><td>9.749 ns</td><td>64.06 ns</td><td>1.00</td>
+</tr><tr><td>Double_std</td><td>-4,13(...)E-293 [23]</td><td>576.07 ns</td><td>10.814 ns</td><td>11.105 ns</td><td>574.59 ns</td><td>1.00</td>
+</tr><tr><td>FastParser_</td><td>-4,44(...)4E+79 [23]</td><td>61.91 ns</td><td>3.528 ns</td><td>10.234 ns</td><td>58.43 ns</td><td>1.00</td>
+</tr><tr><td>Double_std</td><td>-4,44(...)4E+79 [23]</td><td>251.37 ns</td><td>4.783 ns</td><td>4.474 ns</td><td>250.45 ns</td><td>1.00</td>
+</tr><tr><td>FastParser_</td><td>-5,01(...)E+301 [23]</td><td>61.92 ns</td><td>2.645 ns</td><td>7.757 ns</td><td>60.83 ns</td><td>1.00</td>
+</tr><tr><td>Double_std</td><td>-5,01(...)E+301 [23]</td><td>393.00 ns</td><td>2.750 ns</td><td>2.296 ns</td><td>392.14 ns</td><td>1.00</td>
+</tr><tr><td>FastParser_</td><td>-5,51(...)E-121 [23]</td><td>59.40 ns</td><td>2.281 ns</td><td>6.321 ns</td><td>58.94 ns</td><td>1.00</td>
+</tr><tr><td>Double_std</td><td>-5,51(...)E-121 [23]</td><td>316.98 ns</td><td>5.744 ns</td><td>7.054 ns</td><td>313.45 ns</td><td>1.00</td>
+</tr><tr><td>FastParser_</td><td>-5,55(...)E+145 [23]</td><td>54.75 ns</td><td>1.067 ns</td><td>0.998 ns</td><td>54.50 ns</td><td>1.00</td>
+</tr><tr><td>Double_std</td><td>-5,55(...)E+145 [23]</td><td>254.55 ns</td><td>5.024 ns</td><td>9.312 ns</td><td>251.49 ns</td><td>1.00</td>
+</tr><tr><td>FastParser_</td><td>-6,26(...)E-111 [24]</td><td>60.55 ns</td><td>2.017 ns</td><td>5.655 ns</td><td>59.04 ns</td><td>1.00</td>
+</tr><tr><td>Double_std</td><td>-6,26(...)E-111 [24]</td><td>405.07 ns</td><td>8.006 ns</td><td>14.022 ns</td><td>399.09 ns</td><td>1.00</td>
+</tr><tr><td>FastParser_</td><td>-7,01(...)E+298 [23]</td><td>53.84 ns</td><td>1.102 ns</td><td>2.618 ns</td><td>53.13 ns</td><td>1.00</td>
+</tr><tr><td>Double_std</td><td>-7,01(...)E+298 [23]</td><td>365.77 ns</td><td>2.301 ns</td><td>2.040 ns</td><td>365.26 ns</td><td>1.00</td>
+</tr><tr><td>FastParser_</td><td>-8,85(...)E+113 [23]</td><td>53.89 ns</td><td>1.030 ns</td><td>2.033 ns</td><td>53.49 ns</td><td>1.00</td>
+</tr><tr><td>Double_std</td><td>-8,85(...)E+113 [23]</td><td>239.60 ns</td><td>2.484 ns</td><td>2.202 ns</td><td>239.41 ns</td><td>1.00</td>
+</tr><tr><td>FastParser_</td><td>1,410(...)2E+79 [22]</td><td>55.29 ns</td><td>1.117 ns</td><td>3.078 ns</td><td>54.12 ns</td><td>1.00</td>
+</tr><tr><td>Double_std</td><td>1,410(...)2E+79 [22]</td><td>235.87 ns</td><td>4.678 ns</td><td>5.745 ns</td><td>232.90 ns</td><td>1.00</td>
+</tr><tr><td>FastParser_</td><td>1,423(...)E-209 [23]</td><td>52.62 ns</td><td>0.914 ns</td><td>0.763 ns</td><td>52.54 ns</td><td>1.00</td>
+</tr><tr><td>Double_std</td><td>1,423(...)E-209 [23]</td><td>528.50 ns</td><td>10.443 ns</td><td>12.432 ns</td><td>522.21 ns</td><td>1.00</td>
+</tr><tr><td>FastParser_</td><td>1,459(...)E-273 [23]</td><td>52.03 ns</td><td>1.060 ns</td><td>1.884 ns</td><td>51.33 ns</td><td>1.00</td>
+</tr><tr><td>Double_std</td><td>1,459(...)E-273 [23]</td><td>466.72 ns</td><td>9.293 ns</td><td>12.083 ns</td><td>461.01 ns</td><td>1.00</td>
+</tr><tr><td>FastParser_</td><td>1,505(...)4E-43 [22]</td><td>47.79 ns</td><td>0.978 ns</td><td>1.005 ns</td><td>47.65 ns</td><td>1.00</td>
+</tr><tr><td>Double_std</td><td>1,505(...)4E-43 [22]</td><td>292.07 ns</td><td>2.148 ns</td><td>1.677 ns</td><td>291.60 ns</td><td>1.00</td>
+</tr><tr><td>FastParser_</td><td>1,754(...)E-223 [23]</td><td>49.24 ns</td><td>1.012 ns</td><td>2.284 ns</td><td>48.74 ns</td><td>1.00</td>
+</tr><tr><td>Double_std</td><td>1,754(...)E-223 [23]</td><td>576.23 ns</td><td>11.348 ns</td><td>14.352 ns</td><td>572.64 ns</td><td>1.00</td>
+</tr><tr><td>FastParser_</td><td>1,937(...)4E+48 [22]</td><td>50.88 ns</td><td>0.949 ns</td><td>2.142 ns</td><td>50.16 ns</td><td>1.00</td>
+</tr><tr><td>Double_std</td><td>1,937(...)4E+48 [22]</td><td>189.50 ns</td><td>0.752 ns</td><td>0.667 ns</td><td>189.23 ns</td><td>1.00</td>
+</tr><tr><td>FastParser_</td><td>2,197(...)E+283 [23]</td><td>50.73 ns</td><td>0.822 ns</td><td>0.686 ns</td><td>50.76 ns</td><td>1.00</td>
+</tr><tr><td>Double_std</td><td>2,197(...)E+283 [23]</td><td>319.76 ns</td><td>2.376 ns</td><td>1.984 ns</td><td>319.06 ns</td><td>1.00</td>
+</tr><tr><td>FastParser_</td><td>2,766(...)E+176 [23]</td><td>48.93 ns</td><td>0.998 ns</td><td>1.992 ns</td><td>48.12 ns</td><td>1.00</td>
+</tr><tr><td>Double_std</td><td>2,766(...)E+176 [23]</td><td>273.13 ns</td><td>1.692 ns</td><td>1.413 ns</td><td>272.94 ns</td><td>1.00</td>
+</tr><tr><td>FastParser_</td><td>3,738(...)E+189 [22]</td><td>48.90 ns</td><td>0.982 ns</td><td>1.586 ns</td><td>48.56 ns</td><td>1.00</td>
+</tr><tr><td>Double_std</td><td>3,738(...)E+189 [22]</td><td>331.75 ns</td><td>6.413 ns</td><td>6.586 ns</td><td>328.77 ns</td><td>1.00</td>
+</tr><tr><td>FastParser_</td><td>3,867(...)E+176 [22]</td><td>57.83 ns</td><td>2.514 ns</td><td>7.173 ns</td><td>55.41 ns</td><td>1.00</td>
+</tr><tr><td>Double_std</td><td>3,867(...)E+176 [22]</td><td>285.20 ns</td><td>4.884 ns</td><td>3.813 ns</td><td>285.32 ns</td><td>1.00</td>
+</tr><tr><td>FastParser_</td><td>4,412(...)E+224 [22]</td><td>47.30 ns</td><td>0.891 ns</td><td>0.790 ns</td><td>47.28 ns</td><td>1.00</td>
+</tr><tr><td>Double_std</td><td>4,412(...)E+224 [22]</td><td>380.98 ns</td><td>7.232 ns</td><td>12.474 ns</td><td>375.85 ns</td><td>1.00</td>
+</tr><tr><td>FastParser_</td><td>5,258(...)E+163 [23]</td><td>52.01 ns</td><td>1.394 ns</td><td>3.931 ns</td><td>51.24 ns</td><td>1.00</td>
+</tr><tr><td>Double_std</td><td>5,258(...)E+163 [23]</td><td>268.39 ns</td><td>1.371 ns</td><td>1.145 ns</td><td>268.04 ns</td><td>1.00</td>
+</tr><tr><td>FastParser_</td><td>5,829(...)E-230 [22]</td><td>51.32 ns</td><td>1.029 ns</td><td>0.912 ns</td><td>51.15 ns</td><td>1.00</td>
+</tr><tr><td>Double_std</td><td>5,829(...)E-230 [22]</td><td>594.61 ns</td><td>10.934 ns</td><td>15.682 ns</td><td>587.17 ns</td><td>1.00</td>
+</tr><tr><td>FastParser_</td><td>8,240(...)E+105 [22]</td><td>53.02 ns</td><td>1.246 ns</td><td>3.495 ns</td><td>52.22 ns</td><td>1.00</td>
+</tr><tr><td>Double_std</td><td>8,240(...)E+105 [22]</td><td>248.49 ns</td><td>4.769 ns</td><td>6.686 ns</td><td>245.09 ns</td><td>1.00</td>
+</tr><tr><td>FastParser_</td><td>8,606(...)E-209 [22]</td><td>50.54 ns</td><td>1.530 ns</td><td>4.340 ns</td><td>48.85 ns</td><td>1.00</td>
+</tr><tr><td>Double_std</td><td>8,606(...)E-209 [22]</td><td>466.17 ns</td><td>2.208 ns</td><td>1.844 ns</td><td>465.49 ns</td><td>1.00</td>
 </tr></tbody></table>
 </body>
 </html>
