@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestcsFastFloat", "TestcsFa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmark", "Benchmark\Benchmark.csproj", "{72B189A1-F94C-448A-A012-54443D09CF3F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ff_suppl_tests", "ff_suppl_tests\ff_suppl_tests.csproj", "{6EC17C32-DB9F-4A42-BC6E-4693C35406E5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{72B189A1-F94C-448A-A012-54443D09CF3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{72B189A1-F94C-448A-A012-54443D09CF3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{72B189A1-F94C-448A-A012-54443D09CF3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EC17C32-DB9F-4A42-BC6E-4693C35406E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EC17C32-DB9F-4A42-BC6E-4693C35406E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EC17C32-DB9F-4A42-BC6E-4693C35406E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EC17C32-DB9F-4A42-BC6E-4693C35406E5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

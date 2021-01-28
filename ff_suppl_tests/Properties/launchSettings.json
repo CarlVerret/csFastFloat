@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ff_suppl_tests": {
+      "commandName": "Project",
+      "commandLineArgs": "D:\\TELUQ\\Maitrise\\fastfloat\\fast_float_supplemental_tests\\data"
+    }
+  }
+}
