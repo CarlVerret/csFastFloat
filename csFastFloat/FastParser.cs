@@ -242,6 +242,7 @@ namespace csFastFloat
       {
         uint n = (uint)(d.decimal_point);
         int shift = (n < num_powers) ? powers[n] : max_shift;
+
         d.decimal_right_shift(shift);
         if (d.decimal_point < -Constants.decimal_point_range)
         {
@@ -271,7 +272,9 @@ namespace csFastFloat
           uint n = (uint)(-d.decimal_point);
           shift = (n < num_powers) ? powers[n] : max_shift;
         }
+
         d.decimal_left_shift(shift);
+
         if (d.decimal_point > Constants.decimal_point_range)
         {
           // we want to get infinity:
@@ -324,6 +327,7 @@ namespace csFastFloat
       answer.power2 = exp2 - min_exp;
       if (mantissa < ((ulong)(1) << binaryFormat.mantissa_explicit_bits())) { answer.power2--; }
       answer.mantissa = mantissa & (((ulong)(1) << binaryFormat.mantissa_explicit_bits()) - 1);
+
       return answer;
     }
 

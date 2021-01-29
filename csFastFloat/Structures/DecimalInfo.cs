@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace csFastFloat.Structures
 {
@@ -10,6 +11,21 @@ namespace csFastFloat.Structures
     internal bool negative = false;
     internal bool truncated = false;
     internal byte[] digits = new byte[Constants.max_digits];
+
+    public override string ToString()
+    {
+      StringBuilder sb = new();
+
+      sb.Append("0.");
+
+      for (int i = 0; i < num_digits; i++)
+      {
+        sb.Append(digits[i]);
+      }
+
+      sb.Append($" * 10 ** {decimal_point} "); ;
+      return sb.ToString();
+    }
 
     internal void trim()
     {
@@ -94,21 +110,20 @@ namespace csFastFloat.Structures
         7, 3, 7, 9, 8, 8, 4, 0, 3, 5, 4, 7, 2, 0, 5, 9, 6, 2, 2, 4, 0, 6, 9, 5,
         9, 5, 3, 3, 6, 9, 1, 4, 0, 6, 2, 5,
   };
-      byte* pow5 = (byte*)number_of_digits_decimal_left_shift_table_powers_of_5[pow5_a];
+      // byte* pow5 = (byte*)number_of_digits_decimal_left_shift_table_powers_of_5[pow5_a];
       int i = 0;
       uint n = pow5_b - pow5_a;
-      while (i < n)
+      for (; i < n; i++)
       {
         if (i >= num_digits)
         {
           return num_new_digits - 1;
         }
-        else
-          if (digits[i] == pow5[i])
+        else if (digits[i] == number_of_digits_decimal_left_shift_table_powers_of_5[pow5_a + i])
         {
-          i++; continue;
+          continue;
         }
-        else if (digits[i] < pow5[i])
+        else if (digits[i] < number_of_digits_decimal_left_shift_table_powers_of_5[pow5_a + i])
         {
           return num_new_digits - 1;
         }
@@ -144,8 +159,7 @@ namespace csFastFloat.Structures
                                     // but we may need to round to even!
         if ((digits[dp] == 5) && (dp + 1 == num_digits))
         {
-          throw new NotImplementedException();
-          //round_up = truncated || ((dp > 0) && (1 & digits[dp - 1]));
+          round_up = truncated || ((dp > 0) && digits[dp - 1] % 2 != 0);
         }
       }
       if (round_up)
@@ -163,6 +177,7 @@ namespace csFastFloat.Structures
         return;
       }
       uint num_new_digits = number_of_digits_decimal_left_shift(shift);
+
       int read_index = (int)(num_digits - 1);
       uint write_index = num_digits - 1 + num_new_digits;
       ulong n = 0;

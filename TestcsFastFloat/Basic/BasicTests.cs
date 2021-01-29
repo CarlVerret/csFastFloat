@@ -316,12 +316,7 @@ namespace TestcsFastFloat.Tests.Basic
     [Fact]
     unsafe private void test()
     {
-      fixed (char* p = "1234a678")
-      {
-        bool f = Utils.is_made_of_eight_digits_fast(p);
-      }
-
-      double res = FastParser.ParseDouble("-4.27093505740979E-146");
+      double res = FastParser.ParseDouble("2.22507385850720138309e-308");
     }
   }
 }
