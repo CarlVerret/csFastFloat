@@ -9,6 +9,10 @@ namespace ff_suppl_tests
   {
     private static void Main(string[] args)
     {
+      //const std::string input = ;
+
+      //var d = FastParser.ParseDouble("2.22507385850720138309e-308");
+
       string pathValidation = args[0] ?? throw new ArgumentNullException("Search path");
 
       if (!Directory.Exists(pathValidation))

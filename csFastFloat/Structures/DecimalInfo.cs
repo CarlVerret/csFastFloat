@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace csFastFloat.Structures
 {
@@ -10,6 +11,21 @@ namespace csFastFloat.Structures
     internal bool negative = false;
     internal bool truncated = false;
     internal byte[] digits = new byte[Constants.max_digits];
+
+    public override string ToString()
+    {
+      StringBuilder sb = new();
+
+      sb.Append("0.");
+
+      for (int i = 0; i < num_digits; i++)
+      {
+        sb.Append(digits[i]);
+      }
+
+      sb.Append($" * 10 ** {decimal_point} "); ;
+      return sb.ToString();
+    }
 
     internal void trim()
     {
@@ -107,7 +123,7 @@ namespace csFastFloat.Structures
         {
           continue;
         }
-        else if (digits[i] < number_of_digits_decimal_left_shift_table_powers_of_5[i])
+        else if (digits[i] < number_of_digits_decimal_left_shift_table_powers_of_5[pow5_a + i])
         {
           return num_new_digits - 1;
         }
@@ -161,6 +177,7 @@ namespace csFastFloat.Structures
         return;
       }
       uint num_new_digits = number_of_digits_decimal_left_shift(shift);
+
       int read_index = (int)(num_digits - 1);
       uint write_index = num_digits - 1 + num_new_digits;
       ulong n = 0;
