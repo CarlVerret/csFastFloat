@@ -70,7 +70,7 @@ namespace TestcsFastFloat.Tests.ff_suppl_tests
         }
         catch (Exception ex)
         {
-          Console.WriteLine("parsing error on : " + curntLine);
+          Console.WriteLine($"parsing error on : {curntLine}. {ex.Message}");
         }
       }
       fs.Close();
