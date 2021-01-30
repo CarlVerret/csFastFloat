@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using TestcsFastFloat.Tests.Basic;
 using Xunit;
+using Xunit.Sdk;
 
 namespace TestcsFastFloat.Tests.Benchmarking
 {
@@ -64,7 +65,7 @@ namespace TestcsFastFloat.Tests.Benchmarking
       }
     }
 
-    [Fact]
+    [Fact(Skip = "On demand")]
     private unsafe void TestCheck_Random_Double()
     {
       var sb = new StringBuilder();
@@ -109,7 +110,7 @@ namespace TestcsFastFloat.Tests.Benchmarking
       Assert.Equal(0, disagree);
     }
 
-    [Fact]
+    [Fact(Skip = "on demand")]
     private unsafe void TestCheck_Random_Float()
     {
       var did = 0;
@@ -151,7 +152,7 @@ namespace TestcsFastFloat.Tests.Benchmarking
       Assert.Equal(0, disagree);
     }
 
-    [Fact]
+    [Fact(Skip = "on demand")]
     private unsafe void Bench1()
     {
       ulong offset = 1190;
@@ -178,7 +179,7 @@ namespace TestcsFastFloat.Tests.Benchmarking
       //  ApprovalTests.Approvals.Verify(DateTime.Now - start);
     }
 
-    [Fact]
+    [Fact(Skip = "on demand")]
     private unsafe void Bench2()
     {
       ulong offset = 1190;

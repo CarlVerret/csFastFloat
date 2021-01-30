@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -12,6 +13,7 @@ namespace csFastFloat.Structures
     internal bool truncated = false;
     internal byte[] digits = new byte[Constants.max_digits];
 
+    [ExcludeFromCodeCoverage]
     public override string ToString()
     {
       StringBuilder sb = new();
