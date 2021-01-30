@@ -8,6 +8,8 @@ using Xunit;
 
 namespace TestcsFastFloat.Tests.Basic
 {
+#pragma warning disable xUnit1026
+
   public class TestDoubleParser : BaseTestClass
   {
     [InlineData("a", "A", 1, true)]
