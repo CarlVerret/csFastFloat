@@ -64,13 +64,13 @@ namespace TestcsFastFloat.Tests.ff_suppl_tests
 
           // parse and assert equality
           float f = FastParser.ParseFloat(sut[3]);
-          Debug.Assert(_f == f);
+          Assert.True(_f == f);
           double d = FastParser.ParseDouble(sut[3]);
-          Debug.Assert(_d == d);
+          Assert.True(_d == d);
         }
         catch (Exception ex)
         {
-          Console.WriteLine("parsing error on : " + curntLine);
+          Console.WriteLine($"parsing error on : {curntLine}. {ex.Message}");
         }
       }
       fs.Close();
