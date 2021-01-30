@@ -1,4 +1,5 @@
 ﻿using csFastFloat;
+using EmptyFiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -150,6 +151,7 @@ namespace TestcsFastFloat.Tests.Basic
       Assert.Equal(3.14, FastParser.ParseDouble("3.14e10", csFastFloat.Enums.chars_format.is_fixed));
     }
 
+    [Trait("Category", "Smoke Test")]
     [InlineData("INF", double.PositiveInfinity)]
     [InlineData("+INF", double.PositiveInfinity)]
     [InlineData("-INF", double.NegativeInfinity)]
@@ -174,6 +176,7 @@ namespace TestcsFastFloat.Tests.Basic
       Assert.Equal(expected_value, FastParser.ParseDouble(sut));
     }
 
+    [Trait("Category", "Smoke Test")]
     [InlineData("1.1920928955078125e-07", 1.1920928955078125e-07)]
     [InlineData("-0", -0.0)]
     [InlineData("1.0000000000000006661338147750939242541790008544921875", 1.0000000000000007)]
@@ -228,6 +231,7 @@ namespace TestcsFastFloat.Tests.Basic
     [Theory]
     private void TestGeneral_Double(string sut, double expected_value) => Assert.Equal(expected_value, FastParser.ParseDouble(sut));
 
+    [Trait("Category", "Smoke Test")]
     [InlineData("1.1754941406275178592461758986628081843312458647327962400313859427181746759860647699724722770042717456817626953125", 655, "", 1.17549419)]
     [InlineData("1.1754941406275178592461758986628081843312458647327962400313859427181746759860647699724722770042717456817626953125", 656, "", 1.17549419)]
     [InlineData("1.1754941406275178592461758986628081843312458647327962400313859427181746759860647699724722770042717456817626953125", 1000, "", 1.17549419)]
@@ -241,7 +245,7 @@ namespace TestcsFastFloat.Tests.Basic
     ////verify32(1.4012984643e-45f)]
     ////verify32(1.1754942107e-38f)]
     ////verify32(1.1754943508e-45f)]
-
+    [Trait("Category", "Smoke Test")]
     [InlineData("1.1754941406275178592461758986628081843312458647327962400313859427181746759860647699724722770042717456817626953125", 1.17549419)] // "0x1.2ced3p+0f")]
     [InlineData("1.1754941406275178592461758986628081843312458647327962400313859427181746759860647699724722770042717456817626953125e-38", 1.1754941E-38)] // check ->  1.175e-38)] // 0x1.fffff8p - 127f)]
     [InlineData("1090544144181609348835077142190", 1.09054418e+30)] // 0x1.b877ap + 99f)]

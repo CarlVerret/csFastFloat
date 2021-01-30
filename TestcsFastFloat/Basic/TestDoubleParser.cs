@@ -25,6 +25,7 @@ namespace TestcsFastFloat.Tests.Basic
       }
     }
 
+    [Trait("Category", "Smoke Test")]
     [Theory]
     [InlineData("nan", double.NaN)]
     [InlineData("inf", double.PositiveInfinity)]
@@ -144,6 +145,7 @@ namespace TestcsFastFloat.Tests.Basic
       VerifyData(sb.ToString());
     }
 
+    [Trait("Category", "Smoke Test")]
     [Fact]
     public void cas_compute_float_64_1()
     {
@@ -165,6 +167,7 @@ namespace TestcsFastFloat.Tests.Basic
       }
     }
 
+    [Trait("Category", "Smoke Test")]
     [Fact]
     unsafe public void cas_compute_float_64_2()
     {
