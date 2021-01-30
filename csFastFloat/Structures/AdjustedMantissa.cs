@@ -1,4 +1,6 @@
-﻿namespace csFastFloat.Structures
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace csFastFloat.Structures
 {
   public sealed class AdjustedMantissa
   {
@@ -11,8 +13,10 @@
     public static bool operator !=(AdjustedMantissa a, AdjustedMantissa b)
        => a.mantissa != b.mantissa || a.power2 != b.power2;
 
+    [ExcludeFromCodeCoverage]
     public override bool Equals(object obj) => base.Equals(obj);
 
+    [ExcludeFromCodeCoverage]
     public override int GetHashCode() => base.GetHashCode();
   }
 }
