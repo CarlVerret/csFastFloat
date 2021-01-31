@@ -189,7 +189,7 @@ namespace TestcsFastFloat.Tests.Basic
       }
     }
 
-    private static List<double> testing_power_of_ten = new List<double> {
+    private static double[] testing_power_of_ten =  {
     1e-307, 1e-306, 1e-305, 1e-304, 1e-303, 1e-302, 1e-301, 1e-300, 1e-299,
     1e-298, 1e-297, 1e-296, 1e-295, 1e-294, 1e-293, 1e-292, 1e-291, 1e-290,
     1e-289, 1e-288, 1e-287, 1e-286, 1e-285, 1e-284, 1e-283, 1e-282, 1e-281,

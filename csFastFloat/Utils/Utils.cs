@@ -88,18 +88,28 @@ namespace csFastFloat
       return (((152170 + 65536) * q) >> 16) + 63;
     }
 
+#if NET5_0
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal unsafe static value128 FullMultiplication(ulong value1, ulong value2)
     {
       ulong lo;
-      //ulong hi = System.Runtime.Intrinsics.X86.Bmi2.X64.MultiplyNoFlags(value1, value2, &lo);
+
       ulong hi = Math.BigMul(value1, value2, out lo);
-
       return new value128(hi, lo);
-
-      // when to fallback ?
-      // return Emulate64x64to128(value1, value2);
     }
+
+#else
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal unsafe static value128 FullMultiplication(ulong value1, ulong value2)
+    {
+      ulong lo;
+      ulong hi = System.Runtime.Intrinsics.X86.Bmi2.X64.MultiplyNoFlags(value1, value2, &lo);
+      return new value128(hi, lo);
+    }
+
+#endif
 
     //internal static value128 Emulate64x64to128(ulong x, ulong y)
     //{

@@ -12,4 +12,10 @@
   <ItemGroup>
     <ProjectReference Include="..\csFastFloat\csFastFloat.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Update="data\canada.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

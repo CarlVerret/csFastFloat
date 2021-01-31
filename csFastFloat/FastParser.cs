@@ -15,6 +15,9 @@ namespace csFastFloat
   {
     public static double ParseDouble(string s, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
     {
+      if (s == null)
+        throw new ArgumentNullException(nameof(s));
+
       unsafe
       {
         fixed (char* pStart = s)
