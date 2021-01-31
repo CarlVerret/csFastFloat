@@ -95,13 +95,8 @@ namespace csFastFloat
     {
       ulong lo;
 
-      //ulong hi = System.Runtime.Intrinsics.X86.Bmi2.X64.MultiplyNoFlags(value1, value2, &lo);
       ulong hi = Math.BigMul(value1, value2, out lo);
-
       return new value128(hi, lo);
-
-      // when to fallback ?
-      // return Emulate64x64to128(value1, value2);
     }
 
 #else
@@ -110,14 +105,8 @@ namespace csFastFloat
     internal unsafe static value128 FullMultiplication(ulong value1, ulong value2)
     {
       ulong lo;
-
       ulong hi = System.Runtime.Intrinsics.X86.Bmi2.X64.MultiplyNoFlags(value1, value2, &lo);
-      //ulong hi = Math.BigMul(value1, value2, out lo);
-
       return new value128(hi, lo);
-
-      // when to fallback ?
-      // return Emulate64x64to128(value1, value2);
     }
 
 #endif
