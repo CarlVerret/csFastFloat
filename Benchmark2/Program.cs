@@ -77,7 +77,7 @@ namespace Benchmark2
 
     private static void Main(string[] args)
     {
-      string fileName = @"D:\TELUQ\Maitrise\fastfloat\simple_fastfloat_benchmark\data\canada.txt";
+      string fileName = @"\data\canada.txt";
       var lines = GetLinesFromFile(fileName);
       int volume = 0;
       foreach (string l in lines)
