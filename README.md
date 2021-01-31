@@ -8,7 +8,7 @@ C# version of Daniel Lemire's fast_float https://github.com/fastfloat/fast_float
 
 #Benchmarks
 
-Using file Canada.txt
+Using content of file in /data/Canada.txt
 
 ``` ini
 
