@@ -43,11 +43,14 @@ namespace Benchmark2
     {
       double x;
       double answer = 0;
-      for (int i = 0; i != lines.Length; i++)
+      foreach (string l in lines)
       {
-        x = FastParser.ParseDouble(lines[i]);
+        x = FastParser.ParseDouble(l);
         answer = answer > x ? answer : x;
       }
+      //for (int i = 0; i != lines.Length; i++)
+      //{
+      //}
       return answer;
     }
 
@@ -55,9 +58,9 @@ namespace Benchmark2
     {
       double x;
       double answer = 0;
-      for (int i = 0; i != lines.Length; i++)
+      foreach (string l in lines)
       {
-        x = Double.Parse(lines[i], CultureInfo.InvariantCulture);
+        x = Double.Parse(l, CultureInfo.InvariantCulture);
         answer = answer > x ? answer : x;
       }
 
