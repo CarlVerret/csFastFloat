@@ -1,6 +1,6 @@
 # csFastFloat : a fast and accurate 64bits float parser
 
-C# version of Daniel Lemire's fast_float https://github.com/fastfloat/fast_float  fully ported from C 
+C# version of Daniel Lemire's fast_float https://github.com/fastfloat/fast_float  fully ported from C to C# 
 
 
 
