@@ -1,7 +1,11 @@
 ﻿using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Columns;
+using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Running;
 using csFastFloat;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -9,41 +13,49 @@ using System.Net.Sockets;
 using System.Security.Authentication.ExtendedProtection;
 using System.Security.Cryptography;
 
-[SimpleJob(RuntimeMoniker.NetCoreApp50, baseline: true)]
+[SimpleJob(RuntimeMoniker.NetCoreApp50)]
+[Config(typeof(Config))]
+[IterationCount(100)]
 public class MyBencmark
 {
-  [Benchmark]
-  [ArgumentsSource(nameof(Data))]
-  public void FastParser_(string[] sut)
+  private string[] _lines;
+
+  private class Config : ManualConfig
   {
-    foreach (string s in sut)
+    public Config()
     {
-      FastParser.ParseDouble(s);
+      AddColumn(
+          StatisticColumn.Min);
     }
   }
 
-  [Benchmark]
-  [ArgumentsSource(nameof(Data))]
-  public void Double_std(string[] sut)
+  [Benchmark(Description = "FastFloat")]
+  public void FastParser_()
   {
-    foreach (string s in sut)
-    {
-      Double.Parse(s, CultureInfo.InvariantCulture);
-    }
+    foreach (string l in _lines)
+      FastParser.ParseDouble(l);
   }
 
-  public string[] Data()
+  [Benchmark(Baseline = true, Description = "Double.Parse()")]
+  public void Double_std()
+  {
+    foreach (string l in _lines)
+      Double.Parse(l, CultureInfo.InvariantCulture);
+  }
+
+  [GlobalSetup]
+  public void Setup()
   {
     Console.WriteLine("reading data");
     string fileName = @"D:\TELUQ\Maitrise\fastfloat\simple_fastfloat_benchmark\data\canada.txt";
-    return System.IO.File.ReadAllLines(fileName);
+    _lines = System.IO.File.ReadAllLines(fileName);
   }
+}
 
-  public class Program
+public class Program
+{
+  public static void Main(string[] args)
   {
-    public static void Main(string[] args)
-    {
-      var summary = BenchmarkRunner.Run<MyBencmark>();
-    }
+    var summary = BenchmarkRunner.Run<MyBencmark>();
   }
 }

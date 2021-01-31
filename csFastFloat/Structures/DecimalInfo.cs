@@ -16,7 +16,7 @@ namespace csFastFloat.Structures
     [ExcludeFromCodeCoverage]
     public override string ToString()
     {
-      StringBuilder sb = new();
+      StringBuilder sb = new StringBuilder();
 
       sb.Append("0.");
 
