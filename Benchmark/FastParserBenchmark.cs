@@ -1,21 +1,17 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Columns;
 using BenchmarkDotNet.Configs;
+
+//using BenchmarkDotNet.Diagnostics.Windows;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Running;
 using csFastFloat;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Net.Sockets;
-using System.Security.Authentication.ExtendedProtection;
-using System.Security.Cryptography;
 
 [SimpleJob(RuntimeMoniker.NetCoreApp50)]
 [Config(typeof(Config))]
-[IterationCount(100)]
+//[IterationCount(100)] let BemchmarkDotNet determine how many iteration are required
 public class MyBencmark
 {
   private string[] _lines;
@@ -26,21 +22,34 @@ public class MyBencmark
     {
       AddColumn(
           StatisticColumn.Min);
+      // Todo : add MB/s + MFloat/s stats columns
     }
   }
 
-  [Benchmark(Description = "FastFloat")]
-  public void FastParser_()
+  [Benchmark(Description = "FastFloat.PaseDouble()")]
+  public double FastParser_()
   {
+    double max = double.MinValue;
+
     foreach (string l in _lines)
-      FastParser.ParseDouble(l);
+    {
+      double d = FastParser.ParseDouble(l);
+      max = d > max ? d : max;
+    }
+    return max;
   }
 
   [Benchmark(Baseline = true, Description = "Double.Parse()")]
-  public void Double_std()
+  public double Double_std()
   {
+    double max = double.MinValue;
     foreach (string l in _lines)
-      Double.Parse(l, CultureInfo.InvariantCulture);
+    {
+      double d = Double.Parse(l, CultureInfo.InvariantCulture);
+
+      max = d > max ? d : max;
+    }
+    return max;
   }
 
   [GlobalSetup]
