@@ -1,4 +1,4 @@
-# csFastFloat : a fast and accurante 64bits float parser
+# csFastFloat : a fast and accurate 64bits float parser
 
 C# version of Daniel Lemire's fast_float https://github.com/fastfloat/fast_float  fully ported from C 
 
