@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <None Update="data\canada.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 

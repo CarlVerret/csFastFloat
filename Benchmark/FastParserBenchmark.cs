@@ -56,7 +56,7 @@ public class MyBencmark
   public void Setup()
   {
     Console.WriteLine("reading data");
-    string fileName = @"D:\TELUQ\Maitrise\fastfloat\simple_fastfloat_benchmark\data\canada.txt";
+    string fileName = @"data\canada.txt";
     _lines = System.IO.File.ReadAllLines(fileName);
   }
 }
