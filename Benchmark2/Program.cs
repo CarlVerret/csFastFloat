@@ -19,7 +19,7 @@ namespace Benchmark2
 
       Console.WriteLine("Warming up -");
       //  warmup
-      for (int i = 0; i != 5; i++)
+      for (int i = 0; i != 100; i++)
       {
         
         sut(lines);
@@ -38,6 +38,7 @@ namespace Benchmark2
         var dif = sw.ElapsedMilliseconds * 1000000;
 
         average += dif;
+
 
         min_value = min_value < dif ? min_value : dif;
       }
@@ -104,6 +105,7 @@ namespace Benchmark2
 
       pretty_print(volume, (uint)lines.Length, "Double.Parse", time_it_ns<double>(lines, find_max_double_parse, 100));
       pretty_print(volume, (uint)lines.Length, "FastParser.ParseDouble", time_it_ns<double>(lines, find_max_fast_float, 100));
+       
     }
   }
 }
