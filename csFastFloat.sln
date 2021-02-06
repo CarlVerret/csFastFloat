@@ -9,7 +9,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestcsFastFloat", "TestcsFa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmark", "Benchmark\Benchmark.csproj", "{72B189A1-F94C-448A-A012-54443D09CF3F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmark2", "Benchmark2\Benchmark2.csproj", "{948FEE59-6820-41B3-B988-77D7E5A896A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmark2", "Benchmark2\Benchmark2.csproj", "{948FEE59-6820-41B3-B988-77D7E5A896A0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E4729B53-F1D7-4C62-B6C0-B5236AFA3B68}"
+	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
+		Benchmark\Dockerfile = Benchmark\Dockerfile
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

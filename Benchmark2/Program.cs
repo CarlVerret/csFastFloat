@@ -17,6 +17,16 @@ namespace Benchmark2
       double average = 0;
       double min_value = double.MaxValue;
 
+      Console.WriteLine("Warming up");
+      //  warmup
+      for (int i = 0; i != 5; i++)
+      {
+        
+        sut(lines);
+      }
+
+      Console.WriteLine("Testing");
+
       Stopwatch sw = new Stopwatch();
 
       for (int i = 0; i != repeat; i++)
@@ -48,9 +58,7 @@ namespace Benchmark2
         x = FastParser.ParseDouble(l);
         answer = answer > x ? answer : x;
       }
-      //for (int i = 0; i != lines.Length; i++)
-      //{
-      //}
+     
       return answer;
     }
 
@@ -77,7 +85,7 @@ namespace Benchmark2
 
     private static void Main(string[] args)
     {
-      string fileName = @"\data\canada.txt";
+      string fileName = @"data/canada.txt";
       var lines = GetLinesFromFile(fileName);
       int volume = 0;
       foreach (string l in lines)
@@ -93,6 +101,7 @@ namespace Benchmark2
 
     private static void process_test(string[] lines, double volume)
     {
+
       pretty_print(volume, (uint)lines.Length, "Double.Parse", time_it_ns<double>(lines, find_max_double_parse, 100));
       pretty_print(volume, (uint)lines.Length, "FastParser.ParseDouble", time_it_ns<double>(lines, find_max_fast_float, 100));
     }

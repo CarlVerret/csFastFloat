@@ -25,39 +25,8 @@ namespace csFastFloat
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static bool is_integer(char c) => c >= '0' && c <= '9';
 
-    // credit  @aqrit
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static uint parse_eight_digits_unrolled(ulong val)
-    {
-      const ulong mask = 0x000000FF000000FF;
-      const ulong mul1 = 0x000F424000000064; // 100 + (1000000ULL << 32)
-      const ulong mul2 = 0x0000271000000001; // 1 + (10000ULL << 32)
-      val -= 0x3030303030303030;
-      val = (val * 10) + (val >> 8); // val = (val * 2561) >> 8;
-      val = (((val & mask) * mul1) + (((val >> 16) & mask) * mul2)) >> 32;
-      return (uint)val;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    unsafe internal static uint parse_eight_digits_unrolled(char* chars)
-    {
-      ulong val;
-      Buffer.MemoryCopy(chars, &val, sizeof(ulong), sizeof(ulong));
-      return parse_eight_digits_unrolled(val);
-    }
-
-    // credit @aqrit
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    unsafe internal static bool is_made_of_eight_digits_fast(char* chars)
-    {
-      return false;
-      //ulong val;
-      //Buffer.MemoryCopy(&chars, &val, 8, 8);
-
-      //return !(((val & 0xF0F0F0F0F0F0F0F0) |
-      //         (((val + 0x0606060606060606) & 0xF0F0F0F0F0F0F0F0) >> 4)) ==
-      //        0x3333333333333333);
-    }
+  
+   
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static value128 compute_product_approximation(int bitPrecision, long q, ulong w)

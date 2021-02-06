@@ -9,6 +9,9 @@ using System.Text;
 
 [assembly: InternalsVisibleTo("TestcsFastFloat")]
 
+[assembly: InternalsVisibleTo("Benchmark")]
+
+
 namespace csFastFloat
 {
   public sealed class FastParser
@@ -39,7 +42,7 @@ namespace csFastFloat
     }
 
     unsafe static public double ParseDouble(char* first, char* last, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
-      => ParseNumber<double>(first, last, new DoubleBinaryFormat(), expectedFormat, decimal_separator);
+      => ParseNumber(first, last,  new DoubleBinaryFormat(), expectedFormat, decimal_separator);
 
     unsafe static public float ParseFloat(char* first, char* last, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
                   => ParseNumber<float>(first, last, new FloatBinaryFormat(), expectedFormat, decimal_separator);
@@ -79,6 +82,8 @@ namespace csFastFloat
       if (am.power2 < 0) { am = ParseLongMantissa(first, last, binaryFormat, decimal_separator); }
       return binaryFormat.ToFloat(pns.negative, am);
     }
+   
+
 
     /// <summary>
     ///
@@ -198,6 +203,12 @@ namespace csFastFloat
       }
       return answer;
     }
+
+
+   
+
+
+
 
     internal static AdjustedMantissa ComputeFloat<T>(DecimalInfo d, IBinaryFormat<T> binaryFormat)
     {
@@ -340,6 +351,10 @@ namespace csFastFloat
       return ComputeFloat(d, binaryFormat);
     }
 
+    
+
+
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     unsafe static internal T HandleInvalidInput<T>(char* first, char* last, IBinaryFormat<T> binaryFormat)
     {
@@ -371,6 +386,10 @@ namespace csFastFloat
       }
       throw new ArgumentException();
     }
+
+
+   
+
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     unsafe static internal ParsedNumberString ParseNumberString(char* p, char* pend, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
