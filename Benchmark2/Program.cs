@@ -17,7 +17,7 @@ namespace Benchmark2
       double average = 0;
       double min_value = double.MaxValue;
 
-      Console.WriteLine("Warming up");
+      Console.WriteLine("Warming up -");
       //  warmup
       for (int i = 0; i != 5; i++)
       {
