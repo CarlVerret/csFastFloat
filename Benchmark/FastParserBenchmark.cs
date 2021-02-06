@@ -39,24 +39,49 @@ public class MyBencmark
     return max;
   }
 
-  [Benchmark(Baseline = true, Description = "Double.Parse()")]
-  public double Double_std()
-  {
-    double max = double.MinValue;
-    foreach (string l in _lines)
-    {
-      double d = Double.Parse(l, CultureInfo.InvariantCulture);
 
-      max = d > max ? d : max;
-    }
-    return max;
-  }
+  //[Benchmark(Description = "PNS only")]
+  //public double FastParser_PNS()
+  //{
+  //  double max = double.MinValue;
+
+  //  foreach (string l in _lines)
+  //  {
+  //    unsafe { 
+      
+  //    fixed (char* p = l)
+  //    {
+  //      var pni = FastParser.ParseNumberString(p, p + l.Length);
+  //      max = pni.exponent > max ? pni.exponent: max;
+  //    }
+      
+      
+      
+  //    }
+  //  }
+  //  return max;
+  //}
+
+
+
+  //[Benchmark(Baseline = true, Description = "Double.Parse()")]
+  //public double Double_std()
+  //{
+  //  double max = double.MinValue;
+  //  foreach (string l in _lines)
+  //  {
+  //    double d = Double.Parse(l, CultureInfo.InvariantCulture);
+
+  //    max = d > max ? d : max;
+  //  }
+  //  return max;
+  //}
 
   [GlobalSetup]
   public void Setup()
   {
     Console.WriteLine("reading data");
-    string fileName = @"D:\TELUQ\Maitrise\fastfloat\simple_fastfloat_benchmark\data\canada.txt";
+    string fileName = @"data/canada.txt";
     _lines = System.IO.File.ReadAllLines(fileName);
   }
 }
