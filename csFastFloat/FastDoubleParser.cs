@@ -12,14 +12,13 @@ using System.Text;
 [assembly: InternalsVisibleTo("Benchmark")]
 
 
-namespace csFastFloat.experiment2
+namespace csFastFloat
 {
 
- 
 
-  public sealed class FastParser
+
+  public sealed class FastDoubleParser
   {
-
 
     public  static double exact_power_of_ten(long power) => Constants.powers_of_ten_double[power];
 
@@ -65,7 +64,7 @@ namespace csFastFloat.experiment2
       {
         fixed (char* pStart = s)
         {
-          return FastParser.ParseDouble(pStart, pStart + s.Length, expectedFormat, decimal_separator);
+          return ParseDouble(pStart, pStart + s.Length, expectedFormat, decimal_separator);
         }
       }
     }
@@ -85,7 +84,7 @@ namespace csFastFloat.experiment2
       {
         throw new ArgumentException();
       }
-      ParsedNumberString pns = ParseNumberString(first, last, expectedFormat);
+      ParsedNumberString pns = ParsedNumberString.ParseNumberString(first, last, expectedFormat);
       if (!pns.valid)
       {
         return HandleInvalidInput(first, last);
@@ -94,7 +93,7 @@ namespace csFastFloat.experiment2
       // Next is Clinger's fast path.
       if (DoubleBinaryConstants.min_exponent_fast_path <= pns.exponent && pns.exponent <= DoubleBinaryConstants.max_exponent_fast_path && pns.mantissa <= DoubleBinaryConstants.max_mantissa_fast_path && !pns.too_many_digits)
       {
-        return FastParser.FastPath(pns);
+        return FastPath(pns);
       }
 
       AdjustedMantissa am = ComputeFloat(pns.exponent, pns.mantissa);
@@ -108,7 +107,7 @@ namespace csFastFloat.experiment2
       // If we called compute_float<binary_format<T>>(pns.exponent, pns.mantissa) and we have an invalid power (am.power2 < 0),
       // then we need to go the long way around again. This is very uncommon.
       if (am.power2 < 0) { am = ParseLongMantissa(first, last, decimal_separator); }
-      return FastParser.ToFloat(pns.negative, am);
+      return ToFloat(pns.negative, am);
     }
    
 
@@ -419,161 +418,13 @@ namespace csFastFloat.experiment2
    
 
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    unsafe static internal ParsedNumberString ParseNumberString(char* p, char* pend, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
-    {
-      ParsedNumberString answer = new ParsedNumberString();
-
-      answer.valid = false;
-      answer.too_many_digits = false;
-      answer.negative = (*p == '-');
-      if ((*p == '-') || (*p == '+'))
-      {
-        ++p;
-        if (p == pend)
-        {
-          return answer;
-        }
-        if (!Utils.is_integer(*p) && (*p != decimal_separator)) // culture info ?
-        { // a  sign must be followed by an integer or the dot
-          return answer;
-        }
-      }
-      char* start_digits = p;
-
-      ulong i = 0; // an unsigned int avoids signed overflows (which are bad)
-
-      while ((p != pend) && Utils.is_integer(*p))
-      {
-        // a multiplication by 10 is cheaper than an arbitrary integer
-        // multiplication
-        i = 10 * i +
-            (ulong)(*p - '0'); // might overflow, we will handle the overflow later
-        ++p;
-      }
-      char* end_of_integer_part = p;
-      long digit_count = (long)(end_of_integer_part - start_digits);
-      long exponent = 0;
-      if ((p != pend) && (*p == decimal_separator))
-      {
-        ++p;
-        while ((p != pend) && Utils.is_integer(*p))
-        {
-          byte digit = (byte)(*p - '0');
-          ++p;
-          i = i * 10 + digit; // in rare cases, this will overflow, but that's ok
-        }
-        exponent = end_of_integer_part + 1 - p;
-        digit_count -= exponent;
-      }
-      // we must have encountered at least one integer!
-      if (digit_count == 0)
-      {
-        return answer;
-      }
-      long exp_number = 0;            // explicit exponential part
-      if (expectedFormat.HasFlag(chars_format.is_scientific) && (p != pend) && (('e' == *p) || ('E' == *p)))
-      {
-        char* location_of_e = p;
-        ++p;
-        bool neg_exp = false;
-        if ((p != pend) && ('-' == *p))
-        {
-          neg_exp = true;
-          ++p;
-        }
-        else if ((p != pend) && ('+' == *p))
-        {
-          ++p;
-        }
-        if ((p == pend) || !Utils.is_integer(*p))
-        {
-          if (expectedFormat != chars_format.is_fixed)
-          {
-            // We are in error.
-            return answer;
-          }
-          // Otherwise, we will be ignoring the 'e'.
-          p = location_of_e;
-        }
-        else
-        {
-          while ((p != pend) && Utils.is_integer(*p))
-          {
-            byte digit = (byte)(*p - '0');
-            if (exp_number < 0x10000)
-            {
-              exp_number = 10 * exp_number + digit;
-            }
-            ++p;
-          }
-          if (neg_exp) { exp_number = -exp_number; }
-          exponent += exp_number;
-        }
-      }
-      else
-      {
-        // If it scientific and not fixed, we have to bail out.
-        if ((expectedFormat.HasFlag(chars_format.is_scientific)) && !(expectedFormat.HasFlag(chars_format.is_fixed))) { return answer; }
-      }
-      //answer.lastmatch = p;
-      answer.valid = true;
-
-      // If we frequently had to deal with long strings of digits,
-      // we could extend our code by using a 128-bit integer instead
-      // of a 64-bit integer. However, this is uncommon.
-      //
-      // We can deal with up to 19 digits.
-      if (digit_count > 19)
-      { // this is uncommon
-        // It is possible that the integer had an overflow.
-        // We have to handle the case where we have 0.0000somenumber.
-        // We need to be mindful of the case where we only have zeroes...
-        // E.g., 0.000000000...000.
-        char* start = start_digits;
-        while ((start != pend) && (*start == '0' || *start == decimal_separator))
-        {
-          if (*start == '0') { digit_count--; }
-          start++;
-        }
-        if (digit_count > 19)
-        {
-          answer.too_many_digits = true;
-          // Let us start again, this time, avoiding overflows.
-          i = 0;
-          p = start_digits;
-          const ulong minimal_nineteen_digit_integer = 1000000000000000000;
-          while ((i < minimal_nineteen_digit_integer) && (p != pend) && Utils.is_integer(*p))
-          {
-            i = i * 10 + (ulong)(*p - '0');
-            ++p;
-          }
-          if (i >= minimal_nineteen_digit_integer)
-          { // We have a big integers
-            exponent = end_of_integer_part - p + exp_number;
-          }
-          else
-          { // We have a value with a fractional component.
-            p++; // skip the '.'
-            char* first_after_period = p;
-            while ((i < minimal_nineteen_digit_integer) && (p != pend) && Utils.is_integer(*p))
-            {
-              i = i * 10 + (ulong)(*p - '0');
-              ++p;
-            }
-            exponent = first_after_period - p + exp_number;
-          }
-          // We have now corrected both exponent and i, to a truncated value
-        }
-      }
-      answer.exponent = exponent;
-      answer.mantissa = i;
-      return answer;
-    }
-
+   
     // This should always succeed since it follows a call to parse_number_string
     // This function could be optimized. In particular, we could stop after 19 digits
     // and try to bail out. Furthermore, we should be able to recover the computed
     // exponent from the pass in parse_number_string.
   }
+
+
+
 }

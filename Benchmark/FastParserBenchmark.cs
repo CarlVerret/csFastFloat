@@ -6,6 +6,7 @@ using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Running;
 using csFastFloat;
+using csFastFloat.Structures;
 using System;
 using System.Globalization;
 
@@ -33,7 +34,7 @@ public class MyBencmark
 
     foreach (string l in _lines)
     {
-      double d = FastParser.ParseDouble(l);
+      double d = FastDoubleParser.ParseDouble(l);
       max = d > max ? d : max;
     }
     return max;
@@ -46,7 +47,7 @@ public class MyBencmark
 
     foreach (string l in _lines)
     {
-      double d = csFastFloat.experiment1.FastParser.ParseDouble(l);
+      double d = FastDoubleParser.ParseDouble(l);
       max = d > max ? d : max;
     }
     return max;
@@ -58,7 +59,7 @@ public class MyBencmark
 
     foreach (string l in _lines)
     {
-      double d = csFastFloat.experiment2.FastParser.ParseDouble(l);
+      double d = FastDoubleParser.ParseDouble(l);
       max = d > max ? d : max;
     }
     return max;
@@ -77,7 +78,7 @@ public class MyBencmark
       
      fixed (char* p = l)
      {
-       var pni = FastParser.ParseNumberString(p, p + l.Length);
+       var pni = ParsedNumberString.ParseNumberString(p, p + l.Length);
        max = pni.exponent > max ? pni.exponent: max;
      }
       

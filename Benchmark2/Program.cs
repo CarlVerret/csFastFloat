@@ -56,37 +56,14 @@ namespace Benchmark2
       double answer = 0;
       foreach (string l in lines)
       {
-        x = FastParser.ParseDouble(l);
+        x = FastDoubleParser.ParseDouble(l);
         answer = answer > x ? answer : x;
       }
      
       return answer;
     }
 
-     private static double find_max_fast_float_exp1(string[] lines)
-    {
-      double x;
-      double answer = 0;
-      foreach (string l in lines)
-      {
-        x = csFastFloat.experiment1.FastParser.ParseDouble(l);
-        answer = answer > x ? answer : x;
-      }
-     
-      return answer;
-    }
-private static double find_max_fast_float_exp2(string[] lines)
-    {
-      double x;
-      double answer = 0;
-      foreach (string l in lines)
-      {
-        x = csFastFloat.experiment2.FastParser.ParseDouble(l);
-        answer = answer > x ? answer : x;
-      }
-     
-      return answer;
-    }
+  
 
 
 
@@ -158,8 +135,6 @@ private static double find_max_fast_float_exp2(string[] lines)
 
       pretty_print(volume, (uint)lines.Length, "Double.Parse", time_it_ns<double>(lines, find_max_double_parse, 100));
       pretty_print(volume, (uint)lines.Length, "FastParser.ParseDouble", time_it_ns<double>(lines, find_max_fast_float, 100));
-      pretty_print(volume, (uint)lines.Length, "FastParser.ParseDouble - w/o <T>", time_it_ns<double>(lines, find_max_fast_float_exp1, 100));
-      pretty_print(volume, (uint)lines.Length, "FastParser.ParseDouble - const", time_it_ns<double>(lines, find_max_fast_float_exp2, 100));
        
     }
   }

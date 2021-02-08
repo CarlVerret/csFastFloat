@@ -63,9 +63,9 @@ namespace TestcsFastFloat.Tests.ff_suppl_tests
           double _d = DoubleFromHexString(sut[2]);
 
           // parse and assert equality
-          float f = FastParser.ParseFloat(sut[3]);
+          float f = FastFloatParser.ParseFloat(sut[3]);
           Assert.True(_f == f);
-          double d = FastParser.ParseDouble(sut[3]);
+          double d = FastDoubleParser.ParseDouble(sut[3]);
           Assert.True(_d == d);
         }
         catch (Exception ex)

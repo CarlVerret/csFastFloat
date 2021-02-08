@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("TestcsFastFloat")]
 
-namespace csFastFloat.experiment2
+namespace csFastFloat
 {
 
 public static class DoubleBinaryConstants

@@ -74,23 +74,31 @@ namespace csFastFloat
     internal unsafe static value128 FullMultiplication(ulong value1, ulong value2)
     {
       ulong lo;
+
+      // ?
+#if !ARM 
       ulong hi = System.Runtime.Intrinsics.X86.Bmi2.X64.MultiplyNoFlags(value1, value2, &lo);
       return new value128(hi, lo);
+#else
+     return Emulate64x64to128( value1, value2);
+#endif
+
+  
     }
 
 #endif
 
-    //internal static value128 Emulate64x64to128(ulong x, ulong y)
-    //{
-    //  ulong x0 = (uint)x, x1 = x >> 32;
-    //  ulong y0 = (uint)y, y1 = y >> 32;
-    //  ulong p11 = x1 * y1, p01 = x0 * y1;
-    //  ulong p10 = x1 * y0, p00 = x0 * y0;
+    internal static value128 Emulate64x64to128(ulong x, ulong y)
+    {
+      ulong x0 = (uint)x, x1 = x >> 32;
+      ulong y0 = (uint)y, y1 = y >> 32;
+      ulong p11 = x1 * y1, p01 = x0 * y1;
+      ulong p10 = x1 * y0, p00 = x0 * y0;
 
-    //  ulong middle = p10 + (p00 >> 32) + (uint)p01;
+      ulong middle = p10 + (p00 >> 32) + (uint)p01;
 
-    //  return new value128(h: p11 + (middle >> 32) + (p01 >> 32), l: (middle << 32) | (uint)p00);
-    //}
+      return new value128(h: p11 + (middle >> 32) + (p01 >> 32), l: (middle << 32) | (uint)p00);
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static bool is_space(byte c)

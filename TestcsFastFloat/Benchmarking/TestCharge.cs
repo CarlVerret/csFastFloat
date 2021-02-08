@@ -32,7 +32,7 @@ namespace TestcsFastFloat.Tests.Benchmarking
       //s.resize(written);
       s = d.ToString().Replace(",", ".");
 
-      double? x = FastParser.ParseDouble(s);
+      double? x = FastDoubleParser.ParseDouble(s);
       if (!x.HasValue)
       {
         throw new ParseException(s, "refused", 0, 0);
@@ -53,7 +53,7 @@ namespace TestcsFastFloat.Tests.Benchmarking
       //s.resize(written);
       s = f.ToString().Replace(",", ".");
 
-      float? x = FastParser.ParseFloat(s);
+      float? x = FastFloatParser.ParseFloat(s);
       if (!x.HasValue)
       {
         throw new ParseException(s, "refused", 0, 0);
@@ -173,7 +173,7 @@ namespace TestcsFastFloat.Tests.Benchmarking
           Buffer.MemoryCopy(&x, &d, sizeof(double), sizeof(double));
         }
 
-        double var = FastParser.ParseDouble(d.ToString(CultureInfo.CurrentCulture));
+        double var = FastDoubleParser.ParseDouble(d.ToString(CultureInfo.CurrentCulture));
       }
 
       //  ApprovalTests.Approvals.Verify(DateTime.Now - start);
