@@ -1,10 +1,11 @@
 
-FROM mcr.microsoft.com/dotnet/sdk:5.0
+# FROM mcr.microsoft.com/dotnet/sdk:5.0
+FROM mcr.microsoft.com/dotnet/aspnet:5.0-buster-slim AS base
 WORKDIR /src
 COPY . .
 RUN dotnet restore
 
-RUN dotnet build "Benchmark2/Benchmark2.csproj" -c Release -o /src/bin
+RUN dotnet build "Benchmark2/Benchmark2.csproj" -c Release -o /src/bin 
 RUN dotnet publish "Benchmark2/Benchmark2.csproj" -c Release -o /src/bin/publish
 
 WORKDIR /src/bin/publish

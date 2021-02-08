@@ -24,6 +24,13 @@
     </None>
   </ItemGroup>
 
+
+  <ItemGroup>
+    <None Update="data\mesh.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
   <ItemGroup>
     <Folder Include="BenchmarkDotNet.Artifacts\results\" />
   </ItemGroup>

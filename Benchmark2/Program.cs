@@ -17,20 +17,20 @@ namespace Benchmark2
       double average = 0;
       double min_value = double.MaxValue;
 
-      Console.WriteLine("Warming up");
       //  warmup
-      for (int i = 0; i != 5; i++)
+      for (int i = 0; i != 100; i++)
       {
         
         sut(lines);
       }
 
-      Console.WriteLine("Testing");
 
       Stopwatch sw = new Stopwatch();
 
       for (int i = 0; i != repeat; i++)
       {
+        // ...; 
+
         sw.Restart();
         sut(lines);
 
@@ -38,6 +38,7 @@ namespace Benchmark2
         var dif = sw.ElapsedMilliseconds * 1000000;
 
         average += dif;
+
 
         min_value = min_value < dif ? min_value : dif;
       }
@@ -55,12 +56,16 @@ namespace Benchmark2
       double answer = 0;
       foreach (string l in lines)
       {
-        x = FastParser.ParseDouble(l);
+        x = FastDoubleParser.ParseDouble(l);
         answer = answer > x ? answer : x;
       }
      
       return answer;
     }
+
+  
+
+
 
     private static double find_max_double_parse(string[] lines)
     {
@@ -93,10 +98,36 @@ namespace Benchmark2
         volume += l.Length;
       }
 
+
+      Console.WriteLine("Canada.txt");
+      Console.WriteLine("--------------------------");
       double volumeMB = volume / (1024.0 * 1024.0);
       Console.WriteLine($"Volume : {volumeMB}");
 
       process_test(lines, (double)volume);
+
+
+      Console.WriteLine("");
+      Console.WriteLine("");
+ 
+      Console.WriteLine("Mesh.txt");
+      Console.WriteLine("--------------------------");
+ 
+       lines = GetLinesFromFile(@"data/mesh.txt");
+       volume = 0;
+      foreach (string l in lines)
+      {
+        volume += l.Length;
+      }
+       volumeMB = volume / (1024.0 * 1024.0);
+      Console.WriteLine($"Volume : {volumeMB}");
+
+      process_test(lines, (double)volume);
+
+
+
+
+
     }
 
     private static void process_test(string[] lines, double volume)
@@ -104,6 +135,7 @@ namespace Benchmark2
 
       pretty_print(volume, (uint)lines.Length, "Double.Parse", time_it_ns<double>(lines, find_max_double_parse, 100));
       pretty_print(volume, (uint)lines.Length, "FastParser.ParseDouble", time_it_ns<double>(lines, find_max_fast_float, 100));
+       
     }
   }
 }

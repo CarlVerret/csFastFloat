@@ -25,7 +25,7 @@ namespace TestcsFastFloat.Tests.Basic
     {
       fixed (char* p = input)
       {
-        Assert.Equal(res, FastParser.HandleInvalidInput<double>(p, p + input.Length, new DoubleBinaryFormat()));
+        Assert.Equal(res, FastDoubleParser.HandleInvalidInput(p, p + input.Length));
       }
     }
 
@@ -44,7 +44,7 @@ namespace TestcsFastFloat.Tests.Basic
     {
       fixed (char* p = input)
       {
-        Assert.Equal(res, FastParser.HandleInvalidInput<float>(p, p + input.Length, new FloatBinaryFormat())); ;
+        Assert.Equal(res, FastFloatParser.HandleInvalidInput(p, p + input.Length)); ;
       }
     }
 
@@ -57,10 +57,9 @@ namespace TestcsFastFloat.Tests.Basic
         if (p == 23)
           p++;
 
-        var sut = new FloatBinaryFormat();
-        var am = FastParser.ComputeFloat(q: p, w: 1, sut);
+        var am = FastFloatParser.ComputeFloat(q: p, w: 1);
 
-        float? f = sut.ToFloat(false, am);
+        float? f = FastFloatParser.ToFloat(false, am);
 
         if (!f.HasValue)
           throw new ApplicationException($"Can't parse p=> {p}");
@@ -79,7 +78,7 @@ namespace TestcsFastFloat.Tests.Basic
         string sut = $"1e{p}";
         fixed (char* pstart = sut)
         {
-          float? f = FastParser.ParseFloat(pstart, pstart + sut.Length, chars_format.is_general);
+          float? f = FastFloatParser.ParseFloat(pstart, pstart + sut.Length, chars_format.is_general);
 
           if (!f.HasValue)
           {
@@ -132,7 +131,7 @@ namespace TestcsFastFloat.Tests.Basic
         fixed (char* p = kv.Value)
         {
           char* pend = p + kv.Value.Length;
-          var res = FastParser.ParseNumberString(p, pend);
+          var res = ParsedNumberString.ParseNumberString(p, pend);
 
           sb.AppendLine($"Resultat : {res.exponent} {res.mantissa} {res.negative} {res.valid}");
           sb.AppendLine();
@@ -191,7 +190,7 @@ namespace TestcsFastFloat.Tests.Basic
         fixed (char* p = kv.Value)
         {
           char* pend = p + kv.Value.Length;
-          var res = FastParser.ParseNumber<double>(p, pend, new DoubleBinaryFormat());
+          var res = FastDoubleParser.ParseNumber(p, pend);
 
           sb.AppendLine($"Resultat : {res}");
           sb.AppendLine();

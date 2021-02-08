@@ -30,7 +30,7 @@ namespace TestcsFastFloat.Tests.Basic
     [Fact]
     private void issue13()
     {
-      double? x = FastParser.ParseDouble("0");
+      double? x = FastDoubleParser.ParseDouble("0");
       Assert.True(x.HasValue, "Parsed");
       Assert.True(x == 0, "Maps to 0");
     }
@@ -46,7 +46,7 @@ namespace TestcsFastFloat.Tests.Basic
     [Fact]
     private void issue32()
     {
-      double? x = FastParser.ParseDouble("-0");
+      double? x = FastDoubleParser.ParseDouble("-0");
       Assert.True(x.HasValue, "could not parse -zero.");
       Assert.True(x == 0, "-zero does not map to zero.");
     }
@@ -54,7 +54,7 @@ namespace TestcsFastFloat.Tests.Basic
     [Fact]
     private void issue23()
     {
-      double? x = FastParser.ParseDouble("0e+42949672970");
+      double? x = FastDoubleParser.ParseDouble("0e+42949672970");
 
       Assert.True(x.HasValue, "could not parse zero.");
       Assert.True(x == 0, "zero does not map to zero.");
@@ -63,7 +63,7 @@ namespace TestcsFastFloat.Tests.Basic
     [Fact]
     private void issue23_2()
     {
-      double? x = FastParser.ParseDouble("5e0012");
+      double? x = FastDoubleParser.ParseDouble("5e0012");
 
       Assert.True(x.HasValue, "could not parse 5e0012.");
       Assert.True(x == 5e12, "does not map to 5e0012.");
@@ -116,7 +116,7 @@ namespace TestcsFastFloat.Tests.Basic
 
       for (int i = 0; i != 16; i++)
       {
-        double d = FastParser.ParseDouble(sut.Substring(0, sut.Length - i));
+        double d = FastDoubleParser.ParseDouble(sut.Substring(0, sut.Length - i));
         Assert.Equal(Math.PI, d);
       }
     }
@@ -128,7 +128,7 @@ namespace TestcsFastFloat.Tests.Basic
 
       for (int i = 0; i != 16; i++)
       {
-        double d = FastParser.ParseDouble(sut.Substring(0, sut.Length - i));
+        double d = FastDoubleParser.ParseDouble(sut.Substring(0, sut.Length - i));
         Assert.Equal(Math.PI, d);
       }
     }
@@ -136,19 +136,19 @@ namespace TestcsFastFloat.Tests.Basic
     [Fact]
     private void ScientificFails_when_InconsistentInput()
     {
-      Assert.Throws<System.ArgumentException>(() => FastParser.ParseDouble("3.14", csFastFloat.Enums.chars_format.is_scientific));
+      Assert.Throws<System.ArgumentException>(() => FastDoubleParser.ParseDouble("3.14", csFastFloat.Enums.chars_format.is_scientific));
     }
 
     [Fact]
     private void ScientificWorks_when_ConsistentInput()
     {
-      Assert.Equal(3.14e10, FastParser.ParseDouble("3.14e10", csFastFloat.Enums.chars_format.is_scientific));
+      Assert.Equal(3.14e10, FastDoubleParser.ParseDouble("3.14e10", csFastFloat.Enums.chars_format.is_scientific));
     }
 
     [Fact]
     private void FixedWorks_when_ConsistentInput()
     {
-      Assert.Equal(3.14, FastParser.ParseDouble("3.14e10", csFastFloat.Enums.chars_format.is_fixed));
+      Assert.Equal(3.14, FastDoubleParser.ParseDouble("3.14e10", csFastFloat.Enums.chars_format.is_fixed));
     }
 
     [Trait("Category", "Smoke Test")]
@@ -173,7 +173,7 @@ namespace TestcsFastFloat.Tests.Basic
     [Theory]
     private void TestInfinity_Double(string sut, double expected_value)
     {
-      Assert.Equal(expected_value, FastParser.ParseDouble(sut));
+      Assert.Equal(expected_value, FastDoubleParser.ParseDouble(sut));
     }
 
     [Trait("Category", "Smoke Test")]
@@ -229,7 +229,7 @@ namespace TestcsFastFloat.Tests.Basic
     [InlineData("1.7976931348623158e308", 1.7976931348623157e+308)] // 0x1.fffffffffffffp + 1023)]
     [InlineData("9007199254740993.0", 9007199254740992.0)] // 0x1p53)]
     [Theory]
-    private void TestGeneral_Double(string sut, double expected_value) => Assert.Equal(expected_value, FastParser.ParseDouble(sut));
+    private void TestGeneral_Double(string sut, double expected_value) => Assert.Equal(expected_value, FastDoubleParser.ParseDouble(sut));
 
     [Trait("Category", "Smoke Test")]
     [InlineData("1.1754941406275178592461758986628081843312458647327962400313859427181746759860647699724722770042717456817626953125", 655, "", 1.17549419)]
@@ -239,7 +239,7 @@ namespace TestcsFastFloat.Tests.Basic
     [InlineData("1.1754941406275178592461758986628081843312458647327962400313859427181746759860647699724722770042717456817626953125", 656, "e-38", 1.1754941E-38)]
     [InlineData("1.1754941406275178592461758986628081843312458647327962400313859427181746759860647699724722770042717456817626953125", 1000, "e-38", 1.1754941E-38)]
     [Theory]
-    private void TestGeneral_Float_appendZeros(string sut, int zeros, string exp, float expected_value) => Assert.Equal(expected_value, FastParser.ParseFloat(sut.PadRight(zeros, '0') + exp));
+    private void TestGeneral_Float_appendZeros(string sut, int zeros, string exp, float expected_value) => Assert.Equal(expected_value, FastFloatParser.ParseFloat(sut.PadRight(zeros, '0') + exp));
 
     // //verify32(1.00000006e+09f)]
     ////verify32(1.4012984643e-45f)]
@@ -307,6 +307,6 @@ namespace TestcsFastFloat.Tests.Basic
     [InlineData("0.00000000000000000000000000000000000002350988561514728583455765982071533026645717985517980855365926236850006129930346077117064851336181163787841796875", 0.00000000000000000000000000000000000002350988561514728583455765982071533026645717985517980855365926236850006129930346077117064851336181163787841796875f)]
     [InlineData("0.00000000000000000000000000000000000001175494210692441075487029444849287348827052428745893333857174530571588870475618904265502351336181163787841796875", 0.00000000000000000000000000000000000001175494210692441075487029444849287348827052428745893333857174530571588870475618904265502351336181163787841796875f)]
     [Theory]
-    private void TestGeneral_Float(string sut, float expected_value) => Assert.Equal(expected_value, FastParser.ParseFloat(sut));
+    private void TestGeneral_Float(string sut, float expected_value) => Assert.Equal(expected_value, FastFloatParser.ParseFloat(sut));
   }
 }

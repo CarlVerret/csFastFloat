@@ -40,7 +40,7 @@ namespace TestcsFastFloat.Tests.Basic
     {
       fixed (char* p = input)
       {
-        Assert.Equal(res, FastParser.HandleInvalidInput<double>(p, p + input.Length, new DoubleBinaryFormat()));
+        Assert.Equal(res, FastDoubleParser.HandleInvalidInput(p, p + input.Length));
       }
     }
 
@@ -84,7 +84,7 @@ namespace TestcsFastFloat.Tests.Basic
         fixed (char* p = kv.Value)
         {
           char* pend = p + kv.Value.Length;
-          var res = FastParser.ParseNumberString(p, pend);
+          var res = ParsedNumberString.ParseNumberString(p, pend);
 
           sb.AppendLine($"Resultat : {res.exponent} {res.mantissa} {res.negative} {res.valid}");
           sb.AppendLine();
@@ -135,7 +135,7 @@ namespace TestcsFastFloat.Tests.Basic
         fixed (char* p = kv.Value)
         {
           char* pend = p + kv.Value.Length;
-          var res = FastParser.ParseDouble(p, pend);
+          var res = FastDoubleParser.ParseDouble(p, pend);
 
           sb.AppendLine($"Resultat : {res}");
           sb.AppendLine();
@@ -154,10 +154,10 @@ namespace TestcsFastFloat.Tests.Basic
         if (p == 23)
           p++;
 
-        var sut = new DoubleBinaryFormat();
-        var am = FastParser.ComputeFloat(q: p, w: 1, sut);
+     //   var sut = new DoubleBinaryFormat();
+        var am = FastDoubleParser.ComputeFloat(q: p, w: 1);
 
-        double? d = sut.ToFloat(false, am);
+        double? d = FastDoubleParser.ToFloat(false, am);
 
         if (!d.HasValue)
           throw new ApplicationException($"Can't parse p=> {p}");
@@ -176,7 +176,7 @@ namespace TestcsFastFloat.Tests.Basic
         string sut = $"1e{p}";
         fixed (char* pstart = sut)
         {
-          double? d = FastParser.ParseDouble(pstart, pstart + sut.Length, chars_format.is_general);
+          double? d = FastDoubleParser.ParseDouble(pstart, pstart + sut.Length, chars_format.is_general);
 
           if (!d.HasValue)
           {

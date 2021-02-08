@@ -20,7 +20,7 @@ namespace TestcsFastFloat.Tests.Exaustive
 
         string sut = f.ToString().Replace(",", ".");
 
-        Assert.Equal(f, FastParser.ParseFloat(sut));
+        Assert.Equal(f, FastFloatParser.ParseFloat(sut));
       }
     }
   }

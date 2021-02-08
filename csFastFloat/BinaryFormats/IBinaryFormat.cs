@@ -1,41 +1,41 @@
-﻿using csFastFloat.Structures;
+﻿//using csFastFloat.Structures;
 
-namespace csFastFloat
-{
-  internal interface IBinaryFormat<T>
-  {
-    T ToFloat(bool negative, AdjustedMantissa am);
+//namespace csFastFloat
+//{
+//  internal interface IBinaryFormat<T>
+//  {
+//    T ToFloat(bool negative, AdjustedMantissa am);
 
-    T FastPath(ParsedNumberString pns);
+//    T FastPath(ParsedNumberString pns);
 
-    T NaN();
+//    T NaN();
 
-    T PositiveInfinity();
+//    T PositiveInfinity();
 
-    T NegativeInfinity();
+//    T NegativeInfinity();
 
-    int mantissa_explicit_bits();
+//    int mantissa_explicit_bits();
 
-    int minimum_exponent();
+//    int minimum_exponent();
 
-    int infinite_power();
+//    int infinite_power();
 
-    int sign_index();
+//    int sign_index();
 
-    int min_exponent_fast_path();
+//    int min_exponent_fast_path();
 
-    int max_exponent_fast_path();
+//    int max_exponent_fast_path();
 
-    int max_exponent_round_to_even();
+//    int max_exponent_round_to_even();
 
-    int min_exponent_round_to_even();
+//    int min_exponent_round_to_even();
 
-    ulong max_mantissa_fast_path();
+//    ulong max_mantissa_fast_path();
 
-    int largest_power_of_ten();
+//    int largest_power_of_ten();
 
-    int smallest_power_of_ten();
+//    int smallest_power_of_ten();
 
-    T exact_power_of_ten(long power);
-  };
-}
+//    T exact_power_of_ten(long power);
+//  };
+//}
