@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Runtime.Intrinsics.X86;
 
 [assembly: InternalsVisibleTo("TestcsFastFloat")]
 
@@ -24,9 +25,6 @@ namespace csFastFloat
     // able to optimize it well.
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static bool is_integer(char c) => c >= '0' && c <= '9';
-
-  
-   
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static value128 compute_product_approximation(int bitPrecision, long q, ulong w)
@@ -75,8 +73,7 @@ namespace csFastFloat
     {
       ulong lo;
 
-      // ?
-#if !ARM 
+#if (Bmi2.X64.IsSupported)
       ulong hi = System.Runtime.Intrinsics.X86.Bmi2.X64.MultiplyNoFlags(value1, value2, &lo);
       return new value128(hi, lo);
 #else
