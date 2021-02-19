@@ -25,11 +25,8 @@ namespace TestcsFastFloat.Tests.Benchmarking
 
     private static void check(double d)
     {
-      //std::string s(64, '\0');
       string s = new string('\0', 64);
 
-      //auto written = std::snprintf(&s[0], s.size(), "%.*e", DBL_DIG + 1, d);
-      //s.resize(written);
       s = d.ToString().Replace(",", ".");
 
       double? x = FastDoubleParser.ParseDouble(s);
@@ -37,7 +34,6 @@ namespace TestcsFastFloat.Tests.Benchmarking
       {
         throw new ParseException(s, "refused", 0, 0);
       }
-      // if (isok != s.data() + s.size()) throw std::runtime_error("does not point at the end");
       if (d != x)
       {
         throw new ParseException(s, "disagree", x.Value, d);
@@ -46,11 +42,8 @@ namespace TestcsFastFloat.Tests.Benchmarking
 
     private static void check(float f)
     {
-      //std::string s(64, '\0');
       string s = new string('\0', 64);
 
-      //auto written = std::snprintf(&s[0], s.size(), "%.*e", DBL_DIG + 1, d);
-      //s.resize(written);
       s = f.ToString().Replace(",", ".");
 
       float? x = FastFloatParser.ParseFloat(s);
@@ -58,7 +51,6 @@ namespace TestcsFastFloat.Tests.Benchmarking
       {
         throw new ParseException(s, "refused", 0, 0);
       }
-      // if (isok != s.data() + s.size()) throw std::runtime_error("does not point at the end");
       if (f != x)
       {
         throw new ParseException(s, "disagree", x.Value, f);
@@ -157,8 +149,6 @@ namespace TestcsFastFloat.Tests.Benchmarking
     {
       ulong offset = 1190;
       var howmany = 10000000;
-      //   var start = DateTime.Now;
-
       for (var i = 1; i <= howmany; i++)
       {
         // mix bits
@@ -175,8 +165,6 @@ namespace TestcsFastFloat.Tests.Benchmarking
 
         double var = FastDoubleParser.ParseDouble(d.ToString(CultureInfo.CurrentCulture));
       }
-
-      //  ApprovalTests.Approvals.Verify(DateTime.Now - start);
     }
 
     [Fact(Skip = "on demand")]

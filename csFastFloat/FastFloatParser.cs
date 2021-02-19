@@ -16,8 +16,6 @@ namespace csFastFloat
 
     public static float exact_power_of_ten(long power) => Constants.powers_of_ten_float[power];
 
-
-
     public static float ToFloat(bool negative, AdjustedMantissa am)
     {
       float d;

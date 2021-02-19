@@ -12,7 +12,6 @@ using System.Globalization;
 
 [SimpleJob(RuntimeMoniker.NetCoreApp50)]
 [Config(typeof(Config))]
-//[IterationCount(100)] let BemchmarkDotNet determine how many iteration are required
 public class MyBencmark
 {
   private string[] _lines;
@@ -23,7 +22,6 @@ public class MyBencmark
     {
       AddColumn(
           StatisticColumn.Min);
-      // Todo : add MB/s + MFloat/s stats columns
     }
   }
 

@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "Benchmark2": {
+    "BenchmarkHandCoded": {
       "commandName": "Project"
     },
     "Docker": {
