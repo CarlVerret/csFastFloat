@@ -10,7 +10,6 @@ namespace csFastFloat
 public static class DoubleBinaryConstants
 {
 
-
     public const int mantissa_explicit_bits= 52;
 
     public const int minimum_exponent= -1023;
@@ -33,7 +32,6 @@ public static class DoubleBinaryConstants
 
     public const int smallest_power_of_ten= -342;
 
-   
     public const double NaN= double.NaN;
 
     public const double PositiveInfinity= double.PositiveInfinity;
