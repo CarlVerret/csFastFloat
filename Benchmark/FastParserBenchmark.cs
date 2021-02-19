@@ -10,6 +10,7 @@ using csFastFloat.Structures;
 using System;
 using System.Globalization;
 
+[MemoryDiagnoser]
 [SimpleJob(RuntimeMoniker.NetCoreApp50)]
 [Config(typeof(Config))]
 public class MyBencmark

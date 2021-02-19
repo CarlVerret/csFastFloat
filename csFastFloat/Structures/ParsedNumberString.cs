@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace csFastFloat.Structures
 {
-  public unsafe sealed class ParsedNumberString
+  public unsafe struct ParsedNumberString
   {
     internal long exponent;
     internal ulong mantissa;
