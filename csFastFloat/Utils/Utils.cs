@@ -73,12 +73,12 @@ namespace csFastFloat
     {
       ulong lo;
 
-#if (Bmi2.X64.IsSupported)
-      ulong hi = System.Runtime.Intrinsics.X86.Bmi2.X64.MultiplyNoFlags(value1, value2, &lo);
-      return new value128(hi, lo);
-#else
-     return Emulate64x64to128( value1, value2);
-#endif
+      if( Bmi2.X64.IsSupported)
+            ulong hi = System.Runtime.Intrinsics.X86.Bmi2.X64.MultiplyNoFlags(value1, value2, &lo);
+            return new value128(hi, lo);
+      else
+           return Emulate64x64to128( value1, value2);
+      endif
 
   
     }
