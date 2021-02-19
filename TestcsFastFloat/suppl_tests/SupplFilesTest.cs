@@ -17,7 +17,6 @@ namespace TestcsFastFloat.Tests.ff_suppl_tests
     [Fact()]
     private void AllFiles()
     {
-      //string pathValidation = args[0] ?? throw new ArgumentNullException("Search path");
 
       string pathValidation = @".\data_files";
 

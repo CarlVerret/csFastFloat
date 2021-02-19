@@ -8,7 +8,7 @@ namespace TestcsFastFloat.Tests.Exaustive
 {
   public class FastParserTest
   {
-    [Fact(Skip = "En attente d'un environ. de test")]
+    [Fact(Skip = "Waiting for test environ.")]
     unsafe private void All32BitsValues()
     {
       for (uint w = 0; w <= 0xFFFFFFFF; w++)

@@ -1,4 +1,4 @@
-﻿using Benchmark2;
+﻿using BenchmarkHandCoded;
 using System;
 using System.Diagnostics;
 using csFastFloat;
@@ -6,7 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 
-namespace Benchmark2
+namespace BenchmarkHandCoded
 {
   internal class Program
   {

@@ -1,10 +1,6 @@
-# csFastFloat : a fast and accurate 64bits float parser
+# csFastFloat : a fast and accurate float parser
 
-C# version of Daniel Lemire's fast_float https://github.com/fastfloat/fast_float  fully ported from C to C# 
-
-
-
-
+C# version of Daniel Lemire's [fast_float](https://github.com/fastfloat/fast_float)  fully ported from C to C#. It is up to three times faster than the standard library.
 
 # Benchmarks
 
@@ -30,7 +26,24 @@ Runtime=.NET Core 5.0  IterationCount=100
 
 # Requirements
 
-.net 5 framework
+.NET 5 framework
 
 # Usage
 
+```C#
+using csFastFloat;
+
+
+double x;
+float y;
+double answer = 0;
+foreach (string l in lines)
+{
+        x = FastDoubleParser.ParseDouble(l);
+        y = FastFloatParser.ParseFloat(l);
+}
+```
+
+# Reference
+
+- Daniel Lemire, [Number Parsing at a Gigabyte per Second](https://arxiv.org/abs/2101.11408), arXiv:2101.11408
