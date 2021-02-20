@@ -17,7 +17,7 @@ namespace csFastFloat
 
 
 
-  public sealed class FastDoubleParser
+  public static class FastDoubleParser
   {
 
     public  static double exact_power_of_ten(long power) => Constants.powers_of_ten_double[power];
