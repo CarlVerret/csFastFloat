@@ -12,7 +12,6 @@ namespace csFastFloat.Structures
     internal bool too_many_digits;
 
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     unsafe static internal ParsedNumberString ParseNumberString(char* p, char* pend, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
     {
       ParsedNumberString answer = new ParsedNumberString();
