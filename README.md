@@ -30,11 +30,19 @@ Job=.NET Core 5.0  Runtime=.NET Core 5.0
 
 ```
 
-In this repo [FastFloatTestBench](https://github.com/CarlVerret/FastFloatTestBench) we demonstrate the performance gain obtained with FastFloat.ParseDouble() instead of Double.Parse() in a concrete application with [CSVHelper](https://github.com/JoshClose/CsvHelper) library.
+In this repo [FastFloatTestBench](https://github.com/CarlVerret/FastFloatTestBench) we demonstrate a concrete performance gain obtained with FastFloat.ParseDouble() with the [CSVHelper](https://github.com/JoshClose/CsvHelper) library.  This is one of the fastest CSV parser available.  
 
-Canada.txt and mesh.txt are the same from the previous benchmark.  Syntethic.csv is composed of 150 000 random floats. w-c-100k/300k (world cities population data) reprsent reall data borrowed from [OpenDataSoft](https://public.opendatasoft.com/explore/dataset/worldcitiespop).
+Single and multiple columns files have been tested. Canada.txt and mesh.txt are the same from previous benchmark.  Syntethic.csv is composed of 150 000 random floats. World cities population data (100k/300k) represent real data obtained from [OpenDataSoft](https://public.opendatasoft.com/explore/dataset/worldcitiespop).  Benchmark is run on same environment.
 
 
+``` ini
+BenchmarkDotNet=v0.12.1, OS=ubuntu 20.04 (container)
+AMD EPYC 7262, 1 CPU, 16 logical and 8 physical cores
+.NET Core SDK=5.0.102
+  [Host]        : .NET Core 5.0.2 (CoreCLR 5.0.220.61120, CoreFX 5.0.220.61120), X64 RyuJIT
+  .NET Core 5.0 : .NET Core 5.0.2 (CoreCLR 5.0.220.61120, CoreFX 5.0.220.61120), X64 RyuJIT
+
+Job=.NET Core 5.0  Runtime=.NET Core 5.0  
 |                                Method |               fileName | fileSize | nbFloat |      Mean |    Error |   StdDev |       Min | Ratio | RatioSD | MFloat/s |
 |-------------------------------------- |----------------------- |--------- |-------- |----------:|---------:|---------:|----------:|------:|--------:|---------:|
 |          'Double.Parse() - singlecol' |    TestData/canada.txt |     1980 |  111126 |  84.03 ms | 0.410 ms | 0.383 ms |  83.40 ms |  1.00 |    0.00 |     1.33 |
@@ -57,6 +65,7 @@ Canada.txt and mesh.txt are the same from the previous benchmark.  Syntethic.csv
 |                 'Zeroes() - multicol' |  TestData/w-c-300K.csv |    14219 |  600002 | 450.91 ms | 2.095 ms | 1.636 ms | 448.44 ms |  0.77 |    0.00 |     1.34 |
 |        'FastFloat.Parse() - multicol' |  TestData/w-c-300K.csv |    14219 |  600002 | 494.72 ms | 9.552 ms | 9.809 ms | 479.90 ms |  0.85 |    0.02 |     1.25 |
 
+```
 
 
 
