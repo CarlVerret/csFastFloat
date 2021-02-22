@@ -99,7 +99,7 @@ foreach (string l in lines)
 # Testing
 
 The set of unit tests in /TestcsFastFloat project combines unit tests from many libraries.  It includes tests used by the Go Team.  
-Additionnal info can be found here : [Nigel Tao](https://nigeltao.github.io/blog/2020/eisel-lemire.html#testing).
+Additionnal info on Nigel Tao's work can be found [here](https://nigeltao.github.io/blog/2020/eisel-lemire.html#testing).
 
 # Reference
 
