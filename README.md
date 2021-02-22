@@ -3,7 +3,7 @@
 
 C# port of Daniel Lemire's [fast_float](https://github.com/fastfloat/fast_float)  fully ported from C++ to C#. It is almost 7 times faster than the standard library in some cases while providing exact results.
 
-A special thanks to [Egor Bogatov](https://github.com/EgorBo) for his really meaningful contribution.
+
 
 # Benchmarks
 
@@ -102,6 +102,10 @@ foreach (string l in lines)
 
 The set of unit tests in /TestcsFastFloat project combines unit tests from many libraries.  It includes tests used by the Go Team.  
 Additionnal info on Nigel Tao's work can be found [here](https://nigeltao.github.io/blog/2020/eisel-lemire.html#testing).
+
+# Credit
+This library is the main project in my master's degree under the direction of Professor [Daniel Lemire](https://github.com/lemire) at TELUQ University.
+A special thanks to [Egor Bogatov](https://github.com/EgorBo) for his really meaningful contribution.
 
 # Reference
 
