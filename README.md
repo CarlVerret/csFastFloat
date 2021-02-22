@@ -30,6 +30,34 @@ Job=.NET Core 5.0  Runtime=.NET Core 5.0
 
 ```
 
+In this repo [FastFloatTestBench](https://github.com/CarlVerret/FastFloatTestBench) we demonstrate the performance gain obtained with FastFloat.ParseDouble() instead of Double.Parse() in a concrete application with [CSVHelper](https://github.com/JoshClose/CsvHelper) library.
+
+Canada.txt and mesh.txt are the same from the previous benchmark.  Syntethic.csv is composed of 150 000 random floats. w-c-100k/300k (world cities population data) reprsent reall data borrowed from [OpenDataSoft](https://public.opendatasoft.com/explore/dataset/worldcitiespop).
+
+
+|                                Method |               fileName | fileSize | nbFloat |      Mean |    Error |   StdDev |       Min | Ratio | RatioSD | MFloat/s |
+|-------------------------------------- |----------------------- |--------- |-------- |----------:|---------:|---------:|----------:|------:|--------:|---------:|
+|          'Double.Parse() - singlecol' |    TestData/canada.txt |     1980 |  111126 |  84.03 ms | 0.410 ms | 0.383 ms |  83.40 ms |  1.00 |    0.00 |     1.33 |
+|                  'Zeroes - singlecol' |    TestData/canada.txt |     1980 |  111126 |  33.47 ms | 0.263 ms | 0.233 ms |  33.08 ms |  0.40 |    0.00 |     3.36 |
+| 'FastFloat.ParseDouble() - singlecol' |    TestData/canada.txt |     1980 |  111126 |  40.69 ms | 0.249 ms | 0.233 ms |  40.34 ms |  0.48 |    0.00 |     2.75 |
+|                                       |                        |          |         |           |          |          |           |       |         |          |
+|          'Double.Parse() - singlecol' |      TestData/mesh.txt |      548 |   73019 |  30.29 ms | 0.123 ms | 0.109 ms |  30.09 ms |  1.00 |    0.00 |     2.43 |
+|                  'Zeroes - singlecol' |      TestData/mesh.txt |      548 |   73019 |  18.06 ms | 0.139 ms | 0.123 ms |  17.85 ms |  0.60 |    0.00 |     4.09 |
+| 'FastFloat.ParseDouble() - singlecol' |      TestData/mesh.txt |      548 |   73019 |  20.23 ms | 0.202 ms | 0.189 ms |  20.00 ms |  0.67 |    0.01 |     3.65 |
+|                                       |                        |          |         |           |          |          |           |       |         |          |
+|          'Double.Parse() - singlecol' | TestData/synthetic.csv |     2676 |  150000 | 111.97 ms | 1.082 ms | 0.959 ms | 110.85 ms |  1.00 |    0.00 |     1.35 |
+|                  'Zeroes - singlecol' | TestData/synthetic.csv |     2676 |  150000 |  46.24 ms | 0.441 ms | 0.368 ms |  45.72 ms |  0.41 |    0.01 |     3.28 |
+| 'FastFloat.ParseDouble() - singlecol' | TestData/synthetic.csv |     2676 |  150000 |  54.78 ms | 0.412 ms | 0.344 ms |  53.95 ms |  0.49 |    0.00 |     2.78 |
+|                                       |                        |          |         |           |          |          |           |       |         |          |
+|           'Double.Parse() - multicol' |  TestData/w-c-100K.csv |     4740 |  200002 | 184.84 ms | 1.988 ms | 1.859 ms | 182.46 ms |  1.00 |    0.00 |     1.10 |
+|                 'Zeroes() - multicol' |  TestData/w-c-100K.csv |     4740 |  200002 | 157.53 ms | 2.785 ms | 2.605 ms | 154.81 ms |  0.85 |    0.02 |     1.29 |
+|        'FastFloat.Parse() - multicol' |  TestData/w-c-100K.csv |     4740 |  200002 | 170.56 ms | 1.409 ms | 1.318 ms | 167.86 ms |  0.92 |    0.01 |     1.19 |
+|                                       |                        |          |         |           |          |          |           |       |         |          |
+|           'Double.Parse() - multicol' |  TestData/w-c-300K.csv |    14219 |  600002 | 582.92 ms | 3.237 ms | 2.703 ms | 577.78 ms |  1.00 |    0.00 |     1.04 |
+|                 'Zeroes() - multicol' |  TestData/w-c-300K.csv |    14219 |  600002 | 450.91 ms | 2.095 ms | 1.636 ms | 448.44 ms |  0.77 |    0.00 |     1.34 |
+|        'FastFloat.Parse() - multicol' |  TestData/w-c-300K.csv |    14219 |  600002 | 494.72 ms | 9.552 ms | 9.809 ms | 479.90 ms |  0.85 |    0.02 |     1.25 |
+
+
 
 
 # Requirements
