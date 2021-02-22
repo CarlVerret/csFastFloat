@@ -2,6 +2,15 @@
 
 <PropertyGroup>
     <TargetFrameworks>net5.0;netcoreapp3.1</TargetFrameworks>
+    <Authors>Carl Verret</Authors>
+    <Description>C# port of Daniel Lemire's fast_float fully ported from C++ to C#. It is almost 7 times faster than the standard library in some cases while providing exact results.</Description>
+    <Copyright>csFastFloat is licensed under the MIT license</Copyright>
+    <PackageProjectUrl></PackageProjectUrl>
+    <RepositoryUrl>https://github.com/CarlVerret/csFastFloat</RepositoryUrl>
+    <PackageTags>C# Double Float Parsing</PackageTags>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+    <FileVersion>1.0.1.0</FileVersion>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
