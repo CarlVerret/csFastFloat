@@ -32,7 +32,7 @@ Job=.NET Core 5.0  Runtime=.NET Core 5.0
 
 In this repo [FastFloatTestBench](https://github.com/CarlVerret/FastFloatTestBench) we demonstrate a concrete performance gain obtained with FastFloat.ParseDouble() with the [CSVHelper](https://github.com/JoshClose/CsvHelper) library.  This is one of the fastest CSV parser available.  
 
-Single and multiple columns files have been tested. Canada.txt and mesh.txt are the same from previous benchmark.  Syntethic.csv is composed of 150 000 random floats. World cities population data (100k/300k) represent real data obtained from [OpenDataSoft](https://public.opendatasoft.com/explore/dataset/worldcitiespop).  Benchmark is run on same environment.
+Single and multiple columns files have been tested. Canada.txt and mesh.txt are the same from previous benchmark.  Syntethic.csv is composed of 150 000 random floats. World cities population data (100k/300k) are real data obtained from [OpenDataSoft](https://public.opendatasoft.com/explore/dataset/worldcitiespop).  Benchmark is run on same environment.
 
 
 ``` ini
