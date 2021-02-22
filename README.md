@@ -6,7 +6,8 @@ C# port of Daniel Lemire's [fast_float](https://github.com/fastfloat/fast_float)
 
 Using content of files in /data : Canada.txt and mesh.txt
 
-Comparing standard Double.Parse() vs FastFloat.ParseDouble().  'ParseNumberString() only' parses the string itself without any float computation.
+Comparing standard Double.Parse() vs FastFloat.ParseDouble().  
+'ParseNumberString() only' parses the string itself without any float computation.
 
 
 ``` ini
@@ -32,7 +33,8 @@ Job=.NET Core 5.0  Runtime=.NET Core 5.0
 
 # Requirements
 
-This library is optimized for .NET 5 framework, taking advantage of the new Math.BigMul() function.  It also does work with .net core 3.1.
+This library is optimized for .NET 5 framework, taking advantage of the new Math.BigMul() function.  
+It does support .net core 3.1
 
 # Usage
 
