@@ -288,7 +288,6 @@ namespace csFastFloat.Structures
       trim();
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     unsafe internal static DecimalInfo parse_decimal(char* p, char* pend, char decimal_separator)
     {
       DecimalInfo answer = new DecimalInfo() { negative = (*p == '-'), digits = new byte[Constants.max_digits] };

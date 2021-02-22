@@ -232,12 +232,15 @@ namespace csFastFloat
     }
 
 
-   
 
 
+    static readonly byte[] powers = {
+        0,  3,  6,  9,  13, 16, 19, 23, 26, 29, //
+        33, 36, 39, 43, 46, 49, 53, 56, 59,     //
+    };
 
 
-    internal static AdjustedMantissa ComputeFloat(DecimalInfo d)
+        internal static AdjustedMantissa ComputeFloat(DecimalInfo d)
     {
       AdjustedMantissa answer = new AdjustedMantissa();
       if (d.num_digits == 0)
@@ -274,10 +277,7 @@ namespace csFastFloat
       }
       const int max_shift = 60;
       const uint num_powers = 19;
-      byte[] powers = {
-                              0,  3,  6,  9,  13, 16, 19, 23, 26, 29, //
-                              33, 36, 39, 43, 46, 49, 53, 56, 59,     //
-                          };
+
       int exp2 = 0;
       while (d.decimal_point > 0)
       {
@@ -378,11 +378,8 @@ namespace csFastFloat
       return ComputeFloat(d);
     }
 
-    
 
 
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     unsafe static internal double HandleInvalidInput(char* first, char* last)
     {
       if (last - first >= 3)
