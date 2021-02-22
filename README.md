@@ -1,10 +1,13 @@
 # csFastFloat : a fast and accurate float parser
 
-C# version of Daniel Lemire's [fast_float](https://github.com/fastfloat/fast_float)  fully ported from C to C#. It is up to three times faster than the standard library.
+C# port of Daniel Lemire's [fast_float](https://github.com/fastfloat/fast_float)  fully ported from C to C#. It is almost 7 times faster than the standard library.
 
 # Benchmarks
 
-Using content of file in /data/Canada.txt
+Using content of files in /data : Canada.txt and mesh.txt
+
+Comparing standard Double.Parse() vs FastFloat.ParseDouble().  'ParseNumberString() only' parses the string itself without any float computation.
+
 
 ``` ini
 
@@ -29,9 +32,11 @@ Job=.NET Core 5.0  Runtime=.NET Core 5.0
 
 # Requirements
 
-.NET 5 framework
+This library is optimized for .NET 5 framework, taking advantage of the new Math.BigMul() function.  It also does work with .net core 3.1.
 
 # Usage
+
+Two functions are available.  ParseDouble and ParseFloat.
 
 ```C#
 using csFastFloat;
