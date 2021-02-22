@@ -1,6 +1,6 @@
 # csFastFloat : a fast and accurate float parser
 
-C# port of Daniel Lemire's [fast_float](https://github.com/fastfloat/fast_float)  fully ported from C to C#. It is almost 7 times faster than the standard library.
+C# port of Daniel Lemire's [fast_float](https://github.com/fastfloat/fast_float)  fully ported from C to C#. It is almost 7 times faster than the standard library in some cases while providing exact results.
 
 # Benchmarks
 
