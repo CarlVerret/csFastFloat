@@ -10,10 +10,17 @@ using csFastFloat.Structures;
 using System;
 using System.Globalization;
 
-[MemoryDiagnoser]
+
+
+using BenchmarkDotNet.Reports;
+
+namespace csFastFloat.Benchmark
+{
+
+//[MemoryDiagnoser]
 [SimpleJob(RuntimeMoniker.NetCoreApp50)]
 [Config(typeof(Config))]
-public class MyBencmark
+public class FFBencmark
 {
   private string[] _lines;
 
@@ -21,12 +28,14 @@ public class MyBencmark
   {
     public Config()
     {
-      AddColumn(
-          StatisticColumn.Min);
+      AddColumn(StatisticColumn.Min);
+      AddColumn(new MFloatPerSecColumn());
+      AddColumn(new VolumePerSecColumn());
     }
   }
 
-  [Benchmark(Description = "FastFloat.PaseDouble")]
+
+  [Benchmark(Description = "FastFloat.ParseDouble()")]
   public double FastParser_()
   {
     double max = double.MinValue;
@@ -39,34 +48,11 @@ public class MyBencmark
     return max;
   }
 
- [Benchmark(Description = "FastFloat.PaseDouble w/o <T>")]
-  public double FastParser_epx1()
-  {
-    double max = double.MinValue;
-
-    foreach (string l in _lines)
-    {
-      double d = FastDoubleParser.ParseDouble(l);
-      max = d > max ? d : max;
-    }
-    return max;
-  }
- [Benchmark(Description = "FastFloat.PaseDouble - constants")]
-  public double FastParser_epx2()
-  {
-    double max = double.MinValue;
-
-    foreach (string l in _lines)
-    {
-      double d = FastDoubleParser.ParseDouble(l);
-      max = d > max ? d : max;
-    }
-    return max;
-  }
 
 
 
-  [Benchmark(Description = "PNS only")]
+
+  [Benchmark(Description = "ParseNumberString() only")]
   public double FastParser_PNS()
   {
    double max = double.MinValue;
@@ -103,19 +89,28 @@ public class MyBencmark
    return max;
   }
 
+
+   [Params(@"data/canada.txt", @"data/mesh.txt")]
+   public string FileName;
+
   [GlobalSetup]
   public void Setup()
   {
     Console.WriteLine("reading data");
-    string fileName = @"data/canada.txt";
-    _lines = System.IO.File.ReadAllLines(fileName);
+    _lines = System.IO.File.ReadAllLines(FileName);
   }
 }
+
+
 
 public class Program
 {
   public static void Main(string[] args)
   {
-    var summary = BenchmarkRunner.Run<MyBencmark>();
+
+    	var config = DefaultConfig.Instance.WithSummaryStyle( SummaryStyle.Default.WithMaxParameterColumnWidth(100));
+			var summary = BenchmarkRunner.Run<FFBencmark>(config);
+
   }
+}
 }
