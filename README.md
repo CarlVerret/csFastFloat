@@ -4,10 +4,7 @@ C# port of Daniel Lemire's [fast_float](https://github.com/fastfloat/fast_float)
 
 # Benchmarks
 
-Using content of files in /data : Canada.txt and mesh.txt
-
-Comparing standard Double.Parse() vs FastFloat.ParseDouble().  
-'ParseNumberString() only' parses the string itself without any float computation.
+We use the realistic files  in /data. The mesh.txt data file contains numbers that are easier to parse whereas the canada.txt data file is representative of a more challenging scenario. We compare  the `Double.Parse()` function from the runtime library with our `FastFloat.ParseDouble()` function. The `ParseNumberString() only` function parses the string itself without any float computation: it might represent an upper bound on the possible performance.
 
 
 ``` ini
@@ -31,6 +28,9 @@ Job=.NET Core 5.0  Runtime=.NET Core 5.0
 |             Double.Parse() |   data/mesh.txt |  6.855 ms | 0.1183 ms | 0.1106 ms |  6.689 ms |  1.00 |    10.92 |    84.03 |
 
 ```
+
+
+
 # Requirements
 
 .NET Core 3.1 or better. Under .NET 5 framework, the library takes advantage of the new Math.BigMul() function.  
