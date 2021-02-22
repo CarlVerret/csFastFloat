@@ -30,11 +30,10 @@ Job=.NET Core 5.0  Runtime=.NET Core 5.0
 | 'ParseNumberString() only' |   data/mesh.txt |  1.312 ms | 0.0006 ms | 0.0005 ms |  1.311 ms |  0.19 |    55.69 |   428.69 |
 |             Double.Parse() |   data/mesh.txt |  6.855 ms | 0.1183 ms | 0.1106 ms |  6.689 ms |  1.00 |    10.92 |    84.03 |
 
-
+```
 # Requirements
 
-This library is optimized for .NET 5 framework, taking advantage of the new Math.BigMul() function.  
-It does support .net core 3.1
+.NET Core 3.1 or better. Under .NET 5 framework, the library takes advantage of the new Math.BigMul() function.  
 
 # Usage
 
