@@ -179,6 +179,9 @@ DocProject/Help/*.hhp
 DocProject/Help/Html2
 DocProject/Help/html
 
+#core files
+core.*
+
 # Click-Once directory
 publish/
 
