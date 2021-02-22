@@ -40,8 +40,7 @@ It does support .net core 3.1
 
 Two functions are available.  ParseDouble and ParseFloat.
 
-```
-C#
+```C#
 using csFastFloat;
 
 
