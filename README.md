@@ -96,6 +96,11 @@ foreach (string l in lines)
 }
 ```
 
+# Testing
+
+The set of unit tests in /TestcsFastFloat project combines unit tests from many libraries.  It includes tests used by the Go Team.  
+Additionnal info can be found here : [Nigel Tao](https://nigeltao.github.io/blog/2020/eisel-lemire.html#testing).
+
 # Reference
 
 - Daniel Lemire, [Number Parsing at a Gigabyte per Second](https://arxiv.org/abs/2101.11408), arXiv:2101.11408
