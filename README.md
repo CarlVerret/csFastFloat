@@ -3,7 +3,7 @@
 
 C# port of Daniel Lemire's [fast_float](https://github.com/fastfloat/fast_float)  fully ported from C++ to C#. It is almost 7 times faster than the standard library in some cases while providing exact results.
 
-A special thanks to [Egor Bogatov](https://github.com/EgorBo) for his really meaningfull contribution.
+A special thanks to [Egor Bogatov](https://github.com/EgorBo) for his really meaningful contribution.
 
 # Benchmarks
 
