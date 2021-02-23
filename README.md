@@ -20,15 +20,15 @@ AMD EPYC 7262, 1 CPU, 16 logical and 8 physical cores
 
 Job=.NET Core 5.0  Runtime=.NET Core 5.0  
 
-|                     Method |        FileName |      Mean |     Error |    StdDev |       Min | Ratio | MFloat/s |     MB/s |
-|--------------------------- |---------------- |----------:|----------:|----------:|----------:|------:|---------:|---------:|
-|    FastFloat.ParseDouble() | data/canada.txt |  5.591 ms | 0.0053 ms | 0.0050 ms |  5.578 ms |  0.15 |    19.92 |   363.51 |
-| 'ParseNumberString() only' | data/canada.txt |  3.105 ms | 0.0047 ms | 0.0044 ms |  3.098 ms |  0.08 |    35.87 |   654.58 |
-|             Double.Parse() | data/canada.txt | 38.531 ms | 0.3308 ms | 0.3095 ms | 37.878 ms |  1.00 |     2.93 |    53.53 |
-|                            |                 |           |           |           |           |       |          |          |
-|    FastFloat.ParseDouble() |   data/mesh.txt |  2.056 ms | 0.0061 ms | 0.0054 ms |  2.046 ms |  0.30 |    35.68 |   274.64 |
-| 'ParseNumberString() only' |   data/mesh.txt |  1.312 ms | 0.0006 ms | 0.0005 ms |  1.311 ms |  0.19 |    55.69 |   428.69 |
-|             Double.Parse() |   data/mesh.txt |  6.855 ms | 0.1183 ms | 0.1106 ms |  6.689 ms |  1.00 |    10.92 |    84.03 |
+|                     Method |        FileName |      Mean |     Error |    StdDev |       Min | Ratio | Gen 0 | Gen 1 | Gen 2 | Allocated | MFloat/s |     MB/s |
+|--------------------------- |---------------- |----------:|----------:|----------:|----------:|------:|------:|------:|------:|----------:|---------:|---------:|
+|    FastFloat.ParseDouble() | data/canada.txt |  5.974 ms | 0.0060 ms | 0.0053 ms |  5.965 ms |  0.16 |     - |     - |     - |       2 B |    18.63 |   350.04 |
+| 'ParseNumberString() only' | data/canada.txt |  3.082 ms | 0.0009 ms | 0.0008 ms |  3.081 ms |  0.08 |     - |     - |     - |       1 B |    36.07 |   677.80 |
+|             Double.Parse() | data/canada.txt | 37.459 ms | 0.2417 ms | 0.2142 ms | 37.003 ms |  1.00 |     - |     - |     - |      21 B |     3.00 |    56.43 |
+|                            |                 |           |           |           |           |       |       |       |       |           |          |          |
+|    FastFloat.ParseDouble() |   data/mesh.txt |  1.815 ms | 0.0144 ms | 0.0134 ms |  1.798 ms |  0.26 |     - |     - |     - |       1 B |    40.61 |   344.84 |
+| 'ParseNumberString() only' |   data/mesh.txt |  1.314 ms | 0.0021 ms | 0.0017 ms |  1.312 ms |  0.19 |     - |     - |     - |       1 B |    55.66 |   472.64 |
+|             Double.Parse() |   data/mesh.txt |  6.911 ms | 0.1136 ms | 0.1062 ms |  6.758 ms |  1.00 |     - |     - |     - |       2 B |    10.81 |    91.75 |
 
 ```
 
