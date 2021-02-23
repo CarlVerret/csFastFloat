@@ -95,16 +95,10 @@ namespace csFastFloat.Benchmark
 		    var disp_info = benchmarkCase.DisplayInfo;
 			
             var fileName = benchmarkCase.Parameters.Items.FirstOrDefault(x => x.Name == "FileName").ToString();
-
-        var volume =    0;
-
-            foreach (string l in System.IO.File.ReadAllLines(fileName))
-            {
-                volume += l.Length;
-            }
-
+           var volume = new FileInfo(fileName).Length/1024;
+     
 			var s= summary.Reports.Where(x => x.BenchmarkCase.DisplayInfo == disp_info).FirstOrDefault();
-			double vps = volume * 1000 / s.ResultStatistics.Min;
+			double vps = volume * 1000000 / s.ResultStatistics.Min;
 
 			return string.Format("{0,8:f2}",vps);
 
