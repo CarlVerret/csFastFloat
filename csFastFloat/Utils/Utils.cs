@@ -22,10 +22,48 @@ namespace csFastFloat
 
   public static class Utils
   {
-    // Next function can be micro-optimized, but compilers are entirely
-    // able to optimize it well.
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static bool is_integer(char c) => (char)(c - '0') <= '9' - '0';
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static bool is_integer(byte c) => (c - (byte)'0') <= (byte)('9' - '0');
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static uint parse_eight_digits_unrolled(ulong val)
+    {
+      const ulong mask = 0x000000FF000000FF;
+      const ulong mul1 = 0x000F424000000064; // 100 + (1000000ULL << 32)
+      const ulong mul2 = 0x0000271000000001; // 1 + (10000ULL << 32)
+      val -= 0x3030303030303030;
+      val = (val * 10) + (val >> 8); // val = (val * 2561) >> 8;
+      val = (((val & mask) * mul1) + (((val >> 16) & mask) * mul2)) >> 32;
+      return (uint)val;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    unsafe internal static uint parse_eight_digits_unrolled(byte* chars)
+    {
+      ulong val;
+      Buffer.MemoryCopy(chars, &val, sizeof(ulong), sizeof(ulong));
+      return parse_eight_digits_unrolled(val);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    unsafe internal static bool is_made_of_eight_digits_fast(ulong val)
+    {
+      // We only enable paths depending on this function on little endian
+      // platforms (it happens to be effectively nearly everywhere).
+      return BitConverter.IsLittleEndian && (((val & 0xF0F0F0F0F0F0F0F0) |
+               (((val + 0x0606060606060606) & 0xF0F0F0F0F0F0F0F0) >> 4)) ==
+              0x3333333333333333);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    unsafe internal static bool is_made_of_eight_digits_fast(byte* chars)
+    {
+      ulong val;
+      Buffer.MemoryCopy(&chars, &val, 8, 8);
+      return is_made_of_eight_digits_fast(val);
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static value128 compute_product_approximation(int bitPrecision, long q, ulong w)
@@ -140,5 +178,27 @@ namespace csFastFloat
       }
       return (running_diff == 0) || (running_diff == 32);
     }
+    internal unsafe static bool strncasecmp(byte* input1, ReadOnlySpan<byte> input2, int length)
+    {
+      int running_diff = 0;
+
+      for (int i = 0; i < length; i++)
+      {
+        running_diff = running_diff | (input1[i] ^ input2[i]);
+      }
+      return (running_diff == 0) || (running_diff == 32);
+    }
+
+    internal unsafe static bool strncasecmp(byte* input1, byte* input2, int length)
+    {
+      int running_diff = 0;
+
+      for (int i = 0; i < length; i++)
+      {
+        running_diff = running_diff | (input1[i] ^ input2[i]);
+      }
+      return (running_diff == 0) || (running_diff == 32);
+    }
+
   }
 }

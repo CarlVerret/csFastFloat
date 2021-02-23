@@ -288,6 +288,7 @@ namespace csFastFloat.Structures
       trim();
     }
 
+    // UTF-16 inputs
     unsafe internal static DecimalInfo parse_decimal(char* p, char* pend, char decimal_separator)
     {
       DecimalInfo answer = new DecimalInfo() { negative = (*p == '-'), digits = new byte[Constants.max_digits] };
@@ -323,21 +324,6 @@ namespace csFastFloat.Structures
             ++p;
           }
         }
-        //#if FASTFLOAT_IS_BIG_ENDIAN == 0
-        //        // We expect that this loop will often take the bulk of the running time
-        //        // because when a value has lots of digits, these digits often
-        //        while ((p + 8 <= pend) && (answer.num_digits + 8 < Constants.max_digits))
-        //        {
-        //          ulong val;
-        //      ::memcpy(&val, p, sizeof(ulong));
-        //          if (!is_made_of_eight_digits_fast(val)) { break; }
-        //          // We have eight digits, process them in one go!
-        //          val -= 0x3030303030303030;
-        //      ::memcpy(answer.digits + answer.num_digits, &val, sizeof(ulong));
-        //          answer.num_digits += 8;
-        //          p += 8;
-        //        }
-        //#endif
         while ((p != pend) && Utils.is_integer(*p))
         {
           if (answer.num_digits < Constants.max_digits)
@@ -358,6 +344,121 @@ namespace csFastFloat.Structures
         // prune leading zeros. So with answer.num_digits > 0, we know that
         // we have at least one non-zero digit.
         char* preverse = p - 1;
+        int trailing_zeros = 0;
+        while ((*preverse == '0') || (*preverse == decimal_separator))
+        {
+          if (*preverse == '0') { trailing_zeros++; };
+          --preverse;
+        }
+        answer.decimal_point += (int)(answer.num_digits);
+        answer.num_digits -= (uint)(trailing_zeros);
+      }
+      if (answer.num_digits > Constants.max_digits)
+      {
+        answer.truncated = true;
+        answer.num_digits = Constants.max_digits;
+      }
+      if ((p != pend) && (('e' == *p) || ('E' == *p)))
+      {
+        ++p;
+        bool neg_exp = false;
+        if ((p != pend) && ('-' == *p))
+        {
+          neg_exp = true;
+          ++p;
+        }
+        else if ((p != pend) && ('+' == *p))
+        {
+          ++p;
+        }
+        int exp_number = 0; // exponential part
+        while ((p != pend) && Utils.is_integer(*p))
+        {
+          byte digit = (byte)(*p - '0');
+          if (exp_number < 0x10000)
+          {
+            exp_number = 10 * exp_number + digit;
+          }
+          ++p;
+        }
+        answer.decimal_point += (neg_exp ? -exp_number : exp_number);
+      }
+      // In very rare cases, we may have fewer than 19 digits, we want to be able to reliably
+      // assume that all digits up to max_digit_without_overflow have been initialized.
+      for (uint i = answer.num_digits; i < Constants.max_digit_without_overflow; i++) { answer.digits[i] = 0; }
+
+      return answer;
+    }
+
+    // UTF-8/ASCII inputs
+    unsafe internal static DecimalInfo parse_decimal(byte* p, byte* pend, byte decimal_separator)
+    {
+      DecimalInfo answer = new DecimalInfo() { negative = (*p == '-'), digits = new byte[Constants.max_digits] };
+
+      if ((*p == '-') || (*p == '+'))
+      {
+        ++p;
+      }
+      // skip leading zeroes
+      while ((p != pend) && (*p == '0'))
+      {
+        ++p;
+      }
+      while ((p != pend) && Utils.is_integer(*p))
+      {
+        if (answer.num_digits < Constants.max_digits)
+        {
+          answer.digits[answer.num_digits] = (byte)(*p - '0');
+        }
+        answer.num_digits++;
+        ++p;
+      }
+      if ((p != pend) && (*p == decimal_separator))
+      {
+        ++p;
+        byte* first_after_period = p;
+        // if we have not yet encountered a zero, we have to skip it as well
+        if (answer.num_digits == 0)
+        {
+          // skip zeros
+          while ((p != pend) && (*p == '0'))
+          {
+            ++p;
+          }
+        }
+        while ((p + 8 <= pend) && (answer.num_digits + 8 < Constants.max_digits)) 
+        {
+          ulong val;
+          Buffer.MemoryCopy(p, &val, sizeof(ulong), sizeof(ulong));
+          if (!Utils.is_made_of_eight_digits_fast(val)) { break; }
+          val -= 0x3030303030303030;
+          fixed (byte* location = answer.digits)
+          {
+            Buffer.MemoryCopy(location + answer.num_digits, p, sizeof(ulong), sizeof(ulong));
+          }
+          answer.num_digits += 8;
+          p += 8;
+        }
+        while ((p != pend) && Utils.is_integer(*p))
+        {
+          if (answer.num_digits < Constants.max_digits)
+          {
+            answer.digits[answer.num_digits] = (byte)(*p - '0');
+          }
+          answer.num_digits++;
+          ++p;
+        }
+        answer.decimal_point = (int)(first_after_period - p);
+      }
+      // We want num_digits to be the number of significant digits, excluding
+      // leading *and* trailing zeros! Otherwise the truncated flag later is
+      // going to be misleading.
+      if (answer.num_digits > 0)
+      {
+        // We potentially need the answer.num_digits > 0 guard because we
+        // prune leading zeros. So with answer.num_digits > 0, we know that
+        // we have at least one non-zero digit.
+        byte* preverse = p - 1;
         int trailing_zeros = 0;
         while ((*preverse == '0') || (*preverse == decimal_separator))
         {

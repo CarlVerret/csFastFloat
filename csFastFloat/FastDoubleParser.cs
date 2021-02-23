@@ -110,6 +110,41 @@ namespace csFastFloat
       return ToFloat(pns.negative, am);
     }
    
+    unsafe static internal Double ParseNumber (byte* first, byte* last, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
+    {
+      while ((first != last) && Utils.is_space(*first))
+      {
+        first++;
+      }
+      if (first == last)
+      {
+        throw new ArgumentException();
+      }
+      ParsedNumberString pns = ParsedNumberString.ParseNumberString(first, last, expectedFormat);
+      if (!pns.valid)
+      {
+        return HandleInvalidInput(first, last);
+      }
+
+      // Next is Clinger's fast path.
+      if (DoubleBinaryConstants.min_exponent_fast_path <= pns.exponent && pns.exponent <= DoubleBinaryConstants.max_exponent_fast_path && pns.mantissa <= DoubleBinaryConstants.max_mantissa_fast_path && !pns.too_many_digits)
+      {
+        return FastPath(pns);
+      }
+
+      AdjustedMantissa am = ComputeFloat(pns.exponent, pns.mantissa);
+      if (pns.too_many_digits)
+      {
+        if (am != ComputeFloat(pns.exponent, pns.mantissa + 1))
+        {
+          am.power2 = -1; // value is invalid.
+        }
+      }
+      // If we called compute_float<binary_format<T>>(pns.exponent, pns.mantissa) and we have an invalid power (am.power2 < 0),
+      // then we need to go the long way around again. This is very uncommon.
+      if (am.power2 < 0) { am = ParseLongMantissa(first, last, (byte)decimal_separator); }
+      return ToFloat(pns.negative, am);
+    }
 
 
     /// <summary>
@@ -372,12 +407,19 @@ namespace csFastFloat
       return answer;
     }
 
+    // UTF-16 inputs
     unsafe static internal AdjustedMantissa ParseLongMantissa(char* first, char* last,  char decimal_separator)
     {
       DecimalInfo d = DecimalInfo.parse_decimal(first, last, decimal_separator);
       return ComputeFloat(d);
     }
 
+    // UTF-8/ASCII inputs
+    unsafe static internal AdjustedMantissa ParseLongMantissa(byte* first, byte* last,  byte decimal_separator)
+    {
+      DecimalInfo d = DecimalInfo.parse_decimal(first, last, decimal_separator);
+      return ComputeFloat(d);
+    }
 
 
     unsafe static internal double HandleInvalidInput(char* first, char* last)
@@ -411,6 +453,45 @@ namespace csFastFloat
       throw new ArgumentException();
     }
 
+
+    unsafe static internal double HandleInvalidInput(byte* first, byte* last)
+    {
+      ReadOnlySpan<byte> infinity_string = new byte[]{105, 110, 102, 105, 110, 105, 116, 121};
+      ReadOnlySpan<byte> inf_string = new byte[]{105, 110, 102};
+      ReadOnlySpan<byte> pinf_string = new byte[]{43, 105, 110, 102};
+      ReadOnlySpan<byte> minf_string = new byte[]{5, 105, 110, 102};
+      ReadOnlySpan<byte> nan_string = new byte[]{110, 97, 110};
+      ReadOnlySpan<byte> mnan_string = new byte[]{45, 110, 97, 110};
+      ReadOnlySpan<byte> pnan_string = new byte[]{43, 110, 97, 110};
+
+      if (last - first >= 3)
+      {
+        if (Utils.strncasecmp(first, nan_string, 3))
+        {
+          return DoubleBinaryConstants.NaN;
+        }
+        if (Utils.strncasecmp(first, inf_string, 3))
+        {
+          if ((last - first >= 8) && Utils.strncasecmp(first, infinity_string, 8))
+            return DoubleBinaryConstants.PositiveInfinity;
+          return DoubleBinaryConstants.PositiveInfinity;
+        }
+        if (last - first >= 4)
+        {
+          if (Utils.strncasecmp(first, pnan_string, 4) || Utils.strncasecmp(first, mnan_string, 4))
+          {
+            return DoubleBinaryConstants.NaN;
+          }
+          if (Utils.strncasecmp(first, pinf_string, 4) ||
+              Utils.strncasecmp(first, minf_string, 4) ||
+              ((last - first >= 8) && Utils.strncasecmp(first + 1, infinity_string, 8)))
+          {
+            return (first[0] == '-') ? DoubleBinaryConstants.NegativeInfinity : DoubleBinaryConstants.PositiveInfinity;
+          }
+        }
+      }
+      throw new ArgumentException();
+    }
 
    
 
