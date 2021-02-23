@@ -121,6 +121,12 @@ namespace csFastFloat
         return Unsafe.As<byte, bool>(ref b);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static bool is_ansi_space(char c)
+    {
+        return c <= byte.MaxValue && is_space(unchecked((byte)c));
+    }
+
     [ExcludeFromCodeCoverage]
     internal unsafe static bool strncasecmp(char* input1, string input2, int length)
     {
