@@ -19,7 +19,7 @@ namespace csFastFloat
 
   public static class FastDoubleParser
   {
-
+    private static void ThrowArgumentException() => throw new ArgumentException();
     public  static double exact_power_of_ten(long power) => Constants.powers_of_ten_double[power];
 
 
@@ -55,26 +55,33 @@ namespace csFastFloat
     }
 
 
-    public static double ParseDouble(string s, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
+    public static unsafe double ParseDouble(string s, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
     {
       if (s == null)
-        throw new ArgumentNullException(nameof(s));
+        ThrowArgumentNull();
+        static void ThrowArgumentNull() => throw new ArgumentNullException(nameof(s));
 
-      unsafe
+      fixed (char* pStart = s)
       {
-        fixed (char* pStart = s)
-        {
-          return ParseDouble(pStart, pStart + s.Length, expectedFormat, decimal_separator);
-        }
+        return ParseDouble(pStart, pStart + s.Length, expectedFormat, decimal_separator);
       }
     }
 
-   
+
+    public static unsafe double ParseDouble(ReadOnlySpan<char> s, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
+    {
+      fixed(char* pStart = s)
+      {
+        return ParseDouble(pStart, pStart + s.Length, expectedFormat, decimal_separator);
+      }
+    }
+
+ 
     unsafe static public double ParseDouble(char* first, char* last, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
       => ParseNumber(first, last, expectedFormat, decimal_separator);
 
  
-    unsafe static internal Double ParseNumber (char* first, char* last, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
+    unsafe static internal double ParseNumber(char* first, char* last, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
     {
       while ((first != last) && Utils.is_space((byte)(*first)))
       {
@@ -82,7 +89,7 @@ namespace csFastFloat
       }
       if (first == last)
       {
-        throw new ArgumentException();
+        ThrowArgumentException();
       }
       ParsedNumberString pns = ParsedNumberString.ParseNumberString(first, last, expectedFormat);
       if (!pns.valid)
@@ -408,7 +415,8 @@ namespace csFastFloat
           }
         }
       }
-      throw new ArgumentException();
+      ThrowArgumentException();
+      return 0d;
     }
 
 
