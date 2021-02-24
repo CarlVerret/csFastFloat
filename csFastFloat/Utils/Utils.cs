@@ -104,6 +104,7 @@ namespace csFastFloat
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static bool is_space(byte c)
     {
+        // ROS for one byte types can be read directly from metadata avoiding the array allocation.
         ReadOnlySpan<bool> table = new bool[] {
             false, false, false, false, false, false, false, false, false, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
@@ -116,7 +117,7 @@ namespace csFastFloat
             false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
-
+        // Avoid bound checking. The seemingly pointless cast to uint removes a mov instruction. 
         return Unsafe.AddByteOffset(ref MemoryMarshal.GetReference(table), (IntPtr)(uint)c);
     }
 
