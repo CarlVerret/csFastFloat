@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace csFastFloat.Structures
@@ -37,6 +39,17 @@ namespace csFastFloat.Structures
       }
     }
 
+    private static ushort get_number_of_digits_decimal_left_shift(int shift)
+    {
+#if NET5_0
+      Debug.Assert(shift < number_of_digits_decimal_left_shift_table.Length);
+      ref ushort tableRef = ref MemoryMarshal.GetArrayDataReference(number_of_digits_decimal_left_shift_table);
+      return Unsafe.Add(ref tableRef, (IntPtr)(uint)shift);
+#else
+      return number_of_digits_decimal_left_shift_table[shift];
+#endif
+    }
+
     private static readonly ushort[] number_of_digits_decimal_left_shift_table = {
         0x0000, 0x0800, 0x0801, 0x0803, 0x1006, 0x1009, 0x100D, 0x1812, 0x1817,
         0x181D, 0x2024, 0x202B, 0x2033, 0x203C, 0x2846, 0x2850, 0x285B, 0x3067,
@@ -45,19 +58,17 @@ namespace csFastFloat.Structures
         0x59C9, 0x61E3, 0x61FD, 0x6218, 0x6A34, 0x6A50, 0x6A6D, 0x6A8B, 0x72AA,
         0x72C9, 0x72E9, 0x7B0A, 0x7B2B, 0x7B4D, 0x8370, 0x8393, 0x83B7, 0x83DC,
         0x8C02, 0x8C28, 0x8C4F, 0x9477, 0x949F, 0x94C8, 0x9CF2, 0x051C, 0x051C,
-        0x051C, 0x051C,
+        0x051C, 0x051C
     };
 
-
-    private uint number_of_digits_decimal_left_shift(int shift)
+    private static byte number_of_digits_decimal_left_shift_table_powers_of_5(int index)
     {
-      shift &= 63;
-      uint x_a = number_of_digits_decimal_left_shift_table[shift];
-      uint x_b = number_of_digits_decimal_left_shift_table[shift + 1];
-      uint num_new_digits = x_a >> 11;
-      uint pow5_a = 0x7FF & x_a;
-      uint pow5_b = 0x7FF & x_b;
-      ReadOnlySpan<byte> number_of_digits_decimal_left_shift_table_powers_of_5 = new byte[] {
+      Debug.Assert(index < number_of_digits_decimal_left_shift_table_powers_of_5_table.Length);
+      ref byte tableRef = ref MemoryMarshal.GetReference(number_of_digits_decimal_left_shift_table_powers_of_5_table);
+      return Unsafe.AddByteOffset(ref tableRef, (IntPtr)(uint)index);
+    }
+
+    private static ReadOnlySpan<byte> number_of_digits_decimal_left_shift_table_powers_of_5_table => new byte[] {
         5, 2, 5, 1, 2, 5, 6, 2, 5, 3, 1, 2, 5, 1, 5, 6, 2, 5, 7, 8, 1, 2, 5, 3,
         9, 0, 6, 2, 5, 1, 9, 5, 3, 1, 2, 5, 9, 7, 6, 5, 6, 2, 5, 4, 8, 8, 2, 8,
         1, 2, 5, 2, 4, 4, 1, 4, 0, 6, 2, 5, 1, 2, 2, 0, 7, 0, 3, 1, 2, 5, 6, 1,
@@ -113,7 +124,18 @@ namespace csFastFloat.Structures
         4, 4, 8, 1, 3, 9, 1, 9, 0, 6, 7, 3, 8, 2, 8, 1, 2, 5, 8, 6, 7, 3, 6, 1,
         7, 3, 7, 9, 8, 8, 4, 0, 3, 5, 4, 7, 2, 0, 5, 9, 6, 2, 2, 4, 0, 6, 9, 5,
         9, 5, 3, 3, 6, 9, 1, 4, 0, 6, 2, 5,
-  };
+    };
+
+
+    private uint number_of_digits_decimal_left_shift(int shift)
+    {
+      shift &= 63;
+      uint x_a = get_number_of_digits_decimal_left_shift(shift);
+      uint x_b = get_number_of_digits_decimal_left_shift(shift + 1);
+      uint num_new_digits = x_a >> 11;
+      uint pow5_a = 0x7FF & x_a;
+      uint pow5_b = 0x7FF & x_b;
+      
       // byte* pow5 = (byte*)number_of_digits_decimal_left_shift_table_powers_of_5[pow5_a];
       int i = 0;
       uint n = pow5_b - pow5_a;
@@ -123,11 +145,11 @@ namespace csFastFloat.Structures
         {
           return num_new_digits - 1;
         }
-        else if (digits[i] == number_of_digits_decimal_left_shift_table_powers_of_5[(int)(pow5_a + i)])
+        else if (digits[i] == number_of_digits_decimal_left_shift_table_powers_of_5((int)(pow5_a + i)))
         {
           continue;
         }
-        else if (digits[i] < number_of_digits_decimal_left_shift_table_powers_of_5[(int)(pow5_a + i)])
+        else if (digits[i] < number_of_digits_decimal_left_shift_table_powers_of_5((int)(pow5_a + i)))
         {
           return num_new_digits - 1;
         }

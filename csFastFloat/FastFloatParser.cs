@@ -274,15 +274,12 @@ namespace csFastFloat
       }
       const int max_shift = 60;
       const uint num_powers = 19;
-      ReadOnlySpan<byte> powers = new byte[] {
-                              0,  3,  6,  9,  13, 16, 19, 23, 26, 29, //
-                              33, 36, 39, 43, 46, 49, 53, 56, 59,     //
-                          };
+
       int exp2 = 0;
       while (d.decimal_point > 0)
       {
         uint n = (uint)(d.decimal_point);
-        int shift = (n < num_powers) ? powers[(int)n] : max_shift;
+        int shift = (n < num_powers) ? Constants.get_powers(n) : max_shift;
 
         d.decimal_right_shift(shift);
         if (d.decimal_point < -Constants.decimal_point_range)
@@ -311,7 +308,7 @@ namespace csFastFloat
         else
         {
           uint n = (uint)(-d.decimal_point);
-          shift = (n < num_powers) ? powers[(int)n] : max_shift;
+          shift = (n < num_powers) ? Constants.get_powers(n) : max_shift;
         }
 
         d.decimal_left_shift(shift);

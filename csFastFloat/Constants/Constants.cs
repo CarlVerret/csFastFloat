@@ -22,6 +22,18 @@ namespace csFastFloat
     internal const int smallest_power_of_five = -342;
     internal const int largest_power_of_five = 308;
 
+    internal static byte get_powers(uint n)
+    {
+      Debug.Assert(n < powersTable.Length);
+      ref byte tableRef = ref MemoryMarshal.GetReference(powersTable);
+      return Unsafe.AddByteOffset(ref tableRef, (IntPtr)n);
+    }
+
+    private static ReadOnlySpan<byte> powersTable => new byte[19] {
+      0,  3,  6,  9,  13, 16, 19, 23, 26, 29, //
+      33, 36, 39, 43, 46, 49, 53, 56, 59,     //
+    };
+
     internal static ulong get_power_of_five_128(int index)
     {
 #if NET5_0
