@@ -13,7 +13,7 @@ namespace csFastFloat.Structures
     internal int decimal_point;
     internal bool negative;
     internal bool truncated;
-    internal byte[] digits;
+    internal DigitsBuffer digits;
 
     [ExcludeFromCodeCoverage]
     public override string ToString()
@@ -312,7 +312,7 @@ namespace csFastFloat.Structures
 
     unsafe internal static DecimalInfo parse_decimal(char* p, char* pend, char decimal_separator)
     {
-      DecimalInfo answer = new DecimalInfo() { negative = (*p == '-'), digits = new byte[Constants.max_digits] };
+      DecimalInfo answer = new DecimalInfo() { negative = (*p == '-') };
 
       if ((*p == '-') || (*p == '+'))
       {
