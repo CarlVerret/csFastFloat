@@ -25,7 +25,7 @@ namespace csFastFloat
     // Next function can be micro-optimized, but compilers are entirely
     // able to optimize it well.
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static bool is_integer(char c) => (char)(c - '0') <= '9' - '0';
+    internal static bool is_integer(char c) => (uint)(c - '0') <= '9' - '0';
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static value128 compute_product_approximation(int bitPrecision, long q, ulong w)
@@ -85,7 +85,6 @@ namespace csFastFloat
   
     }
 
-#endif
 
     internal static value128 Emulate64x64to128(ulong x, ulong y)
     {
@@ -99,6 +98,7 @@ namespace csFastFloat
       return new value128(h: p11 + (middle >> 32) + (p01 >> 32), l: (middle << 32) | (uint)p00);
     }
 
+#endif
 
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
