@@ -117,7 +117,7 @@ namespace csFastFloat
             false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
-        // Avoid bound checking. The seemingly pointless cast to uint removes a mov instruction. 
+        // Avoid bound checking. The seemingly pointless cast to uint removes the sign-extending movsxd instruction. 
         return Unsafe.AddByteOffset(ref MemoryMarshal.GetReference(table), (IntPtr)(uint)c);
     }
 
