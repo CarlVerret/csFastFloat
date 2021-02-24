@@ -34,13 +34,13 @@ namespace csFastFloat
       // For small values of q, e.g., q in [0,27], the answer is always exact because
       // The line value128 firstproduct = full_multiplication(w, power_of_five_128[index]);
       // gives the exact answer.
-      value128 firstproduct = FullMultiplication(w, Constants.power_of_five_128[index]);
+      value128 firstproduct = FullMultiplication(w, Constants.get_power_of_five_128(index));
       //static_assert((bit_precision >= 0) && (bit_precision <= 64), " precision should  be in (0,64]");
       ulong precision_mask = (bitPrecision < 64) ? ((ulong)(0xFFFFFFFFFFFFFFFF) >> bitPrecision) : (ulong)(0xFFFFFFFFFFFFFFFF);
       if ((firstproduct.high & precision_mask) == precision_mask)
       { // could further guard with  (lower + w < lower)
         // regarding the second product, we only need secondproduct.high, but our expectation is that the compiler will optimize this extra work away if needed.
-        value128 secondproduct = FullMultiplication(w, Constants.power_of_five_128[index + 1]);
+        value128 secondproduct = FullMultiplication(w, Constants.get_power_of_five_128(index + 1));
         firstproduct.low += secondproduct.high;
         if (secondproduct.high > firstproduct.low)
         {

@@ -1,8 +1,10 @@
 ﻿using csFastFloat.Enums;
 using csFastFloat.Structures;
 using System;
+using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 [assembly: InternalsVisibleTo("TestcsFastFloat")]
 
@@ -14,7 +16,16 @@ namespace csFastFloat
   public static class FastFloatParser
   {
 
-    public static float exact_power_of_ten(long power) => Constants.powers_of_ten_float[power];
+    public static float exact_power_of_ten(long power)
+    {
+#if NET5_0
+      Debug.Assert(power < Constants.powers_of_ten_float.Length);
+      ref float tableRef = ref MemoryMarshal.GetArrayDataReference(Constants.powers_of_ten_float);
+      return Unsafe.Add(ref tableRef, (IntPtr)power);
+#else
+      return Constants.powers_of_ten_float[power];
+#endif
+    }
 
     public static float ToFloat(bool negative, AdjustedMantissa am)
     {

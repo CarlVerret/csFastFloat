@@ -2,9 +2,11 @@
 using csFastFloat.Structures;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 
 [assembly: InternalsVisibleTo("TestcsFastFloat")]
@@ -20,9 +22,17 @@ namespace csFastFloat
   public static class FastDoubleParser
   {
 
-    public  static double exact_power_of_ten(long power) => Constants.powers_of_ten_double[power];
+    public  static double exact_power_of_ten(long power)
+    {
+#if NET5_0
+      Debug.Assert(power < Constants.powers_of_ten_double.Length);
+      ref double tableRef = ref MemoryMarshal.GetArrayDataReference(Constants.powers_of_ten_double);
+      return Unsafe.Add(ref tableRef, (IntPtr)power);
+#else
+      return Constants.powers_of_ten_double[power];
+#endif
 
-
+    }
 
     public static double ToFloat(bool negative, AdjustedMantissa am)
     {

@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace csFastFloat
 {
@@ -19,7 +22,18 @@ namespace csFastFloat
     internal const int smallest_power_of_five = -342;
     internal const int largest_power_of_five = 308;
 
-    internal readonly static ulong[] power_of_five_128 = {
+    internal static ulong get_power_of_five_128(int index)
+    {
+#if NET5_0
+      Debug.Assert(index < power_of_five_128.Length);
+      ref ulong tableRef = ref MemoryMarshal.GetArrayDataReference(power_of_five_128);
+      return Unsafe.Add(ref tableRef, (IntPtr)(uint)index);
+# else
+      return power_of_five_128[index];
+#endif
+    }
+
+    private readonly static ulong[] power_of_five_128 = {
         0xeef453d6923bd65a,0x113faa2906a13b3f,
         0x9558b4661b6565f8,0x4ac7ca59a424c507,
         0xbaaee17fa23ebf76,0x5d79bcf00d2df649,
