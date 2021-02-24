@@ -34,17 +34,14 @@ namespace csFastFloat
 
     }
 
-    public static double ToFloat(bool negative, AdjustedMantissa am)
+    public static unsafe double ToFloat(bool negative, AdjustedMantissa am)
     {
       double d;
       ulong word = am.mantissa;
       word |= (ulong)(am.power2) << DoubleBinaryConstants.mantissa_explicit_bits;
       word = negative ? word | ((ulong)(1) << DoubleBinaryConstants.sign_index) : word;
 
-      unsafe
-      {
-        Buffer.MemoryCopy(&word, &d, sizeof(double), sizeof(double));
-      }
+      Unsafe.CopyBlockUnaligned(&d, &word, sizeof(double));
 
       return d;
     }    
