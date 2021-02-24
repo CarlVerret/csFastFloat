@@ -22,6 +22,7 @@ namespace csFastFloat
     internal const int smallest_power_of_five = -342;
     internal const int largest_power_of_five = 308;
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static byte get_powers(uint n)
     {
       Debug.Assert(n < powersTable.Length);
@@ -34,6 +35,7 @@ namespace csFastFloat
       33, 36, 39, 43, 46, 49, 53, 56, 59,     //
     };
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static ulong get_power_of_five_128(int index)
     {
 #if NET5_0

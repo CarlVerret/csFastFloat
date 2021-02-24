@@ -21,7 +21,7 @@ namespace csFastFloat
 
   public static class FastDoubleParser
   {
-
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public  static double exact_power_of_ten(long power)
     {
 #if NET5_0
