@@ -30,4 +30,8 @@
       <PackagePath></PackagePath>
     </None>
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="StringLiteralGenerator" Version="1.0.1" />
+  </ItemGroup>
 </Project>

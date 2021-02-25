@@ -461,44 +461,27 @@ namespace csFastFloat
 
     unsafe static internal float HandleInvalidInput(byte* first, byte* last)
     {
-      // C# does not (yet) allow literal ASCII strings (it uses UTF-16), so
-      // we need to use byte arrays.
-      // "infinity"  string in ASCII, e.g., 105 = i
-      ReadOnlySpan<byte> infinity_string = new byte[]{105, 110, 102, 105, 110, 105, 116, 121};
-      // "inf" string in ASCII
-      ReadOnlySpan<byte> inf_string = new byte[]{105, 110, 102};
-      // "+inf" string in ASCII
-      ReadOnlySpan<byte> pinf_string = new byte[]{43, 105, 110, 102};
-      // "-inf" string in ASCII
-      ReadOnlySpan<byte> minf_string = new byte[]{5, 105, 110, 102};
-      // "nan" string in ASCII
-      ReadOnlySpan<byte> nan_string = new byte[]{110, 97, 110};
-      // "-nan" string in ASCII
-      ReadOnlySpan<byte> mnan_string = new byte[]{45, 110, 97, 110};
-      // "+nan" string in ASCII
-      ReadOnlySpan<byte> pnan_string = new byte[]{43, 110, 97, 110};
-
       if (last - first >= 3)
       {
-        if (Utils.strncasecmp(first, nan_string, 3))
+        if (Utils.strncasecmp(first, Utf8Literals.nan_string(), 3))
         {
           return FloatBinaryConstants.NaN;
         }
-        if (Utils.strncasecmp(first, inf_string, 3))
+        if (Utils.strncasecmp(first, Utf8Literals.inf_string(), 3))
         {
-          if ((last - first >= 8) && Utils.strncasecmp(first, infinity_string, 8))
+          if ((last - first >= 8) && Utils.strncasecmp(first, Utf8Literals.infinity_string(), 8))
             return FloatBinaryConstants.PositiveInfinity;
           return FloatBinaryConstants.PositiveInfinity;
         }
         if (last - first >= 4)
         {
-          if (Utils.strncasecmp(first, pnan_string, 4) || Utils.strncasecmp(first, mnan_string, 4))
+          if (Utils.strncasecmp(first, Utf8Literals.pnan_string(), 4) || Utils.strncasecmp(first, Utf8Literals.mnan_string(), 4))
           {
             return FloatBinaryConstants.NaN;
           }
-          if (Utils.strncasecmp(first, pinf_string, 4) ||
-              Utils.strncasecmp(first, minf_string, 4) ||
-              ((last - first >= 8) && Utils.strncasecmp(first + 1, infinity_string, 8)))
+          if (Utils.strncasecmp(first, Utf8Literals.pinf_string(), 4) ||
+              Utils.strncasecmp(first, Utf8Literals.minf_string(), 4) ||
+              ((last - first >= 8) && Utils.strncasecmp(first + 1, Utf8Literals.infinity_string(), 8)))
           {
             return (first[0] == '-') ? FloatBinaryConstants.NegativeInfinity : FloatBinaryConstants.PositiveInfinity;
           }
