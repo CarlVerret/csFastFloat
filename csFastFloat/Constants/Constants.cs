@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace csFastFloat
 {
@@ -19,7 +22,32 @@ namespace csFastFloat
     internal const int smallest_power_of_five = -342;
     internal const int largest_power_of_five = 308;
 
-    internal readonly static ulong[] power_of_five_128 = {
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static byte get_powers(uint n)
+    {
+      Debug.Assert(n < powersTable.Length);
+      ref byte tableRef = ref MemoryMarshal.GetReference(powersTable);
+      return Unsafe.AddByteOffset(ref tableRef, (nint)n);
+    }
+
+    private static ReadOnlySpan<byte> powersTable => new byte[19] {
+      0,  3,  6,  9,  13, 16, 19, 23, 26, 29, //
+      33, 36, 39, 43, 46, 49, 53, 56, 59,     //
+    };
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static ulong get_power_of_five_128(int index)
+    {
+#if NET5_0
+      Debug.Assert(index < power_of_five_128.Length);
+      ref ulong tableRef = ref MemoryMarshal.GetArrayDataReference(power_of_five_128);
+      return Unsafe.Add(ref tableRef, (nint)(uint)index);
+# else
+      return power_of_five_128[index];
+#endif
+    }
+
+    private readonly static ulong[] power_of_five_128 = {
         0xeef453d6923bd65a,0x113faa2906a13b3f,
         0x9558b4661b6565f8,0x4ac7ca59a424c507,
         0xbaaee17fa23ebf76,0x5d79bcf00d2df649,

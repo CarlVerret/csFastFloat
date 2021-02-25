@@ -15,8 +15,8 @@ namespace csFastFloat
 
     public value128(ulong h, ulong l) : this()
     {
-      this.high = h;
-      this.low = l;
+      high = h;
+      low = l;
     }
   }
 
@@ -25,7 +25,13 @@ namespace csFastFloat
     // Next function can be micro-optimized, but compilers are entirely
     // able to optimize it well.
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static bool is_integer(char c) => (char)(c - '0') <= '9' - '0';
+    internal static bool is_integer(char c, out uint cMinus0)
+    {
+      uint cc = (uint)(c - '0');
+      bool res = cc <= '9' - '0';
+      cMinus0 = cc;
+      return res;
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static value128 compute_product_approximation(int bitPrecision, long q, ulong w)
@@ -34,13 +40,13 @@ namespace csFastFloat
       // For small values of q, e.g., q in [0,27], the answer is always exact because
       // The line value128 firstproduct = full_multiplication(w, power_of_five_128[index]);
       // gives the exact answer.
-      value128 firstproduct = FullMultiplication(w, Constants.power_of_five_128[index]);
+      value128 firstproduct = FullMultiplication(w, Constants.get_power_of_five_128(index));
       //static_assert((bit_precision >= 0) && (bit_precision <= 64), " precision should  be in (0,64]");
       ulong precision_mask = (bitPrecision < 64) ? ((ulong)(0xFFFFFFFFFFFFFFFF) >> bitPrecision) : (ulong)(0xFFFFFFFFFFFFFFFF);
       if ((firstproduct.high & precision_mask) == precision_mask)
       { // could further guard with  (lower + w < lower)
         // regarding the second product, we only need secondproduct.high, but our expectation is that the compiler will optimize this extra work away if needed.
-        value128 secondproduct = FullMultiplication(w, Constants.power_of_five_128[index + 1]);
+        value128 secondproduct = FullMultiplication(w, Constants.get_power_of_five_128(index + 1));
         firstproduct.low += secondproduct.high;
         if (secondproduct.high > firstproduct.low)
         {
@@ -85,7 +91,6 @@ namespace csFastFloat
   
     }
 
-#endif
 
     internal static value128 Emulate64x64to128(ulong x, ulong y)
     {
@@ -99,6 +104,7 @@ namespace csFastFloat
       return new value128(h: p11 + (middle >> 32) + (p01 >> 32), l: (middle << 32) | (uint)p00);
     }
 
+#endif
 
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -117,8 +123,9 @@ namespace csFastFloat
             false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
-        // Avoid bound checking. The seemingly pointless cast to uint removes the sign-extending movsxd instruction. 
-        return Unsafe.AddByteOffset(ref MemoryMarshal.GetReference(table), (IntPtr)(uint)c);
+        
+        // Avoid bound checking.
+        return Unsafe.AddByteOffset(ref MemoryMarshal.GetReference(table), (nint)c);
     }
 
     [ExcludeFromCodeCoverage]

@@ -1,32 +1,37 @@
-﻿using csFastFloat.Enums;
-using csFastFloat.Structures;
-using System;
+﻿using System;
+using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-
-[assembly: InternalsVisibleTo("TestcsFastFloat")]
-
-[assembly: InternalsVisibleTo("Benchmark")]
-
+using System.Runtime.InteropServices;
+using csFastFloat.Enums;
+using csFastFloat.Structures;
 
 namespace csFastFloat
 {
   public static class FastFloatParser
   {
     private static void ThrowArgumentException() => throw new ArgumentException();
-    public static float exact_power_of_ten(long power) => Constants.powers_of_ten_float[power];
 
-    public static float ToFloat(bool negative, AdjustedMantissa am)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static float exact_power_of_ten(long power)
     {
-      float d;
+#if NET5_0
+      Debug.Assert(power < Constants.powers_of_ten_float.Length);
+      ref float tableRef = ref MemoryMarshal.GetArrayDataReference(Constants.powers_of_ten_float);
+      return Unsafe.Add(ref tableRef, (nint)power);
+#else
+      return Constants.powers_of_ten_float[power];
+#endif
+    }
+
+    public static unsafe float ToFloat(bool negative, AdjustedMantissa am)
+    {
       ulong word = am.mantissa;
-      word |= (ulong)(am.power2) << FloatBinaryConstants.mantissa_explicit_bits;
+      word |= (ulong)(uint)(am.power2) << FloatBinaryConstants.mantissa_explicit_bits;
       word = negative ? word | ((ulong)(1) << FloatBinaryConstants.sign_index) : word;
 
-      unsafe
-      {
-        Buffer.MemoryCopy(&word, &d, sizeof(float), sizeof(float));
-      }
+      float d = 0;
+      Unsafe.Copy(ref d, &word);
 
       return d;
     }
@@ -55,7 +60,7 @@ namespace csFastFloat
 
       fixed (char* pStart = s)
       {
-        return ParseFloat(pStart, pStart + s.Length, expectedFormat, decimal_separator);
+        return ParseFloat(pStart, pStart + (uint)s.Length, expectedFormat, decimal_separator);
       }
     }
 
@@ -63,7 +68,7 @@ namespace csFastFloat
     {
       fixed (char* pStart = s)
       {
-        return ParseFloat(pStart, pStart + s.Length, expectedFormat, decimal_separator);
+        return ParseFloat(pStart, pStart + (uint)s.Length, expectedFormat, decimal_separator);
       }
     }
 
@@ -241,9 +246,7 @@ namespace csFastFloat
       if (d.num_digits == 0)
       {
         // should be zero
-        answer.power2 = 0;
-        answer.mantissa = 0;
-        return answer;
+        return default;
       }
       // At this point, going further, we can assume that d.num_digits > 0.
       //
@@ -258,9 +261,7 @@ namespace csFastFloat
         // We have something smaller than 1e-324 which is always zero
         // in binary64 and binary32.
         // It should be zero.
-        answer.power2 = 0;
-        answer.mantissa = 0;
-        return answer;
+        return default;
       }
       else if (d.decimal_point >= 310)
       {
@@ -272,15 +273,12 @@ namespace csFastFloat
       }
       const int max_shift = 60;
       const uint num_powers = 19;
-      ReadOnlySpan<byte> powers = new byte[] {
-                              0,  3,  6,  9,  13, 16, 19, 23, 26, 29, //
-                              33, 36, 39, 43, 46, 49, 53, 56, 59,     //
-                          };
+
       int exp2 = 0;
       while (d.decimal_point > 0)
       {
         uint n = (uint)(d.decimal_point);
-        int shift = (n < num_powers) ? powers[(int)n] : max_shift;
+        int shift = (n < num_powers) ? Constants.get_powers(n) : max_shift;
 
         d.decimal_right_shift(shift);
         if (d.decimal_point < -Constants.decimal_point_range)
@@ -309,7 +307,7 @@ namespace csFastFloat
         else
         {
           uint n = (uint)(-d.decimal_point);
-          shift = (n < num_powers) ? powers[(int)n] : max_shift;
+          shift = (n < num_powers) ? Constants.get_powers(n) : max_shift;
         }
 
         d.decimal_left_shift(shift);
@@ -430,7 +428,7 @@ namespace csFastFloat
         {
           return answer;
         }
-        if (!Utils.is_integer(*p) && (*p != decimal_separator)) // culture info ?
+        if (!Utils.is_integer(*p, out uint _) && (*p != decimal_separator)) // culture info ?
         { // a  sign must be followed by an integer or the dot
           return answer;
         }
@@ -439,12 +437,11 @@ namespace csFastFloat
 
       ulong i = 0; // an unsigned int avoids signed overflows (which are bad)
 
-      while ((p != pend) && Utils.is_integer(*p))
+      while ((p != pend) && Utils.is_integer(*p, out uint cMinus0))
       {
         // a multiplication by 10 is cheaper than an arbitrary integer
         // multiplication
-        i = 10 * i +
-            (ulong)(*p - '0'); // might overflow, we will handle the overflow later
+        i = 10 * i + (ulong)cMinus0; // might overflow, we will handle the overflow later
         ++p;
       }
       char* end_of_integer_part = p;
@@ -453,9 +450,9 @@ namespace csFastFloat
       if ((p != pend) && (*p == decimal_separator))
       {
         ++p;
-        while ((p != pend) && Utils.is_integer(*p))
+        while ((p != pend) && Utils.is_integer(*p, out uint cMinus0))
         {
-          byte digit = (byte)(*p - '0');
+          byte digit = (byte)cMinus0;
           ++p;
           i = i * 10 + digit; // in rare cases, this will overflow, but that's ok
         }
@@ -482,7 +479,7 @@ namespace csFastFloat
         {
           ++p;
         }
-        if ((p == pend) || !Utils.is_integer(*p))
+        if ((p == pend) || !Utils.is_integer(*p, out uint _))
         {
           if (expectedFormat != chars_format.is_fixed)
           {
@@ -494,9 +491,9 @@ namespace csFastFloat
         }
         else
         {
-          while ((p != pend) && Utils.is_integer(*p))
+          while ((p != pend) && Utils.is_integer(*p, out uint cMinus0))
           {
-            byte digit = (byte)(*p - '0');
+            byte digit = (byte)cMinus0;
             if (exp_number < 0x10000)
             {
               exp_number = 10 * exp_number + digit;
@@ -539,9 +536,9 @@ namespace csFastFloat
           i = 0;
           p = start_digits;
           const ulong minimal_nineteen_digit_integer = 1000000000000000000;
-          while ((i < minimal_nineteen_digit_integer) && (p != pend) && Utils.is_integer(*p))
+          while ((i < minimal_nineteen_digit_integer) && (p != pend) && Utils.is_integer(*p, out uint cMinus0))
           {
-            i = i * 10 + (ulong)(*p - '0');
+            i = i * 10 + (ulong)cMinus0;
             ++p;
           }
           if (i >= minimal_nineteen_digit_integer)
@@ -552,9 +549,9 @@ namespace csFastFloat
           { // We have a value with a fractional component.
             p++; // skip the '.'
             char* first_after_period = p;
-            while ((i < minimal_nineteen_digit_integer) && (p != pend) && Utils.is_integer(*p))
+            while ((i < minimal_nineteen_digit_integer) && (p != pend) && Utils.is_integer(*p, out uint cMinus0))
             {
-              i = i * 10 + (ulong)(*p - '0');
+              i = i * 10 + (ulong)cMinus0;
               ++p;
             }
             exponent = first_after_period - p + exp_number;

@@ -1,16 +1,10 @@
-﻿using csFastFloat.Enums;
-using csFastFloat.Structures;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
+﻿using System;
+using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using System.Text;
-
-[assembly: InternalsVisibleTo("TestcsFastFloat")]
-
-[assembly: InternalsVisibleTo("Benchmark")]
-
+using System.Runtime.InteropServices;
+using csFastFloat.Enums;
+using csFastFloat.Structures;
 
 namespace csFastFloat
 {
@@ -20,23 +14,27 @@ namespace csFastFloat
   public static class FastDoubleParser
   {
     private static void ThrowArgumentException() => throw new ArgumentException();
-    public  static double exact_power_of_ten(long power) => Constants.powers_of_ten_double[power];
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public  static double exact_power_of_ten(long power)
+    {
+#if NET5_0
+      Debug.Assert(power < Constants.powers_of_ten_double.Length);
+      ref double tableRef = ref MemoryMarshal.GetArrayDataReference(Constants.powers_of_ten_double);
+      return Unsafe.Add(ref tableRef, (nint)power);
+#else
+      return Constants.powers_of_ten_double[power];
+#endif
 
+    }
 
     public static double ToFloat(bool negative, AdjustedMantissa am)
     {
-      double d;
       ulong word = am.mantissa;
-      word |= (ulong)(am.power2) << DoubleBinaryConstants.mantissa_explicit_bits;
+      word |= (ulong)(uint)(am.power2) << DoubleBinaryConstants.mantissa_explicit_bits;
       word = negative ? word | ((ulong)(1) << DoubleBinaryConstants.sign_index) : word;
 
-      unsafe
-      {
-        Buffer.MemoryCopy(&word, &d, sizeof(double), sizeof(double));
-      }
-
-      return d;
+      return BitConverter.Int64BitsToDouble((long)word);
     }    
     
     public  static double FastPath(ParsedNumberString pns)
@@ -63,16 +61,16 @@ namespace csFastFloat
 
       fixed (char* pStart = s)
       {
-        return ParseDouble(pStart, pStart + s.Length, expectedFormat, decimal_separator);
+        return ParseDouble(pStart, pStart + (uint)s.Length, expectedFormat, decimal_separator);
       }
     }
 
 
     public static unsafe double ParseDouble(ReadOnlySpan<char> s, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
     {
-      fixed(char* pStart = s)
+      fixed (char* pStart = s)
       {
-        return ParseDouble(pStart, pStart + s.Length, expectedFormat, decimal_separator);
+        return ParseDouble(pStart, pStart + (uint)s.Length, expectedFormat, decimal_separator);
       }
     }
 
@@ -133,10 +131,8 @@ namespace csFastFloat
 
       if ((w == 0) || (q < DoubleBinaryConstants.smallest_power_of_ten))
       {
-        answer.power2 = 0;
-        answer.mantissa = 0;
         // result should be zero
-        return answer;
+        return default;
       }
       if (q > DoubleBinaryConstants.largest_power_of_ten)
       {
@@ -239,23 +235,13 @@ namespace csFastFloat
     }
 
 
-
-
-    static readonly byte[] powers = {
-        0,  3,  6,  9,  13, 16, 19, 23, 26, 29, //
-        33, 36, 39, 43, 46, 49, 53, 56, 59,     //
-    };
-
-
-        internal static AdjustedMantissa ComputeFloat(DecimalInfo d)
+    internal static AdjustedMantissa ComputeFloat(DecimalInfo d)
     {
       AdjustedMantissa answer = new AdjustedMantissa();
       if (d.num_digits == 0)
       {
         // should be zero
-        answer.power2 = 0;
-        answer.mantissa = 0;
-        return answer;
+        return default;
       }
       // At this point, going further, we can assume that d.num_digits > 0.
       //
@@ -270,9 +256,7 @@ namespace csFastFloat
         // We have something smaller than 1e-324 which is always zero
         // in binary64 and binary32.
         // It should be zero.
-        answer.power2 = 0;
-        answer.mantissa = 0;
-        return answer;
+        return default;
       }
       else if (d.decimal_point >= 310)
       {
@@ -289,7 +273,7 @@ namespace csFastFloat
       while (d.decimal_point > 0)
       {
         uint n = (uint)(d.decimal_point);
-        int shift = (n < num_powers) ? powers[n] : max_shift;
+        int shift = (n < num_powers) ? Constants.get_powers(n) : max_shift;
 
         d.decimal_right_shift(shift);
         if (d.decimal_point < -Constants.decimal_point_range)
@@ -318,7 +302,7 @@ namespace csFastFloat
         else
         {
           uint n = (uint)(-d.decimal_point);
-          shift = (n < num_powers) ? powers[n] : max_shift;
+          shift = (n < num_powers) ? Constants.get_powers(n) : max_shift;
         }
 
         d.decimal_left_shift(shift);
