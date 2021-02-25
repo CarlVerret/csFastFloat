@@ -67,6 +67,12 @@ namespace TestcsFastFloat.Tests.ff_suppl_tests
           double d = FastDoubleParser.ParseDouble(sut[3]);
           Assert.True(_d == d);
 
+          // parse and assert equality
+          float f_span = FastFloatParser.ParseFloat(sut[3].AsSpan());
+          Assert.True(_f == f_span);
+          double d_span = FastDoubleParser.ParseDouble(sut[3].AsSpan());
+          Assert.True(_d == d_span);
+
          // parse and assert equality
           float f_utf8 = FastFloatParser.ParseFloat(System.Text.Encoding.UTF8.GetBytes(sut[3]));
           Assert.True(_f == f_utf8);

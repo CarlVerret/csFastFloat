@@ -229,7 +229,7 @@ namespace TestcsFastFloat.Tests.Basic
     [InlineData("1.7976931348623158e308", 1.7976931348623157e+308)] // 0x1.fffffffffffffp + 1023)]
     [InlineData("9007199254740993.0", 9007199254740992.0)] // 0x1p53)]
     [Theory]
-    private void TestGeneral_Float(string sut, double expected_value)
+    private void TestGeneral_Double(string sut, double expected_value)
     {
       Assert.Equal(expected_value, FastDoubleParser.ParseDouble(sut));
       Assert.Equal(expected_value, FastDoubleParser.ParseDouble(sut.AsSpan()));
