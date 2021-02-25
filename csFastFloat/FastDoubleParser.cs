@@ -117,7 +117,7 @@ namespace csFastFloat
       return ToFloat(pns.negative, am);
     }
    
-    unsafe static internal Double ParseNumber (byte* first, byte* last, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
+    unsafe static internal Double ParseNumber (byte* first, byte* last, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
     {
       while ((first != last) && Utils.is_space(*first))
       {
@@ -149,10 +149,17 @@ namespace csFastFloat
       }
       // If we called compute_float<binary_format<T>>(pns.exponent, pns.mantissa) and we have an invalid power (am.power2 < 0),
       // then we need to go the long way around again. This is very uncommon.
-      if (am.power2 < 0) { am = ParseLongMantissa(first, last, (byte)decimal_separator); }
+      if (am.power2 < 0) { am = ParseLongMantissa(first, last, decimal_separator); }
       return ToFloat(pns.negative, am);
     }
 
+    public static unsafe double ParseDouble(ReadOnlySpan<byte> s, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
+    {
+      fixed(byte* pStart = s)
+      {
+        return ParseNumber(pStart, pStart + s.Length, expectedFormat, decimal_separator);
+      }
+    }
 
     /// <summary>
     ///

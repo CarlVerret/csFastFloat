@@ -42,8 +42,7 @@ namespace csFastFloat
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     unsafe internal static uint parse_eight_digits_unrolled(byte* chars)
     {
-      ulong val;
-      Buffer.MemoryCopy(chars, &val, sizeof(ulong), sizeof(ulong));
+      ulong val = Unsafe.ReadUnaligned<ulong>(chars);
       return parse_eight_digits_unrolled(val);
     }
 
@@ -60,8 +59,7 @@ namespace csFastFloat
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     unsafe internal static bool is_made_of_eight_digits_fast(byte* chars)
     {
-      ulong val;
-      Buffer.MemoryCopy(&chars, &val, 8, 8);
+      ulong val = Unsafe.ReadUnaligned<ulong>(chars);
       return is_made_of_eight_digits_fast(val);
     }
 

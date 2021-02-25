@@ -109,7 +109,7 @@ namespace csFastFloat
     }
 
 
-    unsafe static internal float ParseNumber(byte* first, byte* last, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
+    unsafe static internal float ParseNumber(byte* first, byte* last, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
     {
       while ((first != last) && Utils.is_space(*first))
       {
@@ -144,7 +144,13 @@ namespace csFastFloat
       if (am.power2 < 0) { am = ParseLongMantissa(first, last, (byte)decimal_separator); }
       return ToFloat(pns.negative, am);
     }
-
+    public static unsafe double ParseFloat(ReadOnlySpan<byte> s, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
+    {
+      fixed(byte* pStart = s)
+      {
+        return ParseNumber(pStart, pStart + s.Length, expectedFormat, decimal_separator);
+      }
+    }
 
     /// <summary>
     ///

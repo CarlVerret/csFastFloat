@@ -82,9 +82,9 @@ Job=.NET Core 5.0  Runtime=.NET Core 5.0
 
 # Usage
 
-Two functions are available.  ParseDouble and ParseFloat.
+Two functions are available: `FastDoubleParser.ParseDouble` and `FastFloatParser.ParseFloat`.
 
-String, char * and ReadOnlySpan<char> are supported inputs.
+`String` and `ReadOnlySpan<char>` are supported inputs.
 
 ```C#
 using csFastFloat;
@@ -99,6 +99,10 @@ foreach (string l in lines)
         y = FastFloatParser.ParseFloat(l);
 }
 ```
+
+Input strings are expected to be valid UTF-16.
+
+For UTF-8 or ASCII inputs, you may pass a `ReadOnlySpan<byte>` argument.
 
 # Testing
 
