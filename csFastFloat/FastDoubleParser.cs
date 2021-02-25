@@ -455,12 +455,21 @@ namespace csFastFloat
 
     unsafe static internal double HandleInvalidInput(byte* first, byte* last)
     {
+      // C# does not (yet) allow literal ASCII strings (it uses UTF-16), so
+      // we need to use byte arrays.
+      // "infinity"  string in ASCII, e.g., 105 = i
       ReadOnlySpan<byte> infinity_string = new byte[]{105, 110, 102, 105, 110, 105, 116, 121};
+      // "inf" string in ASCII
       ReadOnlySpan<byte> inf_string = new byte[]{105, 110, 102};
+      // "+inf" string in ASCII
       ReadOnlySpan<byte> pinf_string = new byte[]{43, 105, 110, 102};
+      // "-inf" string in ASCII
       ReadOnlySpan<byte> minf_string = new byte[]{5, 105, 110, 102};
+      // "nan" string in ASCII
       ReadOnlySpan<byte> nan_string = new byte[]{110, 97, 110};
+      // "-nan" string in ASCII
       ReadOnlySpan<byte> mnan_string = new byte[]{45, 110, 97, 110};
+      // "+nan" string in ASCII
       ReadOnlySpan<byte> pnan_string = new byte[]{43, 110, 97, 110};
 
       if (last - first >= 3)
