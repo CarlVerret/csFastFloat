@@ -23,6 +23,7 @@ namespace csFastFloat.Benchmark
 public class FFBencmark
 {
   private string[] _lines;
+  private byte[][] _linesUtf8;
 
   private class Config : ManualConfig
   {
@@ -34,6 +35,20 @@ public class FFBencmark
     }
   }
 
+  [Benchmark(Description = "Utf8Parser")]
+  public double Utf8Parser()
+  {
+    double max = double.MinValue;
+
+    foreach (byte[] l in _linesUtf8)
+    {
+      if (!System.Buffers.Text.Utf8Parser.TryParse(l, out double d, out int consumed) || consumed != l.Length)
+        throw new InvalidOperationException();
+
+      max = d > max ? d : max;
+    }
+    return max;
+  }
 
   [Benchmark(Description = "FastFloat.ParseDouble()")]
   public double FastParser_()
@@ -98,6 +113,7 @@ public class FFBencmark
   {
     Console.WriteLine("reading data");
     _lines = System.IO.File.ReadAllLines(FileName);
+    _linesUtf8 = Array.ConvertAll(_lines, System.Text.Encoding.UTF8.GetBytes);
   }
 }
 
