@@ -415,7 +415,7 @@ namespace csFastFloat.Structures
     // UTF-8/ASCII inputs
     unsafe internal static DecimalInfo parse_decimal(byte* p, byte* pend, byte decimal_separator)
     {
-      DecimalInfo answer = new DecimalInfo() { negative = (*p == '-'), digits = new byte[Constants.max_digits] };
+      DecimalInfo answer = new DecimalInfo() { negative = (*p == '-') };
 
       if ((*p == '-') || (*p == '+'))
       {
@@ -426,11 +426,11 @@ namespace csFastFloat.Structures
       {
         ++p;
       }
-      while ((p != pend) && Utils.is_integer(*p))
+      while ((p != pend) && Utils.is_integer(*p, out uint digit))
       {
         if (answer.num_digits < Constants.max_digits)
         {
-          answer.digits[answer.num_digits] = (byte)(*p - '0');
+          answer.digits[answer.num_digits] = (byte)digit;
         }
         answer.num_digits++;
         ++p;
@@ -448,24 +448,11 @@ namespace csFastFloat.Structures
             ++p;
           }
         }
-        while ((p + 8 <= pend) && (answer.num_digits + 8 < Constants.max_digits)) 
-        {
-          ulong val;
-          Buffer.MemoryCopy(p, &val, sizeof(ulong), sizeof(ulong));
-          if (!Utils.is_made_of_eight_digits_fast(val)) { break; }
-          val -= 0x3030303030303030;
-          fixed (byte* location = answer.digits)
-          {
-            Buffer.MemoryCopy(location + answer.num_digits, p, sizeof(ulong), sizeof(ulong));
-          }
-          answer.num_digits += 8;
-          p += 8;
-        }
-        while ((p != pend) && Utils.is_integer(*p))
+        while ((p != pend) && Utils.is_integer(*p, out uint digit))
         {
           if (answer.num_digits < Constants.max_digits)
           {
-            answer.digits[answer.num_digits] = (byte)(*p - '0');
+            answer.digits[answer.num_digits] = (byte)digit;
           }
           answer.num_digits++;
           ++p;
@@ -509,12 +496,11 @@ namespace csFastFloat.Structures
           ++p;
         }
         int exp_number = 0; // exponential part
-        while ((p != pend) && Utils.is_integer(*p))
+        while ((p != pend) && Utils.is_integer(*p, out uint digit))
         {
-          byte digit = (byte)(*p - '0');
           if (exp_number < 0x10000)
           {
-            exp_number = 10 * exp_number + digit;
+            exp_number = 10 * exp_number + (int)digit;
           }
           ++p;
         }
