@@ -419,7 +419,7 @@ namespace csFastFloat
         {
           return answer;
         }
-        if (!Utils.is_integer(*p) && (*p != decimal_separator)) // culture info ?
+        if (!Utils.is_integer(*p, out uint _) && (*p != decimal_separator)) // culture info ?
         { // a  sign must be followed by an integer or the dot
           return answer;
         }
@@ -428,12 +428,11 @@ namespace csFastFloat
 
       ulong i = 0; // an unsigned int avoids signed overflows (which are bad)
 
-      while ((p != pend) && Utils.is_integer(*p))
+      while ((p != pend) && Utils.is_integer(*p, out uint cMinus0))
       {
         // a multiplication by 10 is cheaper than an arbitrary integer
         // multiplication
-        i = 10 * i +
-            (ulong)(*p - '0'); // might overflow, we will handle the overflow later
+        i = 10 * i + (ulong)cMinus0; // might overflow, we will handle the overflow later
         ++p;
       }
       char* end_of_integer_part = p;
@@ -442,9 +441,9 @@ namespace csFastFloat
       if ((p != pend) && (*p == decimal_separator))
       {
         ++p;
-        while ((p != pend) && Utils.is_integer(*p))
+        while ((p != pend) && Utils.is_integer(*p, out uint cMinus0))
         {
-          byte digit = (byte)(*p - '0');
+          byte digit = (byte)cMinus0;
           ++p;
           i = i * 10 + digit; // in rare cases, this will overflow, but that's ok
         }
@@ -471,7 +470,7 @@ namespace csFastFloat
         {
           ++p;
         }
-        if ((p == pend) || !Utils.is_integer(*p))
+        if ((p == pend) || !Utils.is_integer(*p, out uint _))
         {
           if (expectedFormat != chars_format.is_fixed)
           {
@@ -483,9 +482,9 @@ namespace csFastFloat
         }
         else
         {
-          while ((p != pend) && Utils.is_integer(*p))
+          while ((p != pend) && Utils.is_integer(*p, out uint cMinus0))
           {
-            byte digit = (byte)(*p - '0');
+            byte digit = (byte)cMinus0;
             if (exp_number < 0x10000)
             {
               exp_number = 10 * exp_number + digit;
@@ -528,9 +527,9 @@ namespace csFastFloat
           i = 0;
           p = start_digits;
           const ulong minimal_nineteen_digit_integer = 1000000000000000000;
-          while ((i < minimal_nineteen_digit_integer) && (p != pend) && Utils.is_integer(*p))
+          while ((i < minimal_nineteen_digit_integer) && (p != pend) && Utils.is_integer(*p, out uint cMinus0))
           {
-            i = i * 10 + (ulong)(*p - '0');
+            i = i * 10 + (ulong)cMinus0;
             ++p;
           }
           if (i >= minimal_nineteen_digit_integer)
@@ -541,9 +540,9 @@ namespace csFastFloat
           { // We have a value with a fractional component.
             p++; // skip the '.'
             char* first_after_period = p;
-            while ((i < minimal_nineteen_digit_integer) && (p != pend) && Utils.is_integer(*p))
+            while ((i < minimal_nineteen_digit_integer) && (p != pend) && Utils.is_integer(*p, out uint cMinus0))
             {
-              i = i * 10 + (ulong)(*p - '0');
+              i = i * 10 + (ulong)cMinus0;
               ++p;
             }
             exponent = first_after_period - p + exp_number;

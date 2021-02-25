@@ -323,11 +323,11 @@ namespace csFastFloat.Structures
       {
         ++p;
       }
-      while ((p != pend) && Utils.is_integer(*p))
+      while ((p != pend) && Utils.is_integer(*p, out uint cMinus0))
       {
         if (answer.num_digits < Constants.max_digits)
         {
-          answer.digits[answer.num_digits] = (byte)(*p - '0');
+          answer.digits[answer.num_digits] = (byte)cMinus0;
         }
         answer.num_digits++;
         ++p;
@@ -360,11 +360,11 @@ namespace csFastFloat.Structures
         //          p += 8;
         //        }
         //#endif
-        while ((p != pend) && Utils.is_integer(*p))
+        while ((p != pend) && Utils.is_integer(*p, out uint cMinus0))
         {
           if (answer.num_digits < Constants.max_digits)
           {
-            answer.digits[answer.num_digits] = (byte)(*p - '0');
+            answer.digits[answer.num_digits] = (byte)cMinus0;
           }
           answer.num_digits++;
           ++p;
@@ -408,9 +408,9 @@ namespace csFastFloat.Structures
           ++p;
         }
         int exp_number = 0; // exponential part
-        while ((p != pend) && Utils.is_integer(*p))
+        while ((p != pend) && Utils.is_integer(*p, out uint cMinus0))
         {
-          byte digit = (byte)(*p - '0');
+          byte digit = (byte)cMinus0;
           if (exp_number < 0x10000)
           {
             exp_number = 10 * exp_number + digit;
