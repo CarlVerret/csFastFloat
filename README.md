@@ -84,6 +84,8 @@ Job=.NET Core 5.0  Runtime=.NET Core 5.0
 
 Two functions are available.  ParseDouble and ParseFloat.
 
+String, char * and ReadOnlySpan<char> are supported inputs.
+
 ```C#
 using csFastFloat;
 
