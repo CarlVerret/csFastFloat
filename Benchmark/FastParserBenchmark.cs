@@ -50,6 +50,19 @@ public class FFBencmark
     return max;
   }
 
+  [Benchmark(Description = "FastFloat.ParseDouble() - UTF8")]
+  public double FastParserUtf8_()
+  {
+    double max = double.MinValue;
+
+    foreach (byte[] l in _linesUtf8)
+    {
+      double d = FastDoubleParser.ParseDouble(l);
+      max = d > max ? d : max;
+    }
+    return max;
+  }
+
   [Benchmark(Description = "FastFloat.ParseDouble()")]
   public double FastParser_()
   {
