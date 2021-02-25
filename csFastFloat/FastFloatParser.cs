@@ -29,12 +29,12 @@ namespace csFastFloat
 
     public static unsafe float ToFloat(bool negative, AdjustedMantissa am)
     {
-      float d;
       ulong word = am.mantissa;
       word |= (ulong)(am.power2) << FloatBinaryConstants.mantissa_explicit_bits;
       word = negative ? word | ((ulong)(1) << FloatBinaryConstants.sign_index) : word;
 
-      Unsafe.CopyBlockUnaligned(&d, &word, sizeof(float));
+      float d = 0;
+      Unsafe.Copy(ref d, &word);
 
       return d;
     }
