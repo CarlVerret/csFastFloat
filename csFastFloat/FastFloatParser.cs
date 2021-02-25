@@ -10,6 +10,8 @@ namespace csFastFloat
 {
   public static class FastFloatParser
   {
+    private static void ThrowArgumentException() => throw new ArgumentException();
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float exact_power_of_ten(long power)
     {
@@ -50,17 +52,23 @@ namespace csFastFloat
     }
 
 
-    public static float ParseFloat(string s, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
+    public static unsafe float ParseFloat(string s, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
     {
       if (s == null)
-        throw new ArgumentNullException(nameof(s));
+        ThrowArgumentNull();
+        static void ThrowArgumentNull() => throw new ArgumentNullException(nameof(s));
 
-      unsafe
+      fixed (char* pStart = s)
       {
-        fixed (char* pStart = s)
-        {
-          return ParseFloat(pStart, pStart + (uint)s.Length, expectedFormat, decimal_separator);
-        }
+        return ParseFloat(pStart, pStart + (uint)s.Length, expectedFormat, decimal_separator);
+      }
+    }
+
+    public static unsafe float ParseFloat(ReadOnlySpan<char> s, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
+    {
+      fixed (char* pStart = s)
+      {
+        return ParseFloat(pStart, pStart + (uint)s.Length, expectedFormat, decimal_separator);
       }
     }
 
@@ -77,7 +85,7 @@ namespace csFastFloat
       }
       if (first == last)
       {
-        throw new ArgumentException();
+        ThrowArgumentException();
       }
       ParsedNumberString pns = ParseNumberString(first, last, expectedFormat);
       if (!pns.valid)
@@ -398,7 +406,8 @@ namespace csFastFloat
           }
         }
       }
-      throw new ArgumentException();
+      ThrowArgumentException();
+      return 0f;
     }
 
 
