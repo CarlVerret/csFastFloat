@@ -149,7 +149,7 @@ namespace csFastFloat
       if (am.power2 < 0) { am = ParseLongMantissa(first, last, (byte)decimal_separator); }
       return ToFloat(pns.negative, am);
     }
-    public static unsafe double ParseFloat(ReadOnlySpan<byte> s, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
+    public static unsafe float ParseFloat(ReadOnlySpan<byte> s, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
     {
       fixed(byte* pStart = s)
       {

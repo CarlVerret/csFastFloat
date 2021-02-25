@@ -229,8 +229,12 @@ namespace TestcsFastFloat.Tests.Basic
     [InlineData("1.7976931348623158e308", 1.7976931348623157e+308)] // 0x1.fffffffffffffp + 1023)]
     [InlineData("9007199254740993.0", 9007199254740992.0)] // 0x1p53)]
     [Theory]
-    private void TestGeneral_Double(string sut, double expected_value) => Assert.Equal(expected_value, FastDoubleParser.ParseDouble(sut));
-
+    private void TestGeneral_Float(string sut, double expected_value)
+    {
+      Assert.Equal(expected_value, FastDoubleParser.ParseDouble(sut));
+      Assert.Equal(expected_value, FastDoubleParser.ParseDouble(sut.AsSpan()));
+      Assert.Equal(expected_value, FastDoubleParser.ParseDouble(System.Text.Encoding.UTF8.GetBytes(sut)));
+    }
     [Trait("Category", "Smoke Test")]
     [InlineData("1.1754941406275178592461758986628081843312458647327962400313859427181746759860647699724722770042717456817626953125", 655, "", 1.17549419)]
     [InlineData("1.1754941406275178592461758986628081843312458647327962400313859427181746759860647699724722770042717456817626953125", 656, "", 1.17549419)]
@@ -240,7 +244,6 @@ namespace TestcsFastFloat.Tests.Basic
     [InlineData("1.1754941406275178592461758986628081843312458647327962400313859427181746759860647699724722770042717456817626953125", 1000, "e-38", 1.1754941E-38)]
     [Theory]
     private void TestGeneral_Float_appendZeros(string sut, int zeros, string exp, float expected_value) => Assert.Equal(expected_value, FastFloatParser.ParseFloat(sut.PadRight(zeros, '0') + exp));
-
     // //verify32(1.00000006e+09f)]
     ////verify32(1.4012984643e-45f)]
     ////verify32(1.1754942107e-38f)]
@@ -311,6 +314,7 @@ namespace TestcsFastFloat.Tests.Basic
     {
       Assert.Equal(expected_value, FastFloatParser.ParseFloat(sut));
       Assert.Equal(expected_value, FastFloatParser.ParseFloat(sut.AsSpan()));
+      Assert.Equal(expected_value, FastFloatParser.ParseFloat(System.Text.Encoding.UTF8.GetBytes(sut)));
     }
   }
 }
