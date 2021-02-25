@@ -659,7 +659,7 @@ namespace csFastFloat
         {
           return answer;
         }
-        if (!Utils.is_integer(*p, out uint digit) && (*p != decimal_separator)) // culture info ?
+        if (!Utils.is_integer(*p, out uint _) && (*p != decimal_separator)) // culture info ?
         { // a  sign must be followed by an integer or the dot
           return answer;
         }
@@ -718,7 +718,7 @@ namespace csFastFloat
         {
           ++p;
         }
-        if ((p == pend) || !Utils.is_integer(*p, out uint digit))
+        if ((p == pend) || !Utils.is_integer(*p, out uint _))
         {
           if (expectedFormat != chars_format.is_fixed)
           {
