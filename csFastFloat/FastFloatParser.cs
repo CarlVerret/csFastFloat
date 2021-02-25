@@ -122,7 +122,7 @@ namespace csFastFloat
       }
       if (first == last)
       {
-        throw new ArgumentException();
+        ThrowArgumentException();
       }
       ParsedNumberString pns = ParseNumberString(first, last, expectedFormat);
       if (!pns.valid)
@@ -461,6 +461,8 @@ namespace csFastFloat
 
     unsafe static internal float HandleInvalidInput(byte* first, byte* last)
     {
+      // C# does not (yet) allow literal ASCII strings (it uses UTF-16), so
+      // we need to use byte arrays.
       // "infinity"  string in ASCII, e.g., 105 = i
       ReadOnlySpan<byte> infinity_string = new byte[]{105, 110, 102, 105, 110, 105, 116, 121};
       // "inf" string in ASCII
@@ -502,7 +504,8 @@ namespace csFastFloat
           }
         }
       }
-      throw new ArgumentException();
+      ThrowArgumentException();
+      return 0f;
     }
 
 

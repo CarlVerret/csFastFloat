@@ -123,7 +123,7 @@ namespace csFastFloat
       }
       if (first == last)
       {
-        throw new ArgumentException();
+        ThrowArgumentException();
       }
       ParsedNumberString pns = ParsedNumberString.ParseNumberString(first, last, expectedFormat);
       if (!pns.valid)
@@ -498,7 +498,8 @@ namespace csFastFloat
           }
         }
       }
-      throw new ArgumentException();
+      ThrowArgumentException();
+      return 0d;
     }
 
    
