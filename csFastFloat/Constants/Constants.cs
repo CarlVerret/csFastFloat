@@ -27,7 +27,7 @@ namespace csFastFloat
     {
       Debug.Assert(n < powersTable.Length);
       ref byte tableRef = ref MemoryMarshal.GetReference(powersTable);
-      return Unsafe.AddByteOffset(ref tableRef, (IntPtr)n);
+      return Unsafe.AddByteOffset(ref tableRef, (nint)n);
     }
 
     private static ReadOnlySpan<byte> powersTable => new byte[19] {
@@ -41,7 +41,7 @@ namespace csFastFloat
 #if NET5_0
       Debug.Assert(index < power_of_five_128.Length);
       ref ulong tableRef = ref MemoryMarshal.GetArrayDataReference(power_of_five_128);
-      return Unsafe.Add(ref tableRef, (IntPtr)(uint)index);
+      return Unsafe.Add(ref tableRef, (nint)(uint)index);
 # else
       return power_of_five_128[index];
 #endif

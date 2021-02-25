@@ -40,7 +40,7 @@ namespace csFastFloat.Structures
         // a multiplication by 10 is cheaper than an arbitrary integer
         // multiplication
         i = 10 * i +
-            (ulong)(*p - '0'); // might overflow, we will handle the overflow later
+            (ulong)(uint)(*p - '0'); // might overflow, we will handle the overflow later
         ++p;
       }
       char* end_of_integer_part = p;
@@ -137,7 +137,7 @@ namespace csFastFloat.Structures
           const ulong minimal_nineteen_digit_integer = 1000000000000000000;
           while ((i < minimal_nineteen_digit_integer) && (p != pend) && Utils.is_integer(*p))
           {
-            i = i * 10 + (ulong)(*p - '0');
+            i = i * 10 + (ulong)(uint)(*p - '0');
             ++p;
           }
           if (i >= minimal_nineteen_digit_integer)
@@ -150,7 +150,7 @@ namespace csFastFloat.Structures
             char* first_after_period = p;
             while ((i < minimal_nineteen_digit_integer) && (p != pend) && Utils.is_integer(*p))
             {
-              i = i * 10 + (ulong)(*p - '0');
+              i = i * 10 + (ulong)(uint)(*p - '0');
               ++p;
             }
             exponent = first_after_period - p + exp_number;

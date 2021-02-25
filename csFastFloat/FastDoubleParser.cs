@@ -1,18 +1,10 @@
-﻿using csFastFloat.Enums;
-using csFastFloat.Structures;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Diagnostics;
-using System.Globalization;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text;
-
-[assembly: InternalsVisibleTo("TestcsFastFloat")]
-
-[assembly: InternalsVisibleTo("Benchmark")]
-
+using csFastFloat.Enums;
+using csFastFloat.Structures;
 
 namespace csFastFloat
 {
@@ -27,17 +19,17 @@ namespace csFastFloat
 #if NET5_0
       Debug.Assert(power < Constants.powers_of_ten_double.Length);
       ref double tableRef = ref MemoryMarshal.GetArrayDataReference(Constants.powers_of_ten_double);
-      return Unsafe.Add(ref tableRef, (IntPtr)power);
+      return Unsafe.Add(ref tableRef, (nint)power);
 #else
       return Constants.powers_of_ten_double[power];
 #endif
 
     }
 
-    public static unsafe double ToFloat(bool negative, AdjustedMantissa am)
+    public static double ToFloat(bool negative, AdjustedMantissa am)
     {
       ulong word = am.mantissa;
-      word |= (ulong)(am.power2) << DoubleBinaryConstants.mantissa_explicit_bits;
+      word |= (ulong)(uint)(am.power2) << DoubleBinaryConstants.mantissa_explicit_bits;
       word = negative ? word | ((ulong)(1) << DoubleBinaryConstants.sign_index) : word;
 
       return BitConverter.Int64BitsToDouble((long)word);
@@ -68,7 +60,7 @@ namespace csFastFloat
       {
         fixed (char* pStart = s)
         {
-          return ParseDouble(pStart, pStart + s.Length, expectedFormat, decimal_separator);
+          return ParseDouble(pStart, pStart + (uint)s.Length, expectedFormat, decimal_separator);
         }
       }
     }
@@ -130,10 +122,8 @@ namespace csFastFloat
 
       if ((w == 0) || (q < DoubleBinaryConstants.smallest_power_of_ten))
       {
-        answer.power2 = 0;
-        answer.mantissa = 0;
         // result should be zero
-        return answer;
+        return default;
       }
       if (q > DoubleBinaryConstants.largest_power_of_ten)
       {
@@ -242,9 +232,7 @@ namespace csFastFloat
       if (d.num_digits == 0)
       {
         // should be zero
-        answer.power2 = 0;
-        answer.mantissa = 0;
-        return answer;
+        return default;
       }
       // At this point, going further, we can assume that d.num_digits > 0.
       //
@@ -259,9 +247,7 @@ namespace csFastFloat
         // We have something smaller than 1e-324 which is always zero
         // in binary64 and binary32.
         // It should be zero.
-        answer.power2 = 0;
-        answer.mantissa = 0;
-        return answer;
+        return default;
       }
       else if (d.decimal_point >= 310)
       {

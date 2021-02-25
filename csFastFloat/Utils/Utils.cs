@@ -15,8 +15,8 @@ namespace csFastFloat
 
     public value128(ulong h, ulong l) : this()
     {
-      this.high = h;
-      this.low = l;
+      high = h;
+      low = l;
     }
   }
 
@@ -117,7 +117,7 @@ namespace csFastFloat
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-        byte b = Unsafe.AddByteOffset(ref MemoryMarshal.GetReference(is_space_table), (IntPtr)c); // avoid bound checks
+        byte b = Unsafe.AddByteOffset(ref MemoryMarshal.GetReference(is_space_table), (nint)c); // avoid bound checks
         return Unsafe.As<byte, bool>(ref b);
     }
 

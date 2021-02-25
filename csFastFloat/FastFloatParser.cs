@@ -1,15 +1,10 @@
-﻿using csFastFloat.Enums;
-using csFastFloat.Structures;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-
-[assembly: InternalsVisibleTo("TestcsFastFloat")]
-
-[assembly: InternalsVisibleTo("Benchmark")]
-
+using csFastFloat.Enums;
+using csFastFloat.Structures;
 
 namespace csFastFloat
 {
@@ -21,7 +16,7 @@ namespace csFastFloat
 #if NET5_0
       Debug.Assert(power < Constants.powers_of_ten_float.Length);
       ref float tableRef = ref MemoryMarshal.GetArrayDataReference(Constants.powers_of_ten_float);
-      return Unsafe.Add(ref tableRef, (IntPtr)power);
+      return Unsafe.Add(ref tableRef, (nint)power);
 #else
       return Constants.powers_of_ten_float[power];
 #endif
@@ -30,7 +25,7 @@ namespace csFastFloat
     public static unsafe float ToFloat(bool negative, AdjustedMantissa am)
     {
       ulong word = am.mantissa;
-      word |= (ulong)(am.power2) << FloatBinaryConstants.mantissa_explicit_bits;
+      word |= (ulong)(uint)(am.power2) << FloatBinaryConstants.mantissa_explicit_bits;
       word = negative ? word | ((ulong)(1) << FloatBinaryConstants.sign_index) : word;
 
       float d = 0;
@@ -64,7 +59,7 @@ namespace csFastFloat
       {
         fixed (char* pStart = s)
         {
-          return ParseFloat(pStart, pStart + s.Length, expectedFormat, decimal_separator);
+          return ParseFloat(pStart, pStart + (uint)s.Length, expectedFormat, decimal_separator);
         }
       }
     }
@@ -243,9 +238,7 @@ namespace csFastFloat
       if (d.num_digits == 0)
       {
         // should be zero
-        answer.power2 = 0;
-        answer.mantissa = 0;
-        return answer;
+        return default;
       }
       // At this point, going further, we can assume that d.num_digits > 0.
       //
@@ -260,9 +253,7 @@ namespace csFastFloat
         // We have something smaller than 1e-324 which is always zero
         // in binary64 and binary32.
         // It should be zero.
-        answer.power2 = 0;
-        answer.mantissa = 0;
-        return answer;
+        return default;
       }
       else if (d.decimal_point >= 310)
       {
