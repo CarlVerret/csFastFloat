@@ -115,7 +115,7 @@ namespace csFastFloat
       return ToFloat(pns.negative, am);
     }
    
-    unsafe static internal Double ParseNumber (byte* first, byte* last, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
+    unsafe static internal double ParseNumber (byte* first, byte* last, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
     {
       while ((first != last) && Utils.is_space(*first))
       {
@@ -153,9 +153,9 @@ namespace csFastFloat
 
     public static unsafe double ParseDouble(ReadOnlySpan<byte> s, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
     {
-      fixed(byte* pStart = s)
+      fixed (byte* pStart = s)
       {
-        return ParseNumber(pStart, pStart + s.Length, expectedFormat, decimal_separator);
+        return ParseNumber(pStart, pStart + (uint)s.Length, expectedFormat, decimal_separator);
       }
     }
 

@@ -151,9 +151,9 @@ namespace csFastFloat
     }
     public static unsafe float ParseFloat(ReadOnlySpan<byte> s, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
     {
-      fixed(byte* pStart = s)
+      fixed (byte* pStart = s)
       {
-        return ParseNumber(pStart, pStart + s.Length, expectedFormat, decimal_separator);
+        return ParseNumber(pStart, pStart + (uint)s.Length, expectedFormat, decimal_separator);
       }
     }
 
