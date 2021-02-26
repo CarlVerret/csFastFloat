@@ -30,7 +30,7 @@ namespace csFastFloat
       word |= (ulong)(uint)(am.power2) << FloatBinaryConstants.mantissa_explicit_bits;
       word = negative ? word | ((ulong)(1) << FloatBinaryConstants.sign_index) : word;
       uint truncated_word = (uint) word;
-      return BitConverter.Int32BitsToSingle(truncated_word);
+      return BitConverter.Int32BitsToSingle((int)truncated_word);
     }
 
     public static float FastPath(ParsedNumberString pns)
