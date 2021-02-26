@@ -268,7 +268,6 @@ namespace TestcsFastFloat.Tests.Basic
       Assert.Throws<System.ArgumentException>(() => FastDoubleParser.ParseDouble("some alpha", out nbCarConsummed));
     }
 
-    [Trait("Category", "Smoke Test")]
     [Fact]
     public void ParseDouble_CharConsummed_Works_Scenarios() 
     {
@@ -331,7 +330,7 @@ namespace TestcsFastFloat.Tests.Basic
        
           var res = FastDoubleParser.ParseDouble(kv.Value, out nbCarConsummed);
 
-          sb.AppendLine($"Result : {res} :  Consummed :  { nbCarConsummed }");
+          sb.AppendLine($"Result : {res.ToString(CultureInfo.InvariantCulture)} :  Consummed :  { nbCarConsummed }");
           sb.AppendLine();
       }
 
