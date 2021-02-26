@@ -14,7 +14,7 @@ namespace TestcsFastFloat.Tests.Exaustive
       for (uint w = 0; w <= 0xFFFFFFFF; w++)
       {
         uint word = (uint)(w);
-        float f = BitConverter.Int32BitsToSingle((int)word)
+        float f = BitConverter.Int32BitsToSingle((int)word);
 
         string sut = f.ToString().Replace(",", ".");
 
