@@ -81,7 +81,7 @@ namespace csFastFloat
  
     unsafe static internal double ParseNumber(char* first, char* last, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
     {
-      while ((first != last) && Utils.is_space((byte)(*first)))
+      while ((first != last) && Utils.is_ascii_space(*first))
       {
         first++;
       }
