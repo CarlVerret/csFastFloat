@@ -26,7 +26,7 @@ namespace csFastFloat.Structures
         {
           return answer;
         }
-        if (!Utils.is_integer(*p, out uint _) && (*p != decimal_separator)) // culture info ?
+        if (!Utils.is_integer(*p, out _) && (*p != decimal_separator)) // culture info ?
         { // a  sign must be followed by an integer or the dot
           return answer;
         }
@@ -77,7 +77,7 @@ namespace csFastFloat.Structures
         {
           ++p;
         }
-        if ((p == pend) || !Utils.is_integer(*p, out uint _))
+        if ((p == pend) || !Utils.is_integer(*p, out _))
         {
           if (expectedFormat != chars_format.is_fixed)
           {
@@ -177,7 +177,7 @@ namespace csFastFloat.Structures
         {
           return answer;
         }
-        if (!Utils.is_integer(*p, out uint _) && (*p != decimal_separator))
+        if (!Utils.is_integer(*p, out _) && (*p != decimal_separator))
         { // a  sign must be followed by an integer or the dot
           return answer;
         }
@@ -236,7 +236,7 @@ namespace csFastFloat.Structures
         {
           ++p;
         }
-        if ((p == pend) || !Utils.is_integer(*p, out uint _))
+        if ((p == pend) || !Utils.is_integer(*p, out _))
         {
           if (expectedFormat != chars_format.is_fixed)
           {

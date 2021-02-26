@@ -508,7 +508,7 @@ namespace csFastFloat
         {
           return answer;
         }
-        if (!Utils.is_integer(*p, out uint _) && (*p != decimal_separator)) // culture info ?
+        if (!Utils.is_integer(*p, out _) && (*p != decimal_separator)) // culture info ?
         { // a  sign must be followed by an integer or the dot
           return answer;
         }
@@ -559,7 +559,7 @@ namespace csFastFloat
         {
           ++p;
         }
-        if ((p == pend) || !Utils.is_integer(*p, out uint _))
+        if ((p == pend) || !Utils.is_integer(*p, out _))
         {
           if (expectedFormat != chars_format.is_fixed)
           {
@@ -659,7 +659,7 @@ namespace csFastFloat
         {
           return answer;
         }
-        if (!Utils.is_integer(*p, out uint _) && (*p != decimal_separator)) // culture info ?
+        if (!Utils.is_integer(*p, out _) && (*p != decimal_separator)) // culture info ?
         { // a  sign must be followed by an integer or the dot
           return answer;
         }
@@ -718,7 +718,7 @@ namespace csFastFloat
         {
           ++p;
         }
-        if ((p == pend) || !Utils.is_integer(*p, out uint _))
+        if ((p == pend) || !Utils.is_integer(*p, out _))
         {
           if (expectedFormat != chars_format.is_fixed)
           {
