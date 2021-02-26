@@ -134,9 +134,12 @@ namespace csFastFloat
 
     unsafe static internal float ParseNumber(byte* first, byte* last, out long characters_consumed, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
     {
+      var leading_spaces = 0;
+
       while ((first != last) && Utils.is_space(*first))
       {
         first++;
+        leading_spaces++;
       }
       if (first == last)
       {
@@ -147,7 +150,7 @@ namespace csFastFloat
       {
         return HandleInvalidInput(first, last, out characters_consumed);
       }
-      characters_consumed = pns.characters_consumed;
+      characters_consumed = pns.characters_consumed+ leading_spaces;
 
       // Next is Clinger's fast path.
       if (FloatBinaryConstants.min_exponent_fast_path <= pns.exponent && pns.exponent <= FloatBinaryConstants.max_exponent_fast_path && pns.mantissa <= FloatBinaryConstants.max_mantissa_fast_path && !pns.too_many_digits)

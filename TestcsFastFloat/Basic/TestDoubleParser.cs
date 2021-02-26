@@ -99,7 +99,6 @@ namespace TestcsFastFloat.Tests.Basic
     {
       Dictionary<string, string> sut = new Dictionary<string, string>();
 
-      // TODO:
       sut.Add("leading zeros", "001");
       sut.Add("leading zeros neg", "-001");
 
@@ -259,5 +258,113 @@ namespace TestcsFastFloat.Tests.Basic
     1e287,  1e288,  1e289,  1e290,  1e291,  1e292,  1e293,  1e294,  1e295,
     1e296,  1e297,  1e298,  1e299,  1e300,  1e301,  1e302,  1e303,  1e304,
     1e305,  1e306,  1e307,  1e308};
+
+
+    [Fact]
+    public void ParseDouble_CharConsummed_Throws_OnlyAlpha()
+    {
+      long nbCarConsummed;
+      Assert.Throws<System.ArgumentException>(() => FastDoubleParser.ParseDouble("some alpha", out nbCarConsummed));
+    }
+
+    [Trait("Category", "Smoke Test")]
+    [Fact]
+    public void ParseDouble_CharConsummed_Works_Scenarios() 
+    {
+
+      Dictionary<string, string> sut = new Dictionary<string, string>();
+
+      sut.Add("leading zeros", "001");
+      sut.Add("leading zeros neg", "-001");
+
+      sut.Add("leading spaces", "   1");
+
+
+      sut.Add("zero", "0");
+      sut.Add("zero neg", "-0");
+
+      sut.Add("double", "0.00000000000000212312312");
+      sut.Add("double neg", "-0.00000000000000212312312");
+      sut.Add("int", "1");
+      sut.Add("int neg", "-1");
+
+      sut.Add("autreint ", "123124");
+      sut.Add("autreint neg", "-123124");
+
+      sut.Add("notation scientifique", "4.56E+2");
+      sut.Add("notation scientifique neg", "-4.56E-2");
+
+      sut.Add("notation scientifique 2", "4.5644E+2");
+      sut.Add("notation scientifique 2 neg", "-4.5644E-2");
+
+      sut.Add("notation scientifique 3", "4424.5644E+22");
+      sut.Add("notation scientifique 3 neg", "-4424.5644E-22");
+
+      sut.Add("notation scientifique 4", "4424.5644E+223");
+      sut.Add("notation scientifique 4 neg", "-4424.5644E-223");
+
+      sut.Add("with trailling alpha", "4424.5644E+223 some alpha");
+
+
+
+      sut.Add("nan", "nan");
+      sut.Add("inf", "inf");
+      sut.Add("+nan", "+nan");
+      sut.Add("-nan", "-nan");
+      sut.Add("+inf", "+inf");
+      sut.Add("-inf", "-inf");
+      sut.Add("infinity", "infinity");
+      sut.Add("+infinity", "+infinity");
+      sut.Add("-infinity", "-infinity");
+
+
+
+      StringBuilder sb = new StringBuilder();
+
+      foreach (KeyValuePair<string, string> kv in sut)
+      {
+        sb.AppendLine($"Scenario : {kv.Key} ");
+        sb.AppendLine($"Value   : {kv.Value} ");
+
+        long nbCarConsummed = 0;
+       
+          var res = FastDoubleParser.ParseDouble(kv.Value, out nbCarConsummed);
+
+          sb.AppendLine($"Result : {res} :  Consummed :  { nbCarConsummed }");
+          sb.AppendLine();
+      }
+
+      VerifyData(sb.ToString());
+
+
+    }
+
+
+    [Trait("Category", "Smoke Test")]
+    [Fact]
+    public void ParseDouble_charConsummed_WholeString()
+    {
+
+      string sut = "1.23213 321e10 3132e-1";
+      StringBuilder sb = new StringBuilder();
+
+      long pos = 0;
+      
+      while (pos < sut.Length)
+      {
+        long nbCarConsummed;
+        var res = FastDoubleParser.ParseDouble(sut.AsSpan().Slice((int)pos), out nbCarConsummed);
+        sb.AppendLine($"Sut :{sut.Substring((int)pos)}  Result : {res} :  Consummed :  { nbCarConsummed }");
+        pos += nbCarConsummed;
+      
+      }
+
+      VerifyData(sb.ToString());
+
+
+    }
+
+
+
   }
 }
