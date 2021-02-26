@@ -24,16 +24,13 @@ namespace csFastFloat
 #endif
     }
 
-    public static unsafe float ToFloat(bool negative, AdjustedMantissa am)
+    public static float ToFloat(bool negative, AdjustedMantissa am)
     {
       ulong word = am.mantissa;
       word |= (ulong)(uint)(am.power2) << FloatBinaryConstants.mantissa_explicit_bits;
       word = negative ? word | ((ulong)(1) << FloatBinaryConstants.sign_index) : word;
-
-      float d = 0;
-      Unsafe.Copy(ref d, &word);
-
-      return d;
+      uint truncated_word = (uint) word;
+      return BitConverter.Int32BitsToSingle(truncated_word);
     }
 
     public static float FastPath(ParsedNumberString pns)

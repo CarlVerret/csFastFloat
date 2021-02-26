@@ -13,10 +13,8 @@ namespace TestcsFastFloat.Tests.Exaustive
     {
       for (uint w = 0; w <= 0xFFFFFFFF; w++)
       {
-        float f;
         uint word = (uint)(w);
-
-        Buffer.MemoryCopy(&word, &f, sizeof(float), sizeof(float));
+        float f = BitConverter.Int32BitsToSingle((int)word)
 
         string sut = f.ToString().Replace(",", ".");
 
