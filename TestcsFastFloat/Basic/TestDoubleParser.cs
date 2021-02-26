@@ -3,6 +3,7 @@ using csFastFloat.Enums;
 using csFastFloat.Structures;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using Xunit;
 
@@ -354,7 +355,7 @@ namespace TestcsFastFloat.Tests.Basic
       {
         long nbCarConsummed;
         var res = FastDoubleParser.ParseDouble(sut.AsSpan().Slice((int)pos), out nbCarConsummed);
-        sb.AppendLine($"Sut :{sut.Substring((int)pos)}  Result : {res} :  Consummed :  { nbCarConsummed }");
+        sb.AppendLine($"Sut :{sut.Substring((int)pos)}  Result : {res.ToString(CultureInfo.InvariantCulture)} :  Consummed :  { nbCarConsummed }");
         pos += nbCarConsummed;
       
       }
