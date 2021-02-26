@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 <PropertyGroup>
-    <TargetFrameworks>net5.0;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net5.0;netcoreapp3.1;netstandard2.0</TargetFrameworks>
     <Authors>Carl Verret</Authors>
     <Description>C# port of Daniel Lemire's fast_float fully ported from C++ to C#. It is almost 7 times faster than the standard library in some cases while providing exact results.</Description>
     <Copyright>csFastFloat is licensed under the MIT license</Copyright>
@@ -16,6 +16,10 @@
     <LangVersion>9</LangVersion>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(TargetFramework)'=='net5.0' OR '$(TargetFramework)'=='netcoreapp3.1'">
+    <DefineConstants>$(DefineConstants);HAS_BITOPERATIONS;HAS_INTRINSICS</DefineConstants>
+  </PropertyGroup>
+    
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
@@ -29,5 +33,10 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Condition="'$(TargetFramework)'=='netstandard2.0'" Include="System.Memory" Version="4.5.4" />
+    <PackageReference Condition="'$(TargetFramework)'=='netstandard2.0'" Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
   </ItemGroup>
 </Project>
