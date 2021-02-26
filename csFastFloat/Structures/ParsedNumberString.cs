@@ -7,6 +7,8 @@ namespace csFastFloat.Structures
   {
     internal long exponent;
     internal ulong mantissa;
+  
+    internal long characters_consumed;
     internal bool negative;
     internal bool valid;
     internal bool too_many_digits;
@@ -18,6 +20,7 @@ namespace csFastFloat.Structures
 
       answer.valid = false;
       answer.too_many_digits = false;
+      char* pstart = p;
       answer.negative = (*p == '-');
       if ((*p == '-') || (*p == '+'))
       {
@@ -107,8 +110,8 @@ namespace csFastFloat.Structures
         // If it scientific and not fixed, we have to bail out.
         if ((expectedFormat.HasFlag(chars_format.is_scientific)) && !(expectedFormat.HasFlag(chars_format.is_fixed))) { return answer; }
       }
-      //answer.lastmatch = p;
       answer.valid = true;
+      answer.characters_consumed = p - pstart;
 
       // If we frequently had to deal with long strings of digits,
       // we could extend our code by using a 128-bit integer instead
@@ -169,6 +172,7 @@ namespace csFastFloat.Structures
 
       answer.valid = false;
       answer.too_many_digits = false;
+      byte* pstart = p;
       answer.negative = (*p == '-');
       if ((*p == '-') || (*p == '+'))
       {
@@ -199,9 +203,9 @@ namespace csFastFloat.Structures
       if ((p != pend) && (*p == decimal_separator))
       {
         ++p;
-        if ((p + 8 <= pend) && Utils.is_made_of_eight_digits_fast(p)) 
+        if ((p + 8 <= pend) && Utils.is_made_of_eight_digits_fast(p))
         {
-          i = i * 100000000 + Utils.parse_eight_digits_unrolled(p); 
+          i = i * 100000000 + Utils.parse_eight_digits_unrolled(p);
           p += 8;
           if ((p + 8 <= pend) && Utils.is_made_of_eight_digits_fast(p)) {
             i = i * 100000000 + Utils.parse_eight_digits_unrolled(p);
@@ -265,8 +269,8 @@ namespace csFastFloat.Structures
         // If it scientific and not fixed, we have to bail out.
         if ((expectedFormat.HasFlag(chars_format.is_scientific)) && !(expectedFormat.HasFlag(chars_format.is_fixed))) { return answer; }
       }
-      //answer.lastmatch = p;
       answer.valid = true;
+      answer.characters_consumed = p - pstart;
 
       // If we frequently had to deal with long strings of digits,
       // we could extend our code by using a 128-bit integer instead
