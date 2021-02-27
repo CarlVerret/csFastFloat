@@ -16,7 +16,7 @@
     <LangVersion>9</LangVersion>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)'=='net5.0' OR '$(TargetFramework)'=='netcoreapp3.1'">
+  <PropertyGroup Condition="'$(TargetFramework)'!='netstandard2.0'">
     <DefineConstants>$(DefineConstants);HAS_BITOPERATIONS;HAS_INTRINSICS</DefineConstants>
   </PropertyGroup>
     
@@ -35,8 +35,8 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Condition="'$(TargetFramework)'=='netstandard2.0'" Include="System.Memory" Version="4.5.4" />
-    <PackageReference Condition="'$(TargetFramework)'=='netstandard2.0'" Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+    <PackageReference Include="System.Memory" Version="4.5.4" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
   </ItemGroup>
 </Project>

@@ -260,7 +260,7 @@ namespace csFastFloat
           // Using deBruijn sequence, k=2, n=5 (2^5=32) : 0b_0000_0111_1100_0100_1010_1100_1101_1101u
           ref MemoryMarshal.GetReference(Log2DeBruijn),
           // uint|long -> IntPtr cast on 32-bit platforms does expensive overflow checks not needed here
-          (IntPtr)(int)((value * 0x07C4ACDDu) >> 27));
+          (nint)((value * 0x07C4ACDDu) >> 27));
       }
 #endif
     }
@@ -268,15 +268,11 @@ namespace csFastFloat
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe float Int32BitsToSingle(int value)
     {
-#if HAS_INTRINSICS
-      // Workaround for https://github.com/dotnet/runtime/issues/11413
-      if (System.Runtime.Intrinsics.X86.Sse2.IsSupported)
-      {
-        System.Runtime.Intrinsics.Vector128<float> vec = System.Runtime.Intrinsics.Vector128.AsSingle(System.Runtime.Intrinsics.Vector128.CreateScalarUnsafe(value));
-        return System.Runtime.Intrinsics.Vector128.ToScalar(vec);
-      }
-#endif
+#if HAS_BITOPERATIONS
+      return BitConverter.Int32BitsToSingle(value);
+#else
       return *((float*)&value);
+#endif
     }
 
   }
