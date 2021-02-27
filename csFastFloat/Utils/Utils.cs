@@ -173,14 +173,9 @@ namespace csFastFloat
 
     [ExcludeFromCodeCoverage]
     internal unsafe static bool strncasecmp(char* input1, string input2, int length)
-    {
-      fixed (char* p2 = input2)
-      {
-        return strncasecmp(input1, p2, length);
-      }
-    }
+      =>strncasecmp(input1, input2.AsSpan(), length);
 
-    internal unsafe static bool strncasecmp(char* input1, char* input2, int length)
+    internal unsafe static bool strncasecmp(char* input1, ReadOnlySpan<char> input2, int length)
     {
       int running_diff = 0;
 
@@ -201,16 +196,17 @@ namespace csFastFloat
       return (running_diff == 0) || (running_diff == 32);
     }
 
-    internal unsafe static bool strncasecmp(byte* input1, byte* input2, int length)
-    {
-      int running_diff = 0;
+    // Unreferenced
+    //internal unsafe static bool strncasecmp(byte* input1, byte* input2, int length)
+    //{
+    //  int running_diff = 0;
 
-      for (int i = 0; i < length; i++)
-      {
-        running_diff = running_diff | (input1[i] ^ input2[i]);
-      }
-      return (running_diff == 0) || (running_diff == 32);
-    }
+    //  for (int i = 0; i < length; i++)
+    //  {
+    //    running_diff = running_diff | (input1[i] ^ input2[i]);
+    //  }
+    //  return (running_diff == 0) || (running_diff == 32);
+    //}
 
   }
 }

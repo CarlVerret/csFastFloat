@@ -2,6 +2,9 @@
 
 namespace csFastFloat.Structures
 {
+  /// <summary>
+  /// This struct holds the significand and power used for float computation
+  /// </summary>
   public struct AdjustedMantissa
   {
     internal ulong mantissa;

@@ -1,0 +1,72 @@
+Scenario : leading zeros 
+Valeur   : 001 
+Resultat : 0 1 False True
+
+Scenario : leading zeros neg 
+Valeur   : -001 
+Resultat : 0 1 True True
+
+Scenario : zero 
+Valeur   : 0 
+Resultat : 0 0 False True
+
+Scenario : zero neg 
+Valeur   : -0 
+Resultat : 0 0 True True
+
+Scenario : double 
+Valeur   : 0.00000000000000212312312 
+Resultat : -23 212312312 False True
+
+Scenario : double neg 
+Valeur   : -0.00000000000000212312312 
+Resultat : -23 212312312 True True
+
+Scenario : int 
+Valeur   : 1 
+Resultat : 0 1 False True
+
+Scenario : int neg 
+Valeur   : -1 
+Resultat : 0 1 True True
+
+Scenario : autreint  
+Valeur   : 123124 
+Resultat : 0 123124 False True
+
+Scenario : autreint neg 
+Valeur   : -123124 
+Resultat : 0 123124 True True
+
+Scenario : notation scientifique 
+Valeur   : 4.56E+2 
+Resultat : 0 456 False True
+
+Scenario : notation scientifique neg 
+Valeur   : -4.56E-2 
+Resultat : -4 456 True True
+
+Scenario : notation scientifique 2 
+Valeur   : 4.5644E+2 
+Resultat : -2 45644 False True
+
+Scenario : notation scientifique 2 neg 
+Valeur   : -4.5644E-2 
+Resultat : -6 45644 True True
+
+Scenario : notation scientifique 3 
+Valeur   : 4424.5644E+22 
+Resultat : 18 44245644 False True
+
+Scenario : notation scientifique 3 neg 
+Valeur   : -4424.5644E-22 
+Resultat : -26 44245644 True True
+
+Scenario : notation scientifique 4 
+Valeur   : 4424.5644E+223 
+Resultat : 219 44245644 False True
+
+Scenario : notation scientifique 4 neg 
+Valeur   : -4424.5644E-223 
+Resultat : -227 44245644 True True
+

@@ -3,6 +3,9 @@ using System.Runtime.CompilerServices;
 
 namespace csFastFloat.Structures
 {
+  /// <summary>
+  /// 
+  /// </summary>
   public unsafe struct ParsedNumberString
   {
     internal long exponent;

@@ -28,6 +28,12 @@ namespace csFastFloat
 
     }
 
+    /// <summary>
+    /// Compute 64 bit float from mantissa
+    /// </summary>
+    /// <param name="negative">bool: true is number is negative</param>
+    /// <param name="am">adjuster mantissa</param>
+    /// <returns></returns>
     public static double ToFloat(bool negative, AdjustedMantissa am)
     {
       ulong word = am.mantissa;
@@ -37,7 +43,13 @@ namespace csFastFloat
       return BitConverter.Int64BitsToDouble((long)word);
     }
 
-    public  static double FastPath(ParsedNumberString pns)
+
+    /// <summary>
+    /// Clinger's fast path
+    /// </summary>
+    /// <param name="pns"></param>
+    /// <returns></returns>
+    public static double FastPath(ParsedNumberString pns)
     {
       double value = (double)pns.mantissa;
       if (pns.exponent < 0)
@@ -53,18 +65,25 @@ namespace csFastFloat
     }
 
 
+
+    /// <summary>
+    /// Parse double from a string 
+    /// </summary>
+    /// <param name="s">Input</param>
+    /// <param name="expectedFormat"></param>
+    /// <param name="decimal_separator">by default .</param>
+    /// <returns>double: parsed value</returns>
     public static unsafe double ParseDouble(string s, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
-    {
-      if (s == null)
-        ThrowArgumentNull();
-        static void ThrowArgumentNull() => throw new ArgumentNullException(nameof(s));
+      => ParseDouble(s, out long _, expectedFormat, decimal_separator);
 
-      fixed (char* pStart = s)
-      {
-        return ParseDouble(pStart, pStart + (uint)s.Length, expectedFormat, decimal_separator);
-      }
-    }
-
+    /// <summary>
+    /// Parse double from a string and count number of character consummed
+    /// </summary>
+    /// <param name="s">input string</param>
+    /// <param name="characters_consumed">out: number of char consumed</param>
+    /// <param name="expectedFormat"></param>
+    /// <param name="decimal_separator">by default .</param>
+    /// <returns>parsed value</returns>
     public static unsafe double ParseDouble(string s, out long characters_consumed, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
     {
       if (s == null)
@@ -77,15 +96,22 @@ namespace csFastFloat
       }
     }
 
-
+    /// <summary>
+    /// Parse double from a ReadonlySpan<char> input
+    /// </summary>
+    /// <param name="s"></param>
+    /// <param name="expectedFormat"></param>
+    /// <param name="decimal_separator"></param>
+    /// <returns></returns>
     public static unsafe double ParseDouble(ReadOnlySpan<char> s, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
-    {
-      fixed (char* pStart = s)
-      {
-        return ParseDouble(pStart, pStart + (uint)s.Length, expectedFormat, decimal_separator);
-      }
-    }
-
+      => ParseDouble(s, out long _, expectedFormat, decimal_separator);
+    /// <summary>
+    /// Parse double from a ReadonlySpan<char> input and count number of character consummed
+    /// </summary>
+    /// <param name="s"></param>
+    /// <param name="expectedFormat"></param>
+    /// <param name="decimal_separator"></param>
+    /// <returns></returns>
     public static unsafe double ParseDouble(ReadOnlySpan<char> s, out long characters_consumed, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
     {
       fixed (char* pStart = s)
@@ -94,11 +120,56 @@ namespace csFastFloat
       }
     }
 
+    /// <summary>
+    /// Parses double  between first and last pointers
+    /// </summary>
+    /// <param name="first"></param>
+    /// <param name="last"></param>
+    /// <param name="expectedFormat"></param>
+    /// <param name="decimal_separator"></param>
+    /// <returns></returns>
     unsafe static public double ParseDouble(char* first, char* last, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
       => ParseNumber(first, last, out long _, expectedFormat, decimal_separator);
+   
+    /// <summary>
+    /// Parses double from a ReadOnlySpan of byes (UTF-8 input)
+    /// </summary>
+    /// <param name="s"></param>
+    /// <param name="expectedFormat"></param>
+    /// <param name="decimal_separator"></param>
+    /// <returns></returns>
+    public static unsafe double ParseDouble(ReadOnlySpan<byte> s, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
+      => ParseDouble(s, out long _, expectedFormat, decimal_separator);
 
 
-    unsafe static internal double ParseNumber(char* first, char* last, out long characters_consumed, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
+    /// <summary>
+    /// Parses double from a ReadOnlySpan of byes (UTF-8 input) and count number of characters consumed
+    /// </summary>
+    /// <param name="s"></param>
+    /// <param name="characters_consumed"></param>
+    /// <param name="expectedFormat"></param>
+    /// <param name="decimal_separator"></param>
+    /// <returns></returns>
+    public static unsafe double ParseDouble(ReadOnlySpan<byte> s, out long characters_consumed, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
+    {
+      fixed(byte* pStart = s)
+      {
+        return ParseNumber(pStart, pStart + s.Length, out characters_consumed, expectedFormat, decimal_separator);
+      }
+    }
+
+
+
+    /// <summary>
+    /// Parse double between two char pointers and count number of characters consumed
+    /// </summary>
+    /// <param name="first"></param>
+    /// <param name="last"></param>
+    /// <param name="characters_consumed"></param>
+    /// <param name="expectedFormat"></param>
+    /// <param name="decimal_separator"></param>
+    /// <returns></returns>
+        unsafe static internal double ParseNumber(char* first, char* last, out long characters_consumed, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
     {
       var leading_spaces = 0;
       while ((first != last) && Utils.is_space((byte)(*first)))
@@ -136,12 +207,24 @@ namespace csFastFloat
       if (am.power2 < 0) { am = ParseLongMantissa(first, last, decimal_separator); }
       return ToFloat(pns.negative, am);
     }
-
-    unsafe static internal Double ParseNumber (byte* first, byte* last, out long characters_consumed, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
+    
+    /// <summary>
+    /// Parse double between two byte pointers and count number of characters consumed (UTF-8)
+    /// </summary>
+    /// <param name="first"></param>
+    /// <param name="last"></param>
+    /// <param name="characters_consumed"></param>
+    /// <param name="expectedFormat"></param>
+    /// <param name="decimal_separator"></param>
+    /// <returns></returns>
+    unsafe static internal double ParseNumber (byte* first, byte* last, out long characters_consumed, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
     {
+      var leading_spaces = 0;
       while ((first != last) && Utils.is_space(*first))
       {
         first++;
+        leading_spaces++;
+
       }
       if (first == last)
       {
@@ -152,7 +235,7 @@ namespace csFastFloat
       {
         return HandleInvalidInput(first, last, out characters_consumed);
       }
-      characters_consumed = pns.characters_consumed;
+      characters_consumed = pns.characters_consumed+ leading_spaces;
 
       // Next is Clinger's fast path.
       if (DoubleBinaryConstants.min_exponent_fast_path <= pns.exponent && pns.exponent <= DoubleBinaryConstants.max_exponent_fast_path && pns.mantissa <= DoubleBinaryConstants.max_mantissa_fast_path && !pns.too_many_digits)
@@ -174,29 +257,14 @@ namespace csFastFloat
       return ToFloat(pns.negative, am);
     }
 
-    public static unsafe double ParseDouble(ReadOnlySpan<byte> s, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
-    {
-      fixed(byte* pStart = s)
-      {
-        return ParseNumber(pStart, pStart + s.Length, out long _, expectedFormat, decimal_separator);
-      }
-    }
-    public static unsafe double ParseDouble(ReadOnlySpan<byte> s, out long characters_consumed, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
-    {
-      fixed(byte* pStart = s)
-      {
-        return ParseNumber(pStart, pStart + s.Length, out characters_consumed, expectedFormat, decimal_separator);
-      }
-    }
 
     /// <summary>
-    ///
+    /// Compute the adjusted mantissa based on significand and power
     /// </summary>
-    /// <param name="q"></param>
-    /// <param name="w"></param>
+    /// <param name="q">exponent</param>
+    /// <param name="w">significand</param>
     ///
     /// <returns></returns>
-
     internal static AdjustedMantissa ComputeFloat (long q, ulong w)
     {
       var answer = new AdjustedMantissa();
@@ -557,13 +625,6 @@ namespace csFastFloat
     }
 
 
-
-
-
-    // This should always succeed since it follows a call to parse_number_string
-    // This function could be optimized. In particular, we could stop after 19 digits
-    // and try to bail out. Furthermore, we should be able to recover the computed
-    // exponent from the pass in parse_number_string.
   }
 
 
