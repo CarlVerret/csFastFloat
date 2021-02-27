@@ -8,7 +8,7 @@ namespace csFastFloat.Structures
     internal long exponent;
     internal ulong mantissa;
   
-    internal long characters_consumed;
+    internal int characters_consumed;
     internal bool negative;
     internal bool valid;
     internal bool too_many_digits;
@@ -111,7 +111,7 @@ namespace csFastFloat.Structures
         if ((expectedFormat.HasFlag(chars_format.is_scientific)) && !(expectedFormat.HasFlag(chars_format.is_fixed))) { return answer; }
       }
       answer.valid = true;
-      answer.characters_consumed = p - pstart;
+      answer.characters_consumed = (int) (p - pstart);
 
       // If we frequently had to deal with long strings of digits,
       // we could extend our code by using a 128-bit integer instead
@@ -270,7 +270,7 @@ namespace csFastFloat.Structures
         if ((expectedFormat.HasFlag(chars_format.is_scientific)) && !(expectedFormat.HasFlag(chars_format.is_fixed))) { return answer; }
       }
       answer.valid = true;
-      answer.characters_consumed = p - pstart;
+      answer.characters_consumed = (int) (p - pstart);
 
       // If we frequently had to deal with long strings of digits,
       // we could extend our code by using a 128-bit integer instead

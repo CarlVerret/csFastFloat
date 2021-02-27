@@ -64,7 +64,7 @@ namespace csFastFloat
       }
     }
 
-    public static unsafe float ParseFloat(string s, out long characters_consumed, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
+    public static unsafe float ParseFloat(string s, out int characters_consumed, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
     {
       if (s == null)
         ThrowArgumentNull();
@@ -83,7 +83,7 @@ namespace csFastFloat
         return ParseFloat(pStart, pStart + (uint)s.Length, expectedFormat, decimal_separator);
       }
     }
-    public static unsafe float ParseFloat(ReadOnlySpan<char> s, out long characters_consumed, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
+    public static unsafe float ParseFloat(ReadOnlySpan<char> s, out int characters_consumed, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
     {
       fixed (char* pStart = s)
       {
@@ -91,10 +91,10 @@ namespace csFastFloat
       }
     }
     unsafe static public float ParseFloat(char* first, char* last, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
-      => ParseNumber(first, last, out long _, expectedFormat, decimal_separator);
+      => ParseNumber(first, last, out int _, expectedFormat, decimal_separator);
 
 
-    unsafe static internal float ParseNumber(char* first, char* last, out long characters_consumed, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
+    unsafe static internal float ParseNumber(char* first, char* last, out int characters_consumed, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
     {
       while ((first != last) && Utils.is_space((byte)(*first)))
       {
@@ -132,7 +132,7 @@ namespace csFastFloat
     }
 
 
-    unsafe static internal float ParseNumber(byte* first, byte* last, out long characters_consumed, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
+    unsafe static internal float ParseNumber(byte* first, byte* last, out int characters_consumed, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
     {
       var leading_spaces = 0;
 
@@ -175,10 +175,10 @@ namespace csFastFloat
     {
       fixed(byte* pStart = s)
       {
-        return ParseNumber(pStart, pStart + s.Length, out long _, expectedFormat, decimal_separator);
+        return ParseNumber(pStart, pStart + s.Length, out int _, expectedFormat, decimal_separator);
       }
     }
-    public static unsafe float ParseFloat(ReadOnlySpan<byte> s, out long characters_consumed, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
+    public static unsafe float ParseFloat(ReadOnlySpan<byte> s, out int characters_consumed, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
     {
       fixed(byte* pStart = s)
       {
@@ -455,7 +455,7 @@ namespace csFastFloat
 
 
 
-    unsafe static internal float HandleInvalidInput(char* first, char* last, out long characters_consumed)
+    unsafe static internal float HandleInvalidInput(char* first, char* last, out int characters_consumed)
     {
       if (last - first >= 3)
       {
@@ -499,7 +499,7 @@ namespace csFastFloat
       return 0f;
     }
 
-    unsafe static internal float HandleInvalidInput(byte* first, byte* last, out long characters_consumed)
+    unsafe static internal float HandleInvalidInput(byte* first, byte* last, out int characters_consumed)
     {
       // C# does not (yet) allow literal ASCII strings (it uses UTF-16), so
       // we need to use byte arrays.
@@ -660,7 +660,7 @@ namespace csFastFloat
         if ((expectedFormat.HasFlag(chars_format.is_scientific)) && !(expectedFormat.HasFlag(chars_format.is_fixed))) { return answer; }
       }
       answer.valid = true;
-      answer.characters_consumed = p - pstart;
+      answer.characters_consumed =(int) (p - pstart);
 
       // If we frequently had to deal with long strings of digits,
       // we could extend our code by using a 128-bit integer instead
@@ -819,7 +819,7 @@ namespace csFastFloat
         if ((expectedFormat.HasFlag(chars_format.is_scientific)) && !(expectedFormat.HasFlag(chars_format.is_fixed))) { return answer; }
       }
       answer.valid = true;
-      answer.characters_consumed = p - pstart;
+      answer.characters_consumed = (int) (p - pstart);
 
       // If we frequently had to deal with long strings of digits,
       // we could extend our code by using a 128-bit integer instead

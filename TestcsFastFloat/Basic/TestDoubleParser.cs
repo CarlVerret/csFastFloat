@@ -41,7 +41,7 @@ namespace TestcsFastFloat.Tests.Basic
     {
       fixed (char* p = input)
       {
-        Assert.Equal(res, FastDoubleParser.HandleInvalidInput(p, p + input.Length, out long _));
+        Assert.Equal(res, FastDoubleParser.HandleInvalidInput(p, p + input.Length, out int _));
       }
     }
 
@@ -264,7 +264,7 @@ namespace TestcsFastFloat.Tests.Basic
     [Fact]
     public void ParseDouble_CharConsummed_Throws_OnlyAlpha()
     {
-      long nbCarConsummed;
+      int nbCarConsummed;
       Assert.Throws<System.ArgumentException>(() => FastDoubleParser.ParseDouble("some alpha", out nbCarConsummed));
     }
 
@@ -326,7 +326,7 @@ namespace TestcsFastFloat.Tests.Basic
         sb.AppendLine($"Scenario : {kv.Key} ");
         sb.AppendLine($"Value   : {kv.Value} ");
 
-        long nbCarConsummed = 0;
+        int nbCarConsummed = 0;
        
           var res = FastDoubleParser.ParseDouble(kv.Value, out nbCarConsummed);
 
@@ -352,7 +352,7 @@ namespace TestcsFastFloat.Tests.Basic
       
       while (pos < sut.Length)
       {
-        long nbCarConsummed;
+        int nbCarConsummed;
         var res = FastDoubleParser.ParseDouble(sut.AsSpan().Slice((int)pos), out nbCarConsummed);
         sb.AppendLine($"Sut :{sut.Substring((int)pos)}  Result : {res.ToString(CultureInfo.InvariantCulture)} :  Consummed :  { nbCarConsummed }");
         pos += nbCarConsummed;

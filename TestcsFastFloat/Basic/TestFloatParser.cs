@@ -25,7 +25,7 @@ namespace TestcsFastFloat.Tests.Basic
     {
       fixed (char* p = input)
       {
-        Assert.Equal(res, FastDoubleParser.HandleInvalidInput(p, p + input.Length, out long _));
+        Assert.Equal(res, FastDoubleParser.HandleInvalidInput(p, p + input.Length, out int _));
       }
     }
 
@@ -44,7 +44,7 @@ namespace TestcsFastFloat.Tests.Basic
     {
       fixed (char* p = input)
       {
-        Assert.Equal(res, FastFloatParser.HandleInvalidInput(p, p + input.Length, out long _)); ;
+        Assert.Equal(res, FastFloatParser.HandleInvalidInput(p, p + input.Length, out int _)); ;
       }
     }
 
@@ -190,7 +190,7 @@ namespace TestcsFastFloat.Tests.Basic
         fixed (char* p = kv.Value)
         {
           char* pend = p + kv.Value.Length;
-          var res = FastDoubleParser.ParseNumber(p, pend, out long _);
+          var res = FastDoubleParser.ParseNumber(p, pend, out int _);
 
           sb.AppendLine($"Resultat : {res}");
           sb.AppendLine();

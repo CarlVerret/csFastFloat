@@ -65,7 +65,7 @@ namespace csFastFloat
       }
     }
 
-    public static unsafe double ParseDouble(string s, out long characters_consumed, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
+    public static unsafe double ParseDouble(string s, out int characters_consumed, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
     {
       if (s == null)
         ThrowArgumentNull();
@@ -86,7 +86,7 @@ namespace csFastFloat
       }
     }
 
-    public static unsafe double ParseDouble(ReadOnlySpan<char> s, out long characters_consumed, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
+    public static unsafe double ParseDouble(ReadOnlySpan<char> s, out int characters_consumed, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
     {
       fixed (char* pStart = s)
       {
@@ -95,10 +95,10 @@ namespace csFastFloat
     }
 
     unsafe static public double ParseDouble(char* first, char* last, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
-      => ParseNumber(first, last, out long _, expectedFormat, decimal_separator);
+      => ParseNumber(first, last, out int _, expectedFormat, decimal_separator);
 
 
-    unsafe static internal double ParseNumber(char* first, char* last, out long characters_consumed, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
+    unsafe static internal double ParseNumber(char* first, char* last, out int characters_consumed, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
     {
       var leading_spaces = 0;
       while ((first != last) && Utils.is_space((byte)(*first)))
@@ -137,7 +137,7 @@ namespace csFastFloat
       return ToFloat(pns.negative, am);
     }
 
-    unsafe static internal Double ParseNumber (byte* first, byte* last, out long characters_consumed, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
+    unsafe static internal Double ParseNumber (byte* first, byte* last, out int characters_consumed, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
     {
       while ((first != last) && Utils.is_space(*first))
       {
@@ -178,10 +178,10 @@ namespace csFastFloat
     {
       fixed(byte* pStart = s)
       {
-        return ParseNumber(pStart, pStart + s.Length, out long _, expectedFormat, decimal_separator);
+        return ParseNumber(pStart, pStart + s.Length, out int _, expectedFormat, decimal_separator);
       }
     }
-    public static unsafe double ParseDouble(ReadOnlySpan<byte> s, out long characters_consumed, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
+    public static unsafe double ParseDouble(ReadOnlySpan<byte> s, out int characters_consumed, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
     {
       fixed(byte* pStart = s)
       {
@@ -450,7 +450,7 @@ namespace csFastFloat
     }
 
 
-    unsafe static internal double HandleInvalidInput(char* first, char* last, out long characters_consumed)
+    unsafe static internal double HandleInvalidInput(char* first, char* last, out int characters_consumed)
     {
       if (last - first >= 3)
       {
@@ -495,7 +495,7 @@ namespace csFastFloat
     }
 
 
-    unsafe static internal double HandleInvalidInput(byte* first, byte* last, out long characters_consumed)
+    unsafe static internal double HandleInvalidInput(byte* first, byte* last, out int characters_consumed)
     {
       // C# does not (yet) allow literal ASCII strings (it uses UTF-16), so
       // we need to use byte arrays.
