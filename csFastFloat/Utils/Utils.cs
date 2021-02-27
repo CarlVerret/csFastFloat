@@ -127,11 +127,10 @@ namespace csFastFloat
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static unsafe value128 FullMultiplication(ulong value1, ulong value2)
     {
-      ulong lo;
-
 #if HAS_INTRINSICS
       if(System.Runtime.Intrinsics.X86.Bmi2.X64.IsSupported)
       {
+            ulong lo;
             ulong hi = System.Runtime.Intrinsics.X86.Bmi2.X64.MultiplyNoFlags(value1, value2, &lo);
             return new value128(hi, lo);
       }
