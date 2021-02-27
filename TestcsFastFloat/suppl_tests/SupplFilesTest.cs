@@ -13,15 +13,22 @@ namespace TestcsFastFloat.Tests.ff_suppl_tests
     /// Verify FastParser for every .txt file of a given path
     /// </summary>
     /// <param name="args"></param>
-
+    [Trait("Category", "Files Test")]
     [Fact()]
     private void AllFiles()
     {
-
-      string pathValidation = @".\data_files";
+      string pathValidation = "data_files";
 
       if (!Directory.Exists(pathValidation))
-        throw new ArgumentException("Invalid search path");
+      {
+        // Important: do not assume that path separator is \.
+        pathValidation = "TestcsFastFloat" + Path.PathSeparator + pathValidation;
+        if (!Directory.Exists(pathValidation))
+        {
+          Console.WriteLine("I looked for the data_files directory, and could not find it.");
+          throw new ArgumentException("Invalid search path");
+        }
+      }
 
       foreach (var fileName in Directory.GetFiles(pathValidation, "*.txt"))
       {
