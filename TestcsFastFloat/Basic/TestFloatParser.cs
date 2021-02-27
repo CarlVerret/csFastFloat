@@ -148,7 +148,7 @@ namespace TestcsFastFloat.Tests.Basic
     unsafe public void HandleEmptyString() => Assert.Throws<System.FormatException>(() => Double.Parse(string.Empty));
 
     [Fact]
-    unsafe public void ParseNumber_Works_Scnenarios()
+    unsafe public void ParseNumber_Works_Scenarios()
     {
       Dictionary<string, string> sut = new Dictionary<string, string>();
 
