@@ -144,7 +144,7 @@ namespace csFastFloat
       ParsedNumberString pns = ParsedNumberString.ParseNumberString(first, last, expectedFormat);
       if (!pns.valid)
       {
-        return HandleInvalidInput(first, last, out characters_consumed);
+        return (float)FastDoubleParser.HandleInvalidInput(first, last, out characters_consumed);
       }
       characters_consumed = pns.characters_consumed + leading_spaces;
 
@@ -194,7 +194,7 @@ namespace csFastFloat
       ParsedNumberString pns = ParsedNumberString.ParseNumberString(first, last, expectedFormat);
       if (!pns.valid)
       {
-        return HandleInvalidInput(first, last, out characters_consumed);
+        return (float) FastDoubleParser.HandleInvalidInput(first, last, out characters_consumed);
       }
       characters_consumed = pns.characters_consumed+ leading_spaces;
 
@@ -518,112 +518,6 @@ namespace csFastFloat
     }
 
 
-
-
-    unsafe static internal float HandleInvalidInput(char* first, char* last, out long characters_consumed)
-    {
-      if (last - first >= 3)
-      {
-        if (Utils.strncasecmp(first, "nan", 3))
-        {
-          characters_consumed = 3;
-          return FloatBinaryConstants.NaN;
-        }
-        if (Utils.strncasecmp(first, "inf", 3))
-        {
-          if ((last - first >= 8) && Utils.strncasecmp(first, "infinity", 8))
-          {
-            characters_consumed = 8;
-            return FloatBinaryConstants.PositiveInfinity;
-          }
-          characters_consumed = 3;
-          return FloatBinaryConstants.PositiveInfinity;
-        }
-        if (last - first >= 4)
-        {
-          if (Utils.strncasecmp(first, "+nan", 4) || Utils.strncasecmp(first, "-nan", 4))
-          {
-            characters_consumed = 4;
-            return FloatBinaryConstants.NaN;
-          }
-          if (Utils.strncasecmp(first, "+inf", 4) ||
-              Utils.strncasecmp(first, "-inf", 4))
-          {
-            if((last - first >= 9) && Utils.strncasecmp(first + 1, "infinity", 8))
-            {
-              characters_consumed = 9;
-            } else {
-              characters_consumed = 4;
-            }
-            return (first[0] == '-') ? FloatBinaryConstants.NegativeInfinity : FloatBinaryConstants.PositiveInfinity;
-          }
-        }
-      }
-      ThrowArgumentException();
-      characters_consumed = 0;
-      return 0f;
-    }
-
-    unsafe static internal float HandleInvalidInput(byte* first, byte* last, out long characters_consumed)
-    {
-      // C# does not (yet) allow literal ASCII strings (it uses UTF-16), so
-      // we need to use byte arrays.
-      // "infinity"  string in ASCII, e.g., 105 = i
-      ReadOnlySpan<byte> infinity_string = new byte[]{105, 110, 102, 105, 110, 105, 116, 121};
-      // "inf" string in ASCII
-      ReadOnlySpan<byte> inf_string = new byte[]{105, 110, 102};
-      // "+inf" string in ASCII
-      ReadOnlySpan<byte> pinf_string = new byte[]{43, 105, 110, 102};
-      // "-inf" string in ASCII
-      ReadOnlySpan<byte> minf_string = new byte[]{5, 105, 110, 102};
-      // "nan" string in ASCII
-      ReadOnlySpan<byte> nan_string = new byte[]{110, 97, 110};
-      // "-nan" string in ASCII
-      ReadOnlySpan<byte> mnan_string = new byte[]{45, 110, 97, 110};
-      // "+nan" string in ASCII
-      ReadOnlySpan<byte> pnan_string = new byte[]{43, 110, 97, 110};
-
-      if (last - first >= 3)
-      {
-        if (Utils.strncasecmp(first, nan_string, 3))
-        {
-          characters_consumed = 3;
-          return FloatBinaryConstants.NaN;
-        }
-        if (Utils.strncasecmp(first, inf_string, 3))
-        {
-          if ((last - first >= 8) && Utils.strncasecmp(first, infinity_string, 8))
-          {
-            characters_consumed = 8;
-            return FloatBinaryConstants.PositiveInfinity;
-          }
-          characters_consumed = 3;
-          return FloatBinaryConstants.PositiveInfinity;
-        }
-        if (last - first >= 4)
-        {
-          if (Utils.strncasecmp(first, pnan_string, 4) || Utils.strncasecmp(first, mnan_string, 4))
-          {
-            characters_consumed = 4;
-            return FloatBinaryConstants.NaN;
-          }
-          if (Utils.strncasecmp(first, pinf_string, 4) ||
-              Utils.strncasecmp(first, minf_string, 4))
-          {
-            if((last - first >= 9) && Utils.strncasecmp(first + 1, infinity_string, 8))
-            {
-              characters_consumed = 9;
-            } else {
-              characters_consumed = 4;
-            }
-            return (first[0] == '-') ? FloatBinaryConstants.NegativeInfinity : FloatBinaryConstants.PositiveInfinity;
-          }
-        }
-      }
-      ThrowArgumentException();
-      characters_consumed = 0;
-      return 0f;
-    }
 
 
 

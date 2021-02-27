@@ -30,11 +30,7 @@ namespace csFastFloat
 
     public const int smallest_power_of_ten= -65;
   
-    public const float NaN = float.NaN;
 
-    public const float PositiveInfinity = float.PositiveInfinity;
-
-    public const float NegativeInfinity = float.NegativeInfinity;
     
   }
 }

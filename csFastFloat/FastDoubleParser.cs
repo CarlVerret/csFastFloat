@@ -16,7 +16,7 @@ namespace csFastFloat
     private static void ThrowArgumentException() => throw new ArgumentException();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public  static double exact_power_of_ten(long power)
+    public static double exact_power_of_ten(long power)
     {
 #if NET5_0
       Debug.Assert(power < Constants.powers_of_ten_double.Length);
@@ -88,7 +88,7 @@ namespace csFastFloat
     {
       if (s == null)
         ThrowArgumentNull();
-        static void ThrowArgumentNull() => throw new ArgumentNullException(nameof(s));
+      static void ThrowArgumentNull() => throw new ArgumentNullException(nameof(s));
 
       fixed (char* pStart = s)
       {
@@ -130,7 +130,7 @@ namespace csFastFloat
     /// <returns></returns>
     unsafe static public double ParseDouble(char* first, char* last, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
       => ParseNumber(first, last, out long _, expectedFormat, decimal_separator);
-   
+
     /// <summary>
     /// Parses double from a ReadOnlySpan of byes (UTF-8 input)
     /// </summary>
@@ -152,7 +152,7 @@ namespace csFastFloat
     /// <returns></returns>
     public static unsafe double ParseDouble(ReadOnlySpan<byte> s, out long characters_consumed, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
     {
-      fixed(byte* pStart = s)
+      fixed (byte* pStart = s)
       {
         return ParseNumber(pStart, pStart + s.Length, out characters_consumed, expectedFormat, decimal_separator);
       }
@@ -169,7 +169,7 @@ namespace csFastFloat
     /// <param name="expectedFormat"></param>
     /// <param name="decimal_separator"></param>
     /// <returns></returns>
-        unsafe static internal double ParseNumber(char* first, char* last, out long characters_consumed, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
+    unsafe static internal double ParseNumber(char* first, char* last, out long characters_consumed, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
     {
       var leading_spaces = 0;
       while ((first != last) && Utils.is_space((byte)(*first)))
@@ -207,7 +207,7 @@ namespace csFastFloat
       if (am.power2 < 0) { am = ParseLongMantissa(first, last, decimal_separator); }
       return ToFloat(pns.negative, am);
     }
-    
+
     /// <summary>
     /// Parse double between two byte pointers and count number of characters consumed (UTF-8)
     /// </summary>
@@ -217,7 +217,7 @@ namespace csFastFloat
     /// <param name="expectedFormat"></param>
     /// <param name="decimal_separator"></param>
     /// <returns></returns>
-    unsafe static internal double ParseNumber (byte* first, byte* last, out long characters_consumed, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
+    unsafe static internal double ParseNumber(byte* first, byte* last, out long characters_consumed, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
     {
       var leading_spaces = 0;
       while ((first != last) && Utils.is_space(*first))
@@ -235,7 +235,7 @@ namespace csFastFloat
       {
         return HandleInvalidInput(first, last, out characters_consumed);
       }
-      characters_consumed = pns.characters_consumed+ leading_spaces;
+      characters_consumed = pns.characters_consumed + leading_spaces;
 
       // Next is Clinger's fast path.
       if (DoubleBinaryConstants.min_exponent_fast_path <= pns.exponent && pns.exponent <= DoubleBinaryConstants.max_exponent_fast_path && pns.mantissa <= DoubleBinaryConstants.max_mantissa_fast_path && !pns.too_many_digits)
@@ -265,7 +265,7 @@ namespace csFastFloat
     /// <param name="w">significand</param>
     ///
     /// <returns></returns>
-    internal static AdjustedMantissa ComputeFloat (long q, ulong w)
+    internal static AdjustedMantissa ComputeFloat(long q, ulong w)
     {
       var answer = new AdjustedMantissa();
 
@@ -504,17 +504,35 @@ namespace csFastFloat
     }
 
     // UTF-16 inputs
-    unsafe static internal AdjustedMantissa ParseLongMantissa(char* first, char* last,  char decimal_separator)
+    unsafe static internal AdjustedMantissa ParseLongMantissa(char* first, char* last, char decimal_separator)
     {
       DecimalInfo d = DecimalInfo.parse_decimal(first, last, decimal_separator);
       return ComputeFloat(d);
     }
 
     // UTF-8/ASCII inputs
-    unsafe static internal AdjustedMantissa ParseLongMantissa(byte* first, byte* last,  byte decimal_separator)
+    unsafe static internal AdjustedMantissa ParseLongMantissa(byte* first, byte* last, byte decimal_separator)
     {
       DecimalInfo d = DecimalInfo.parse_decimal(first, last, decimal_separator);
       return ComputeFloat(d);
+    }
+
+
+
+
+    unsafe static internal object HandleInvalidInput2(char* first, char* last, out long characters_consumed)
+    {
+      if (last - first >= 3)
+      {
+        if (Utils.strncasecmp(first, "nan", 3))
+        {
+          characters_consumed = 3;
+          return double.NaN;
+        }
+      }
+
+      characters_consumed = 0;
+      return 0d;
     }
 
 
@@ -547,10 +565,12 @@ namespace csFastFloat
           if (Utils.strncasecmp(first, "+inf", 4) ||
               Utils.strncasecmp(first, "-inf", 4))
           {
-            if((last - first >= 9) && Utils.strncasecmp(first + 1, "infinity", 8))
+            if ((last - first >= 9) && Utils.strncasecmp(first + 1, "infinity", 8))
             {
               characters_consumed = 9;
-            } else {
+            }
+            else
+            {
               characters_consumed = 4;
             }
             return (first[0] == '-') ? DoubleBinaryConstants.NegativeInfinity : DoubleBinaryConstants.PositiveInfinity;
@@ -568,19 +588,19 @@ namespace csFastFloat
       // C# does not (yet) allow literal ASCII strings (it uses UTF-16), so
       // we need to use byte arrays.
       // "infinity"  string in ASCII, e.g., 105 = i
-      ReadOnlySpan<byte> infinity_string = new byte[]{105, 110, 102, 105, 110, 105, 116, 121};
+      ReadOnlySpan<byte> infinity_string = new byte[] { 105, 110, 102, 105, 110, 105, 116, 121 };
       // "inf" string in ASCII
-      ReadOnlySpan<byte> inf_string = new byte[]{105, 110, 102};
+      ReadOnlySpan<byte> inf_string = new byte[] { 105, 110, 102 };
       // "+inf" string in ASCII
-      ReadOnlySpan<byte> pinf_string = new byte[]{43, 105, 110, 102};
+      ReadOnlySpan<byte> pinf_string = new byte[] { 43, 105, 110, 102 };
       // "-inf" string in ASCII
-      ReadOnlySpan<byte> minf_string = new byte[]{5, 105, 110, 102};
+      ReadOnlySpan<byte> minf_string = new byte[] { 5, 105, 110, 102 };
       // "nan" string in ASCII
-      ReadOnlySpan<byte> nan_string = new byte[]{110, 97, 110};
+      ReadOnlySpan<byte> nan_string = new byte[] { 110, 97, 110 };
       // "-nan" string in ASCII
-      ReadOnlySpan<byte> mnan_string = new byte[]{45, 110, 97, 110};
+      ReadOnlySpan<byte> mnan_string = new byte[] { 45, 110, 97, 110 };
       // "+nan" string in ASCII
-      ReadOnlySpan<byte> pnan_string = new byte[]{43, 110, 97, 110};
+      ReadOnlySpan<byte> pnan_string = new byte[] { 43, 110, 97, 110 };
 
       if (last - first >= 3)
       {
@@ -609,10 +629,12 @@ namespace csFastFloat
           if (Utils.strncasecmp(first, pinf_string, 4) ||
               Utils.strncasecmp(first, minf_string, 4))
           {
-            if((last - first >= 9) && Utils.strncasecmp(first + 1, infinity_string, 8))
+            if ((last - first >= 9) && Utils.strncasecmp(first + 1, infinity_string, 8))
             {
               characters_consumed = 9;
-            } else {
+            }
+            else
+            {
               characters_consumed = 4;
             }
             return (first[0] == '-') ? DoubleBinaryConstants.NegativeInfinity : DoubleBinaryConstants.PositiveInfinity;

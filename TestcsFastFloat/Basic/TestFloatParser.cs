@@ -44,7 +44,7 @@ namespace TestcsFastFloat.Tests.Basic
     {
       fixed (char* p = input)
       {
-        Assert.Equal(res, FastFloatParser.HandleInvalidInput(p, p + input.Length, out long _)); ;
+        Assert.Equal(res, (float) FastDoubleParser.HandleInvalidInput(p, p + input.Length, out long _)); ;
       }
     }
 
@@ -97,6 +97,17 @@ namespace TestcsFastFloat.Tests.Basic
 
     [Fact]
     unsafe public void HandleEmptyString() => Assert.Throws<System.FormatException>(() => Double.Parse(string.Empty));
+
+
+    [Fact]
+    public void Exp_() {
+
+
+      Assert.Equal(float.NaN, (float)double.NaN);
+      Assert.Equal(float.PositiveInfinity, (float)double.PositiveInfinity);
+
+    }
+
 
     [Fact]
     unsafe public void ParseNumber_Works_Scnenarios()
