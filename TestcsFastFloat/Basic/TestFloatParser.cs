@@ -91,9 +91,11 @@ namespace TestcsFastFloat.Tests.Basic
       }
     }
 
-    [Fact]
+   [SkippableFact]
     unsafe public void ParseNumberString_Works_Scnenarios()
     {
+      Skip.If(base.NoDiffToolDetected(), "No diff tool detected");
+
       Dictionary<string, string> sut = new Dictionary<string, string>();
 
       sut.Add("leading zeros", "001");
@@ -156,9 +158,13 @@ namespace TestcsFastFloat.Tests.Basic
     [Fact]
     unsafe public void HandleEmptyString() => Assert.Throws<System.FormatException>(() => Double.Parse(string.Empty));
 
-    [Fact]
+    [SkippableFact]
     unsafe public void ParseNumber_Works_Scenarios()
     {
+      Skip.If(base.NoDiffToolDetected(), "No diff tool detected");
+
+
+
       Dictionary<string, string> sut = new Dictionary<string, string>();
 
       sut.Add("leading spaces", "  1");

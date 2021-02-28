@@ -45,9 +45,13 @@ namespace TestcsFastFloat.Tests.Basic
       }
     }
 
-    [Fact]
+    [SkippableFact]
     unsafe public void ParseNumberString_Works_Scnenarios()
     {
+
+
+      Skip.If(base.NoDiffToolDetected(), "No diff tool detected");
+
       Dictionary<string, string> sut = new Dictionary<string, string>();
 
       sut.Add("leading zeros", "001");
@@ -97,6 +101,7 @@ namespace TestcsFastFloat.Tests.Basic
       try
       {
         VerifyData(sb.ToString());
+        
       }
       catch(System.Exception ex)
       {
@@ -104,9 +109,12 @@ namespace TestcsFastFloat.Tests.Basic
       }
     }
 
-    [Fact]
+    [SkippableFact]
     unsafe public void ParseNumber_Works_Scnenarios()
     {
+      Skip.If(base.NoDiffToolDetected(), "No diff tool detected");
+
+
       Dictionary<string, string> sut = new Dictionary<string, string>();
 
       sut.Add("leading zeros", "001");
@@ -286,9 +294,10 @@ namespace TestcsFastFloat.Tests.Basic
       Assert.Throws<System.ArgumentException>(() => FastDoubleParser.ParseDouble("some alpha", out nbCarConsummed));
     }
 
-    [Fact]
+    [SkippableFact]
     public void ParseDouble_CharConsummed_Works_Scenarios() 
     {
+      Skip.If(base.NoDiffToolDetected(), "No diff tool detected");
 
       Dictionary<string, string> sut = new Dictionary<string, string>();
 
@@ -359,9 +368,10 @@ namespace TestcsFastFloat.Tests.Basic
 
 
     [Trait("Category", "Smoke Test")]
-    [Fact]
+    [SkippableFact]
     public void ParseDouble_charConsummed_WholeString()
     {
+      Skip.If(base.NoDiffToolDetected(), "No diff tool detected");
 
       string sut = "1.23213 321e10 3132e-1";
       StringBuilder sb = new StringBuilder();
