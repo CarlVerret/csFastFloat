@@ -107,7 +107,7 @@ Trailing content in the string is ignored.  You may pass an optional `out int ch
 
 
 For UTF-8 or ASCII inputs, you may pass a `ReadOnlySpan<byte>` argument. You can also pass
-an optional `out long characters_consumed` parameter to track the number of characters consumed
+an optional `out int characters_consumed` parameter to track the number of characters consumed
 by the number pattern.
 
 # Testing
