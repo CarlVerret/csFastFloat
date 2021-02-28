@@ -149,6 +149,16 @@ namespace csFastFloat
 
 #endif
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static bool is_ascii_space(char c)
+    {
+        // ROS for one byte types can be read directly from metadata avoiding the array allocation.
+        ReadOnlySpan<bool> table = new bool[] {
+            false, false, false, false, false, false, false, false, false, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, true};
+        // Avoid bound checking.
+        return (c >32) ? false : Unsafe.AddByteOffset(ref MemoryMarshal.GetReference(table), (nint)c);
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static bool is_space(byte c)
