@@ -18,7 +18,7 @@ AMD EPYC 7262, 1 CPU, 16 logical and 8 physical cores
   [Host]        : .NET Core 5.0.2 (CoreCLR 5.0.220.61120, CoreFX 5.0.220.61120), X64 RyuJIT
   .NET Core 5.0 : .NET Core 5.0.2 (CoreCLR 5.0.220.61120, CoreFX 5.0.220.61120), X64 RyuJIT
 
-Job=.NET Core 5.0  Runtime=.NET Core 5.0  
+Job=.NET Core 5.0  Runtime=.NET Core 5.0
 
 |                     Method |        FileName |      Mean |     Error |    StdDev |       Min | Ratio | MFloat/s |     MB/s |
 |--------------------------- |---------------- |----------:|----------:|----------:|----------:|------:|---------:|---------:|
@@ -32,12 +32,12 @@ Job=.NET Core 5.0  Runtime=.NET Core 5.0
 
 ```
 
-In this repo [FastFloatTestBench](https://github.com/CarlVerret/FastFloatTestBench) we demonstrate a concrete performance gain obtained with FastFloat.ParseDouble() with the [CSVHelper](https://github.com/JoshClose/CsvHelper) library.  This is one of the fastest CSV parser available.  
+In this repo [FastFloatTestBench](https://github.com/CarlVerret/FastFloatTestBench) we demonstrate a concrete performance gain obtained with FastFloat.ParseDouble() with the [CSVHelper](https://github.com/JoshClose/CsvHelper) library.  This is one of the fastest CSV parser available.
 
 Single and multiple columns files have been tested. :
-- Canada.txt and mesh.txt are the same from previous benchmark.  
-- Syntethic.csv is composed of 150 000 random floats. 
-- World cities population data (100k/300k) are real data obtained from [OpenDataSoft](https://public.opendatasoft.com/explore/dataset/worldcitiespop).  
+- Canada.txt and mesh.txt are the same from previous benchmark.
+- Syntethic.csv is composed of 150 000 random floats.
+- World cities population data (100k/300k) are real data obtained from [OpenDataSoft](https://public.opendatasoft.com/explore/dataset/worldcitiespop).
 
 Benchmark is run on same environment.
 
@@ -49,7 +49,7 @@ AMD EPYC 7262, 1 CPU, 16 logical and 8 physical cores
   [Host]        : .NET Core 5.0.2 (CoreCLR 5.0.220.61120, CoreFX 5.0.220.61120), X64 RyuJIT
   .NET Core 5.0 : .NET Core 5.0.2 (CoreCLR 5.0.220.61120, CoreFX 5.0.220.61120), X64 RyuJIT
 
-Job=.NET Core 5.0  Runtime=.NET Core 5.0  
+Job=.NET Core 5.0  Runtime=.NET Core 5.0
 |                                Method |               fileName | fileSize | nbFloat |      Mean |    Error |   StdDev |       Min | Ratio | MFloat/s |
 |-------------------------------------- |----------------------- |--------- |-------- |----------:|---------:|---------:|----------:|------:|---------:|
 |          'Double.Parse() - singlecol' |    TestData/canada.txt |     2088 |  111126 |  84.46 ms | 0.271 ms | 0.226 ms |  84.16 ms |  1.00 |     1.32 |
@@ -78,7 +78,7 @@ Job=.NET Core 5.0  Runtime=.NET Core 5.0
 
 # Requirements
 
-.NET Core 3.1 or better. Under .NET 5 framework, the library takes advantage of the new Math.BigMul() function.  
+.NET Core 3.1 or better. Under .NET 5 framework, the library takes advantage of the new Math.BigMul() function.
 
 # Usage
 
@@ -102,11 +102,17 @@ foreach (string l in lines)
 
 Input strings are expected to be valid UTF-16.
 
-For UTF-8 or ASCII inputs, you may pass a `ReadOnlySpan<byte>` argument.
+Trailing content in the string is ignored.  You may pass an optional `out int characters_consumed` parameter
+`FastDoubleParser.ParseDouble(l, out int characters_consumed)` if you wich to check how many characters were processed. Some users may want to fail when the number of characters consumed does not match the string length.
+
+
+For UTF-8 or ASCII inputs, you may pass a `ReadOnlySpan<byte>` argument. You can also pass
+an optional `out long characters_consumed` parameter to track the number of characters consumed
+by the number pattern.
 
 # Testing
 
-The set of unit tests in /TestcsFastFloat project combines unit tests from many libraries.  It includes tests used by the Go Team.  
+The set of unit tests in /TestcsFastFloat project combines unit tests from many libraries.  It includes tests used by the Go Team.
 Additionnal info on Nigel Tao's work can be found [here](https://nigeltao.github.io/blog/2020/eisel-lemire.html#testing).
 
 # Credit
