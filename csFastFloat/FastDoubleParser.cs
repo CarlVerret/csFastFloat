@@ -35,8 +35,8 @@ namespace csFastFloat
       word = negative ? word | ((ulong)(1) << DoubleBinaryConstants.sign_index) : word;
 
       return BitConverter.Int64BitsToDouble((long)word);
-    }    
-    
+    }
+
     public  static double FastPath(ParsedNumberString pns)
     {
       double value = (double)pns.mantissa;
@@ -65,6 +65,18 @@ namespace csFastFloat
       }
     }
 
+    public static unsafe double ParseDouble(string s, out int characters_consumed, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
+    {
+      if (s == null)
+        ThrowArgumentNull();
+        static void ThrowArgumentNull() => throw new ArgumentNullException(nameof(s));
+
+      fixed (char* pStart = s)
+      {
+        return ParseNumber(pStart, pStart + (uint)s.Length, out characters_consumed, expectedFormat, decimal_separator);
+      }
+    }
+
 
     public static unsafe double ParseDouble(ReadOnlySpan<char> s, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
     {
@@ -74,16 +86,25 @@ namespace csFastFloat
       }
     }
 
- 
-    unsafe static public double ParseDouble(char* first, char* last, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
-      => ParseNumber(first, last, expectedFormat, decimal_separator);
-
- 
-    unsafe static internal double ParseNumber(char* first, char* last, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
+    public static unsafe double ParseDouble(ReadOnlySpan<char> s, out int characters_consumed, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
     {
+      fixed (char* pStart = s)
+      {
+        return ParseNumber(pStart, pStart + (uint)s.Length, out characters_consumed, expectedFormat, decimal_separator);
+      }
+    }
+
+    unsafe static public double ParseDouble(char* first, char* last, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
+      => ParseNumber(first, last, out int _, expectedFormat, decimal_separator);
+
+
+    unsafe static internal double ParseNumber(char* first, char* last, out int characters_consumed, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
+    {
+      var leading_spaces = 0;
       while ((first != last) && Utils.is_ascii_space(*first))
       {
         first++;
+        leading_spaces++;
       }
       if (first == last)
       {
@@ -92,8 +113,9 @@ namespace csFastFloat
       ParsedNumberString pns = ParsedNumberString.ParseNumberString(first, last, expectedFormat);
       if (!pns.valid)
       {
-        return HandleInvalidInput(first, last);
+        return HandleInvalidInput(first, last, out characters_consumed);
       }
+      characters_consumed = pns.characters_consumed + leading_spaces;
 
       // Next is Clinger's fast path.
       if (DoubleBinaryConstants.min_exponent_fast_path <= pns.exponent && pns.exponent <= DoubleBinaryConstants.max_exponent_fast_path && pns.mantissa <= DoubleBinaryConstants.max_mantissa_fast_path && !pns.too_many_digits)
@@ -114,8 +136,8 @@ namespace csFastFloat
       if (am.power2 < 0) { am = ParseLongMantissa(first, last, decimal_separator); }
       return ToFloat(pns.negative, am);
     }
-   
-    unsafe static internal Double ParseNumber (byte* first, byte* last, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
+
+    unsafe static internal Double ParseNumber (byte* first, byte* last, out int characters_consumed, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
     {
       while ((first != last) && Utils.is_space(*first))
       {
@@ -128,8 +150,9 @@ namespace csFastFloat
       ParsedNumberString pns = ParsedNumberString.ParseNumberString(first, last, expectedFormat);
       if (!pns.valid)
       {
-        return HandleInvalidInput(first, last);
+        return HandleInvalidInput(first, last, out characters_consumed);
       }
+      characters_consumed = pns.characters_consumed;
 
       // Next is Clinger's fast path.
       if (DoubleBinaryConstants.min_exponent_fast_path <= pns.exponent && pns.exponent <= DoubleBinaryConstants.max_exponent_fast_path && pns.mantissa <= DoubleBinaryConstants.max_mantissa_fast_path && !pns.too_many_digits)
@@ -155,7 +178,14 @@ namespace csFastFloat
     {
       fixed(byte* pStart = s)
       {
-        return ParseNumber(pStart, pStart + s.Length, expectedFormat, decimal_separator);
+        return ParseNumber(pStart, pStart + s.Length, out int _, expectedFormat, decimal_separator);
+      }
+    }
+    public static unsafe double ParseDouble(ReadOnlySpan<byte> s, out int characters_consumed, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
+    {
+      fixed(byte* pStart = s)
+      {
+        return ParseNumber(pStart, pStart + s.Length, out characters_consumed, expectedFormat, decimal_separator);
       }
     }
 
@@ -420,40 +450,52 @@ namespace csFastFloat
     }
 
 
-    unsafe static internal double HandleInvalidInput(char* first, char* last)
+    unsafe static internal double HandleInvalidInput(char* first, char* last, out int characters_consumed)
     {
       if (last - first >= 3)
       {
         if (Utils.strncasecmp(first, "nan", 3))
         {
+          characters_consumed = 3;
           return DoubleBinaryConstants.NaN;
         }
         if (Utils.strncasecmp(first, "inf", 3))
         {
           if ((last - first >= 8) && Utils.strncasecmp(first, "infinity", 8))
+          {
+            characters_consumed = 8;
             return DoubleBinaryConstants.PositiveInfinity;
+          }
+          characters_consumed = 3;
           return DoubleBinaryConstants.PositiveInfinity;
         }
         if (last - first >= 4)
         {
           if (Utils.strncasecmp(first, "+nan", 4) || Utils.strncasecmp(first, "-nan", 4))
           {
+            characters_consumed = 4;
             return DoubleBinaryConstants.NaN;
           }
           if (Utils.strncasecmp(first, "+inf", 4) ||
-              Utils.strncasecmp(first, "-inf", 4) ||
-              ((last - first >= 8) && Utils.strncasecmp(first + 1, "infinity", 8)))
+              Utils.strncasecmp(first, "-inf", 4))
           {
+            if((last - first >= 9) && Utils.strncasecmp(first + 1, "infinity", 8))
+            {
+              characters_consumed = 9;
+            } else {
+              characters_consumed = 4;
+            }
             return (first[0] == '-') ? DoubleBinaryConstants.NegativeInfinity : DoubleBinaryConstants.PositiveInfinity;
           }
         }
       }
       ThrowArgumentException();
+      characters_consumed = 0;
       return 0d;
     }
 
 
-    unsafe static internal double HandleInvalidInput(byte* first, byte* last)
+    unsafe static internal double HandleInvalidInput(byte* first, byte* last, out int characters_consumed)
     {
       // C# does not (yet) allow literal ASCII strings (it uses UTF-16), so
       // we need to use byte arrays.
@@ -476,36 +518,48 @@ namespace csFastFloat
       {
         if (Utils.strncasecmp(first, nan_string, 3))
         {
+          characters_consumed = 3;
           return DoubleBinaryConstants.NaN;
         }
         if (Utils.strncasecmp(first, inf_string, 3))
         {
           if ((last - first >= 8) && Utils.strncasecmp(first, infinity_string, 8))
+          {
+            characters_consumed = 8;
             return DoubleBinaryConstants.PositiveInfinity;
+          }
+          characters_consumed = 3;
           return DoubleBinaryConstants.PositiveInfinity;
         }
         if (last - first >= 4)
         {
           if (Utils.strncasecmp(first, pnan_string, 4) || Utils.strncasecmp(first, mnan_string, 4))
           {
+            characters_consumed = 4;
             return DoubleBinaryConstants.NaN;
           }
           if (Utils.strncasecmp(first, pinf_string, 4) ||
-              Utils.strncasecmp(first, minf_string, 4) ||
-              ((last - first >= 8) && Utils.strncasecmp(first + 1, infinity_string, 8)))
+              Utils.strncasecmp(first, minf_string, 4))
           {
+            if((last - first >= 9) && Utils.strncasecmp(first + 1, infinity_string, 8))
+            {
+              characters_consumed = 9;
+            } else {
+              characters_consumed = 4;
+            }
             return (first[0] == '-') ? DoubleBinaryConstants.NegativeInfinity : DoubleBinaryConstants.PositiveInfinity;
           }
         }
       }
       ThrowArgumentException();
+      characters_consumed = 0;
       return 0d;
     }
 
-   
 
 
-   
+
+
     // This should always succeed since it follows a call to parse_number_string
     // This function could be optimized. In particular, we could stop after 19 digits
     // and try to bail out. Furthermore, we should be able to recover the computed
