@@ -40,8 +40,17 @@ namespace TestcsFastFloat.Tests
 
     public bool NoDiffToolDetected()
     {
+      try { 
+      
+        return Approvals.GetReporter() == null;
 
-      return Approvals.GetReporter() == null;
+
+      }
+      catch
+      {
+        return false;
+
+      }
 
     }
 
