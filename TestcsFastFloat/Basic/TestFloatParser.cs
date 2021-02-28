@@ -44,7 +44,7 @@ namespace TestcsFastFloat.Tests.Basic
     {
       fixed (char* p = input)
       {
-        Assert.Equal(res, FastFloatParser.HandleInvalidInput(p, p + input.Length, out int _)); ;
+        Assert.Equal(res, (float)FastDoubleParser.HandleInvalidInput(p, p + input.Length, out int _)); ;
       }
     }
 
