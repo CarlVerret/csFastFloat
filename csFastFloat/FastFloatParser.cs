@@ -61,6 +61,18 @@ namespace csFastFloat
       }
     }
 
+    public static unsafe float ParseFloat(string s, out int characters_consumed, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
+    {
+      if (s == null)
+        ThrowArgumentNull();
+        static void ThrowArgumentNull() => throw new ArgumentNullException(nameof(s));
+
+      fixed (char* pStart = s)
+      {
+        return ParseNumber(pStart, pStart + (uint)s.Length, out characters_consumed, expectedFormat, decimal_separator);
+      }
+    }
+
     public static unsafe float ParseFloat(ReadOnlySpan<char> s, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
     {
       fixed (char* pStart = s)
@@ -68,13 +80,18 @@ namespace csFastFloat
         return ParseFloat(pStart, pStart + (uint)s.Length, expectedFormat, decimal_separator);
       }
     }
-
-
+    public static unsafe float ParseFloat(ReadOnlySpan<char> s, out int characters_consumed, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
+    {
+      fixed (char* pStart = s)
+      {
+        return ParseNumber(pStart, pStart + (uint)s.Length, out characters_consumed, expectedFormat, decimal_separator);
+      }
+    }
     unsafe static public float ParseFloat(char* first, char* last, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
-      => ParseNumber(first, last, expectedFormat, decimal_separator);
+      => ParseNumber(first, last, out int _, expectedFormat, decimal_separator);
 
 
-    unsafe static internal float ParseNumber(char* first, char* last, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
+    unsafe static internal float ParseNumber(char* first, char* last, out int characters_consumed, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
     {
       while ((first != last) && Utils.is_space((byte)(*first)))
       {
@@ -87,8 +104,9 @@ namespace csFastFloat
       ParsedNumberString pns = ParseNumberString(first, last, expectedFormat);
       if (!pns.valid)
       {
-        return HandleInvalidInput(first, last);
+        return HandleInvalidInput(first, last, out characters_consumed);
       }
+      characters_consumed = pns.characters_consumed;
 
       // Next is Clinger's fast path.
       if (FloatBinaryConstants.min_exponent_fast_path <= pns.exponent && pns.exponent <= FloatBinaryConstants.max_exponent_fast_path && pns.mantissa <= FloatBinaryConstants.max_mantissa_fast_path && !pns.too_many_digits)
@@ -111,11 +129,14 @@ namespace csFastFloat
     }
 
 
-    unsafe static internal float ParseNumber(byte* first, byte* last, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
+    unsafe static internal float ParseNumber(byte* first, byte* last, out int characters_consumed, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
     {
+      var leading_spaces = 0;
+
       while ((first != last) && Utils.is_space(*first))
       {
         first++;
+        leading_spaces++;
       }
       if (first == last)
       {
@@ -124,8 +145,9 @@ namespace csFastFloat
       ParsedNumberString pns = ParseNumberString(first, last, expectedFormat);
       if (!pns.valid)
       {
-        return HandleInvalidInput(first, last);
+        return HandleInvalidInput(first, last, out characters_consumed);
       }
+      characters_consumed = pns.characters_consumed+ leading_spaces;
 
       // Next is Clinger's fast path.
       if (FloatBinaryConstants.min_exponent_fast_path <= pns.exponent && pns.exponent <= FloatBinaryConstants.max_exponent_fast_path && pns.mantissa <= FloatBinaryConstants.max_mantissa_fast_path && !pns.too_many_digits)
@@ -150,10 +172,16 @@ namespace csFastFloat
     {
       fixed(byte* pStart = s)
       {
-        return ParseNumber(pStart, pStart + s.Length, expectedFormat, decimal_separator);
+        return ParseNumber(pStart, pStart + s.Length, out int _, expectedFormat, decimal_separator);
       }
     }
-
+    public static unsafe float ParseFloat(ReadOnlySpan<byte> s, out int characters_consumed, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
+    {
+      fixed(byte* pStart = s)
+      {
+        return ParseNumber(pStart, pStart + s.Length, out characters_consumed, expectedFormat, decimal_separator);
+      }
+    }
     /// <summary>
     ///
     /// </summary>
@@ -424,39 +452,51 @@ namespace csFastFloat
 
 
 
-    unsafe static internal float HandleInvalidInput(char* first, char* last)
+    unsafe static internal float HandleInvalidInput(char* first, char* last, out int characters_consumed)
     {
       if (last - first >= 3)
       {
         if (Utils.strncasecmp(first, "nan", 3))
         {
+          characters_consumed = 3;
           return FloatBinaryConstants.NaN;
         }
         if (Utils.strncasecmp(first, "inf", 3))
         {
           if ((last - first >= 8) && Utils.strncasecmp(first, "infinity", 8))
+          {
+            characters_consumed = 8;
             return FloatBinaryConstants.PositiveInfinity;
+          }
+          characters_consumed = 3;
           return FloatBinaryConstants.PositiveInfinity;
         }
         if (last - first >= 4)
         {
           if (Utils.strncasecmp(first, "+nan", 4) || Utils.strncasecmp(first, "-nan", 4))
           {
+            characters_consumed = 4;
             return FloatBinaryConstants.NaN;
           }
           if (Utils.strncasecmp(first, "+inf", 4) ||
-              Utils.strncasecmp(first, "-inf", 4) ||
-              ((last - first >= 8) && Utils.strncasecmp(first + 1, "infinity", 8)))
+              Utils.strncasecmp(first, "-inf", 4))
           {
+            if((last - first >= 9) && Utils.strncasecmp(first + 1, "infinity", 8))
+            {
+              characters_consumed = 9;
+            } else {
+              characters_consumed = 4;
+            }
             return (first[0] == '-') ? FloatBinaryConstants.NegativeInfinity : FloatBinaryConstants.PositiveInfinity;
           }
         }
       }
       ThrowArgumentException();
+      characters_consumed = 0;
       return 0f;
     }
 
-    unsafe static internal float HandleInvalidInput(byte* first, byte* last)
+    unsafe static internal float HandleInvalidInput(byte* first, byte* last, out int characters_consumed)
     {
       // C# does not (yet) allow literal ASCII strings (it uses UTF-16), so
       // we need to use byte arrays.
@@ -479,29 +519,41 @@ namespace csFastFloat
       {
         if (Utils.strncasecmp(first, nan_string, 3))
         {
+          characters_consumed = 3;
           return FloatBinaryConstants.NaN;
         }
         if (Utils.strncasecmp(first, inf_string, 3))
         {
           if ((last - first >= 8) && Utils.strncasecmp(first, infinity_string, 8))
+          {
+            characters_consumed = 8;
             return FloatBinaryConstants.PositiveInfinity;
+          }
+          characters_consumed = 3;
           return FloatBinaryConstants.PositiveInfinity;
         }
         if (last - first >= 4)
         {
           if (Utils.strncasecmp(first, pnan_string, 4) || Utils.strncasecmp(first, mnan_string, 4))
           {
+            characters_consumed = 4;
             return FloatBinaryConstants.NaN;
           }
           if (Utils.strncasecmp(first, pinf_string, 4) ||
-              Utils.strncasecmp(first, minf_string, 4) ||
-              ((last - first >= 8) && Utils.strncasecmp(first + 1, infinity_string, 8)))
+              Utils.strncasecmp(first, minf_string, 4))
           {
+            if((last - first >= 9) && Utils.strncasecmp(first + 1, infinity_string, 8))
+            {
+              characters_consumed = 9;
+            } else {
+              characters_consumed = 4;
+            }
             return (first[0] == '-') ? FloatBinaryConstants.NegativeInfinity : FloatBinaryConstants.PositiveInfinity;
           }
         }
       }
       ThrowArgumentException();
+      characters_consumed = 0;
       return 0f;
     }
 
@@ -514,6 +566,7 @@ namespace csFastFloat
 
       answer.valid = false;
       answer.too_many_digits = false;
+      char* pstart = p;
       answer.negative = (*p == '-');
       if ((*p == '-') || (*p == '+'))
       {
@@ -603,8 +656,8 @@ namespace csFastFloat
         // If it scientific and not fixed, we have to bail out.
         if ((expectedFormat.HasFlag(chars_format.is_scientific)) && !(expectedFormat.HasFlag(chars_format.is_fixed))) { return answer; }
       }
-      //answer.lastmatch = p;
       answer.valid = true;
+      answer.characters_consumed =(int) (p - pstart);
 
       // If we frequently had to deal with long strings of digits,
       // we could extend our code by using a 128-bit integer instead
@@ -665,6 +718,7 @@ namespace csFastFloat
 
       answer.valid = false;
       answer.too_many_digits = false;
+      byte* pstart = p;
       answer.negative = (*p == '-');
       if ((*p == '-') || (*p == '+'))
       {
@@ -761,8 +815,8 @@ namespace csFastFloat
         // If it scientific and not fixed, we have to bail out.
         if ((expectedFormat.HasFlag(chars_format.is_scientific)) && !(expectedFormat.HasFlag(chars_format.is_fixed))) { return answer; }
       }
-      //answer.lastmatch = p;
       answer.valid = true;
+      answer.characters_consumed = (int) (p - pstart);
 
       // If we frequently had to deal with long strings of digits,
       // we could extend our code by using a 128-bit integer instead

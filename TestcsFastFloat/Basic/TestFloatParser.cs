@@ -25,7 +25,7 @@ namespace TestcsFastFloat.Tests.Basic
     {
       fixed (char* p = input)
       {
-        Assert.Equal(res, FastDoubleParser.HandleInvalidInput(p, p + input.Length));
+        Assert.Equal(res, FastDoubleParser.HandleInvalidInput(p, p + input.Length, out int _));
       }
     }
 
@@ -44,7 +44,7 @@ namespace TestcsFastFloat.Tests.Basic
     {
       fixed (char* p = input)
       {
-        Assert.Equal(res, FastFloatParser.HandleInvalidInput(p, p + input.Length)); ;
+        Assert.Equal(res, FastFloatParser.HandleInvalidInput(p, p + input.Length, out int _)); ;
       }
     }
 
@@ -148,7 +148,7 @@ namespace TestcsFastFloat.Tests.Basic
     unsafe public void HandleEmptyString() => Assert.Throws<System.FormatException>(() => Double.Parse(string.Empty));
 
     [Fact]
-    unsafe public void ParseNumber_Works_Scnenarios()
+    unsafe public void ParseNumber_Works_Scenarios()
     {
       Dictionary<string, string> sut = new Dictionary<string, string>();
 
@@ -190,7 +190,7 @@ namespace TestcsFastFloat.Tests.Basic
         fixed (char* p = kv.Value)
         {
           char* pend = p + kv.Value.Length;
-          var res = FastDoubleParser.ParseNumber(p, pend);
+          var res = FastDoubleParser.ParseNumber(p, pend, out int _);
 
           sb.AppendLine($"Resultat : {res}");
           sb.AppendLine();
