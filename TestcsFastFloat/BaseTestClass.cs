@@ -12,18 +12,34 @@ namespace TestcsFastFloat.Tests
   {
     public static void VerifyData<T>(T data, string nomScenario = "")
     {
-      if (!string.IsNullOrEmpty(nomScenario))
-      {
-        using (ApprovalResults.ForScenario(nomScenario))
+
+
+
+
+        if (!string.IsNullOrEmpty(nomScenario))
+        {
+          using (ApprovalResults.ForScenario(nomScenario))
+          {
+            Approvals.Verify(data);
+          }
+        }
+        else
         {
           Approvals.Verify(data);
         }
-      }
-      else
-      {
-        Approvals.Verify(data);
-      }
+
+
+
+
+
+
+
     }
+
+
+
+    public bool NoDiffToolDetected() => !DiffEngine.DiffTools.TryFind("txt", out _);
+
 
     /// @Credit Dmitry Bychenko
     /// https://stackoverflow.com/questions/35449339/c-sharp-converting-from-float-to-hexstring-via-ieee-754-and-back-to-float/35450540#35450540

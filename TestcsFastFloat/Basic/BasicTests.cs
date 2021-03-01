@@ -36,14 +36,6 @@ namespace TestcsFastFloat.Tests.Basic
     }
 
     [Fact]
-    private void issue40()
-    {
-      //https://tools.ietf.org/html/rfc7159
-      // A fraction part is a decimal point followed by one or more digits.
-      Assert.Throws<System.FormatException>(() => Double.Parse("0."));
-    }
-
-    [Fact]
     private void issue32()
     {
       double? x = FastDoubleParser.ParseDouble("-0");

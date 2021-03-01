@@ -13,15 +13,22 @@ namespace TestcsFastFloat.Tests.ff_suppl_tests
     /// Verify FastParser for every .txt file of a given path
     /// </summary>
     /// <param name="args"></param>
-
+    [Trait("Category", "Files Test")]
     [Fact()]
     private void AllFiles()
     {
-
-      string pathValidation = @".\data_files";
+      string pathValidation = "data_files";
 
       if (!Directory.Exists(pathValidation))
-        throw new ArgumentException("Invalid search path");
+      {
+        // Important: do not assume that path separator is \.
+        pathValidation = "TestcsFastFloat" + Path.PathSeparator + pathValidation;
+        if (!Directory.Exists(pathValidation))
+        {
+          Console.WriteLine("I looked for the data_files directory, and could not find it.");
+          throw new ArgumentException("Invalid search path");
+        }
+      }
 
       foreach (var fileName in Directory.GetFiles(pathValidation, "*.txt"))
       {
@@ -47,12 +54,11 @@ namespace TestcsFastFloat.Tests.ff_suppl_tests
     private static void VerifyFile(string fileName)
     {
       var fs = System.IO.File.OpenText(fileName);
+      int counter = 0;
+      int testCount = 0;
       while (!fs.EndOfStream)
       {
-        string curntLine = fs.ReadLine();
-
-        try
-        {
+          string curntLine = fs.ReadLine();
           var sut = curntLine.Split();
           if (sut.Length != 4) throw new Exception($"Invalid file in file {curntLine}");
 
@@ -73,18 +79,17 @@ namespace TestcsFastFloat.Tests.ff_suppl_tests
           double d_span = FastDoubleParser.ParseDouble(sut[3].AsSpan());
           Assert.True(_d == d_span);
 
-         // parse and assert equality
+          // parse and assert equality
           float f_utf8 = FastFloatParser.ParseFloat(System.Text.Encoding.UTF8.GetBytes(sut[3]));
           Assert.True(_f == f_utf8);
           double d_utf8 = FastDoubleParser.ParseDouble(System.Text.Encoding.UTF8.GetBytes(sut[3]));
           Assert.True(_d == d_utf8);
-        }
-        catch (Exception ex)
-        {
-          Console.WriteLine($"parsing error on : {curntLine}. {ex.Message}");
-        }
+
+          counter++;
+          testCount += 6;
       }
       fs.Close();
+      Console.WriteLine($"processed {counter} numbers, {testCount} tests in total.");
     }
   }
 }
