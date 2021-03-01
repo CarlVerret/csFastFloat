@@ -38,21 +38,7 @@ namespace TestcsFastFloat.Tests
 
 
 
-    public bool NoDiffToolDetected()
-    {
-      try { 
-      
-        return Approvals.GetReporter() == null;
-
-
-      }
-      catch
-      {
-        return false;
-
-      }
-
-    }
+    public bool NoDiffToolDetected() => !DiffEngine.DiffTools.TryFind("txt", out _);
 
 
     /// @Credit Dmitry Bychenko
