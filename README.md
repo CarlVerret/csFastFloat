@@ -130,7 +130,7 @@ by the number pattern.
 
 # Credit
 This library is the main project in my master's degree under the direction of Professor [Daniel Lemire](https://github.com/lemire) at TELUQ University.
-A special thanks to [Egor Bogatov](https://github.com/EgorBo) for his really meaningful contribution.
+A special thanks to [Egor Bogatov](https://github.com/EgorBo) and all contributors for their really meaningful contribution.
 
 # Reference
 
