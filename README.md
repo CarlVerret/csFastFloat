@@ -80,11 +80,28 @@ Job=.NET Core 5.0  Runtime=.NET Core 5.0
 
 .NET Core 3.1 or better. Under .NET 5 framework, the library takes advantage of the new Math.BigMul() function.
 
+# Compile and testing
+
+As this library targets multiple framework, you can specify the target framework version with -f parameter :
+
+``` command line
+dotnet build -c Release -f net5.0
+dotnet test -f net5.0
+
+```
+If you omit the target framework and you don't have both .net 5.0 and dotnetcore 3.1 SDKs installed you may experience an error when building or running tests.
+
+The set of unit tests in /TestcsFastFloat project combines unit tests from many libraries.  It includes tests used by the Go Team.
+Additionnal info on Nigel Tao's work can be found [here](https://nigeltao.github.io/blog/2020/eisel-lemire.html#testing).
+
+Some unit tests are based on [Approvals.net library](https://github.com/approvals/ApprovalTests.Net).  They require a diff tool installed on your computer.  Tests will be automatically skiped if no diff tool is found.
+
+
 # Usage
 
 Two functions are available: `FastDoubleParser.ParseDouble` and `FastFloatParser.ParseFloat`.
 
-`String` and `ReadOnlySpan<char>` are supported inputs.
+`String`, `char *`  and `ReadOnlySpan<char>` are supported inputs.
 
 ```C#
 using csFastFloat;
@@ -110,10 +127,6 @@ For UTF-8 or ASCII inputs, you may pass a `ReadOnlySpan<byte>` argument. You can
 an optional `out int characters_consumed` parameter to track the number of characters consumed
 by the number pattern.
 
-# Testing
-
-The set of unit tests in /TestcsFastFloat project combines unit tests from many libraries.  It includes tests used by the Go Team.
-Additionnal info on Nigel Tao's work can be found [here](https://nigeltao.github.io/blog/2020/eisel-lemire.html#testing).
 
 # Credit
 This library is the main project in my master's degree under the direction of Professor [Daniel Lemire](https://github.com/lemire) at TELUQ University.
