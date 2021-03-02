@@ -211,16 +211,7 @@ namespace csFastFloat
       return (running_diff == 0) || (running_diff == 32);
     }
 
-    internal unsafe static bool strncasecmp(byte* input1, byte* input2, int length)
-    {
-      int running_diff = 0;
-
-      for (int i = 0; i < length; i++)
-      {
-        running_diff = running_diff | (input1[i] ^ input2[i]);
-      }
-      return (running_diff == 0) || (running_diff == 32);
-    }
+    
 
   }
 }
