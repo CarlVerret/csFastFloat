@@ -22,13 +22,13 @@ Job=.NET Core 5.0  Runtime=.NET Core 5.0
 
 |                     Method |        FileName |      Mean |     Error |    StdDev |       Min | Ratio | MFloat/s |     MB/s |
 |--------------------------- |---------------- |----------:|----------:|----------:|----------:|------:|---------:|---------:|
-|    FastFloat.ParseDouble() | data/canada.txt |  5.952 ms | 0.0419 ms | 0.0372 ms |  5.844 ms |  0.16 |    19.02 |   357.29 |
-| 'ParseNumberString() only' | data/canada.txt |  2.751 ms | 0.0053 ms | 0.0050 ms |  2.741 ms |  0.07 |    40.54 |   761.63 |
-|             Double.Parse() | data/canada.txt | 37.277 ms | 0.2537 ms | 0.2249 ms | 36.949 ms |  1.00 |     3.01 |    56.51 |
+|    FastFloat.ParseDouble() | data/canada.txt |  5.140 ms | 0.0280 ms | 0.0262 ms |  5.105 ms |  0.14 |    21.77 |   408.99 |
+| 'ParseNumberString() only' | data/canada.txt |  2.540 ms | 0.0053 ms | 0.0047 ms |  2.531 ms |  0.07 |    43.90 |   824.87 |
+|             Double.Parse() | data/canada.txt | 37.147 ms | 0.3284 ms | 0.3071 ms | 36.443 ms |  1.00 |     3.05 |    57.29 |
 |                            |                 |           |           |           |           |       |          |          |
-|    FastFloat.ParseDouble() |   data/mesh.txt |  2.073 ms | 0.0117 ms | 0.0097 ms |  2.045 ms |  0.29 |    35.70 |   303.12 |
-| 'ParseNumberString() only' |   data/mesh.txt |  1.041 ms | 0.0015 ms | 0.0013 ms |  1.039 ms |  0.15 |    70.28 |   596.78 |
-|             Double.Parse() |   data/mesh.txt |  7.052 ms | 0.1050 ms | 0.0982 ms |  6.863 ms |  1.00 |    10.64 |    90.34 |
+|    FastFloat.ParseDouble() |   data/mesh.txt |  2.083 ms | 0.0029 ms | 0.0024 ms |  2.080 ms |  0.29 |    35.10 |   298.07 |
+| 'ParseNumberString() only' |   data/mesh.txt |  1.298 ms | 0.0034 ms | 0.0032 ms |  1.294 ms |  0.18 |    56.45 |   479.30 |
+|             Double.Parse() |   data/mesh.txt |  7.086 ms | 0.0911 ms | 0.0852 ms |  6.931 ms |  1.00 |    10.54 |    89.45 |
 
 ```
 
