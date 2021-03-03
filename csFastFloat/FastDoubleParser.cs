@@ -216,7 +216,7 @@ namespace csFastFloat
       // At this point in time q is in [smallest_power_of_five, largest_power_of_five].
 
       // We want the most significant bit of i to be 1. Shift if needed.
-      int lz = BitOperations.LeadingZeroCount(w);
+      int lz = Utils.LeadingZeroCount(w);
       w <<= lz;
 
       // The required precision is mantissa_explicit_bits() + 3 because
