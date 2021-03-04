@@ -1,7 +1,5 @@
 ﻿using csFastFloat;
 using System;
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
 using System.IO;
 using Xunit;
 

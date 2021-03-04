@@ -5,7 +5,6 @@ using BenchmarkDotNet.Configs;
 //using BenchmarkDotNet.Diagnostics.Windows;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Running;
-using csFastFloat;
 using csFastFloat.Structures;
 using System;
 using System.Globalization;
@@ -17,8 +16,8 @@ using BenchmarkDotNet.Reports;
 namespace csFastFloat.Benchmark
 {
 
-//[MemoryDiagnoser]
-[SimpleJob(RuntimeMoniker.NetCoreApp50)]
+  //[MemoryDiagnoser]
+  [SimpleJob(RuntimeMoniker.NetCoreApp50)]
 [Config(typeof(Config))]
 public class FFBencmark
 {

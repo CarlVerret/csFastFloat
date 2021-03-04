@@ -3,7 +3,6 @@ using csFastFloat.Enums;
 using csFastFloat.Structures;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Text;
 using Xunit;
 

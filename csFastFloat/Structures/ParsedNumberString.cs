@@ -1,5 +1,4 @@
 ﻿using csFastFloat.Enums;
-using System.Runtime.CompilerServices;
 
 namespace csFastFloat.Structures
 {

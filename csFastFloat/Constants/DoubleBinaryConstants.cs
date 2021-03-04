@@ -1,13 +1,11 @@
-﻿using csFastFloat.Structures;
-using System;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("TestcsFastFloat")]
 
 namespace csFastFloat
 {
 
-public static class DoubleBinaryConstants
+  public static class DoubleBinaryConstants
 {
 
     public const int mantissa_explicit_bits= 52;

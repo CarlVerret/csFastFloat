@@ -1,8 +1,4 @@
-﻿using csFastFloat;
-using System;
-using Xunit;
-
-namespace TestcsFastFloat.Tests.Exaustive
+﻿namespace TestcsFastFloat.Tests.Exaustive
 {
 
 #if BitOperations
