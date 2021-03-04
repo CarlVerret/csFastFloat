@@ -29,7 +29,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Xunit.SkippableFact" Version="1.4.13" />
-     <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="16.6.1" />
+     <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="16.7.1" />
   </ItemGroup>
 
   <ItemGroup>
