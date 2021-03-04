@@ -11,8 +11,7 @@ jobs:
       with: 
         nuget-version: latest
       
-    - name: Restore NuGet Packages
-      run: nuget install xunit.runner.visualstudio
+ 
       
       # install required .net versions
     - name: Setup .NET 3.1
@@ -27,8 +26,10 @@ jobs:
         
     - name: Restore dependencies
       run: dotnet restore
+      
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build #--no-restore
+      
     - name: Test
       run: dotnet test --no-build --verbosity normal
       continue-on-error: false
