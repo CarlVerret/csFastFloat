@@ -6,9 +6,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
     - name: Setup .NET 4.7.x
-      uses: actions/setup-dotnet@v1
+    - uses: auycro/netframework-action-template@v0.0.2
       with:
         dotnet-version: 4.7.2
     - name: Setup .NET 3.1
