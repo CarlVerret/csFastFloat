@@ -73,7 +73,7 @@ namespace BenchmarkHandCoded
       double answer = 0;
       foreach (string l in lines)
       {
-        x = Double.Parse(l, CultureInfo.InvariantCulture);
+        x = double.Parse(l, CultureInfo.InvariantCulture);
         answer = answer > x ? answer : x;
       }
 

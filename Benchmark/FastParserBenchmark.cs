@@ -110,7 +110,7 @@ public class FFBencmark
    double max = double.MinValue;
    foreach (string l in _lines)
    {
-     double d = Double.Parse(l, CultureInfo.InvariantCulture);
+     double d = double.Parse(l, CultureInfo.InvariantCulture);
 
      max = d > max ? d : max;
    }

@@ -233,7 +233,9 @@ namespace csFastFloat
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       static int Log2SoftwareFallback(uint value)
       {
-        if (value == 0)         return 32;
+        if (value == 0)
+          return 32;
+        
         int n = 1;
         if (value >> 16 == 0) { n += 16; value <<= 16; }
         if (value >> 24 == 0) { n +=  8; value <<=  8; }

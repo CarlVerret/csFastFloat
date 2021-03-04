@@ -137,7 +137,7 @@ namespace csFastFloat
       return ToFloat(pns.negative, am);
     }
 
-    unsafe static internal Double ParseNumber (byte* first, byte* last, out int characters_consumed, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
+    unsafe static internal double ParseNumber (byte* first, byte* last, out int characters_consumed, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
     {
       while ((first != last) && Utils.is_space(*first))
       {
@@ -560,10 +560,6 @@ namespace csFastFloat
 
 
 
-    // This should always succeed since it follows a call to parse_number_string
-    // This function could be optimized. In particular, we could stop after 19 digits
-    // and try to bail out. Furthermore, we should be able to recover the computed
-    // exponent from the pass in parse_number_string.
   }
 
 
