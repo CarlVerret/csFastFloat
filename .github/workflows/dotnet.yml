@@ -18,7 +18,12 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build #--no-restore
+      run: dotnet build --no-restore
+    
     - name: Test
-      run: dotnet test  --verbosity normal #--no-build
+      run: dotnet test  --verbosity normal --no-build -f net5.0
+      continue-on-error: false
+
+    - name: Test
+      run: dotnet test  --verbosity normal --no-build -f net472
       continue-on-error: false
