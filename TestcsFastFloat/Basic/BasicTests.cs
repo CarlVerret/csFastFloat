@@ -1,10 +1,5 @@
 ﻿using csFastFloat;
-using EmptyFiles;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
 using Xunit;
 
 namespace TestcsFastFloat.Tests.Basic
@@ -61,6 +56,8 @@ namespace TestcsFastFloat.Tests.Basic
       Assert.True(x == 5e12, "does not map to 5e0012.");
     }
 
+#if BitOperations
+
     [InlineData(0, 63)]
     [InlineData(1, 62)]
     [InlineData(2, 61)]
@@ -73,6 +70,9 @@ namespace TestcsFastFloat.Tests.Basic
       ulong bit = 1;
       Assert.Equal(BitOperations.LeadingZeroCount(bit << shift), val);
     }
+#endif
+
+
 
     [InlineData(1ul << 0, 1ul << 0, 1ul, 0ul)]
     [InlineData(1ul << 0, 1ul << 63, 1ul << 63, 0ul)]
@@ -227,6 +227,17 @@ namespace TestcsFastFloat.Tests.Basic
       Assert.Equal(expected_value, FastDoubleParser.ParseDouble(sut.AsSpan()));
       Assert.Equal(expected_value, FastDoubleParser.ParseDouble(System.Text.Encoding.UTF8.GetBytes(sut)));
     }
+
+
+    [InlineData("2.22507385850720212418870147920222032907240528279439037814303133837435107319244194686754406432563881851382188218502438069999947733013005649884107791928741341929297200970481951993067993290969042784064731682041565926728632933630474670123316852983422152744517260835859654566319282835244787787799894310779783833699159288594555213714181128458251145584319223079897504395086859412457230891738946169368372321191373658977977723286698840356390251044443035457396733706583981055420456693824658413747607155981176573877626747665912387199931904006317334709003012790188175203447190250028061277777916798391090578584006464715943810511489154282775041174682194133952466682503431306181587829379004205392375072083366693241580002758391118854188641513168478436313080237596295773983001708984375e-308", 2.2250738585072024e-308)]//0x1.0000000000002p-1022
+    [Theory]
+    private void TestGeneral_Double_2(string sut, double expected_value)
+    {
+      Assert.Equal(expected_value, FastDoubleParser.ParseDouble(sut));
+      Assert.Equal(expected_value, FastDoubleParser.ParseDouble(sut.AsSpan()));
+      Assert.Equal(expected_value, FastDoubleParser.ParseDouble(System.Text.Encoding.UTF8.GetBytes(sut)));
+    }
+
     [Trait("Category", "Smoke Test")]
     [InlineData("1.1754941406275178592461758986628081843312458647327962400313859427181746759860647699724722770042717456817626953125", 655, "", 1.17549419)]
     [InlineData("1.1754941406275178592461758986628081843312458647327962400313859427181746759860647699724722770042717456817626953125", 656, "", 1.17549419)]

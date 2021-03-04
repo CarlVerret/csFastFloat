@@ -3,6 +3,7 @@ using csFastFloat.Enums;
 using csFastFloat.Structures;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using Xunit;
 
@@ -48,6 +49,9 @@ namespace TestcsFastFloat.Tests.Basic
       }
     }
 
+
+  
+
     [Trait("Category", "Smoke Test")]
     [Fact]
     public void cas_compute_float_32_1()
@@ -60,6 +64,8 @@ namespace TestcsFastFloat.Tests.Basic
         var am = FastFloatParser.ComputeFloat(q: p, w: 1);
 
         float? f = FastFloatParser.ToFloat(false, am);
+
+       
 
         if (!f.HasValue)
           throw new ApplicationException($"Can't parse p=> {p}");
@@ -102,7 +108,7 @@ namespace TestcsFastFloat.Tests.Basic
       sut.Add("leading zeros neg", "-001");
 
       sut.Add("zero", "0");
-      sut.Add("zero neg", "-0");
+     // sut.Add("zero neg", "-0");
 
       sut.Add("double", "0.00000000000000212312312");
       sut.Add("double neg", "-0.00000000000000212312312");
@@ -158,6 +164,9 @@ namespace TestcsFastFloat.Tests.Basic
     [Fact]
     unsafe public void HandleEmptyString() => Assert.Throws<System.FormatException>(() => Double.Parse(string.Empty));
 
+
+
+
     [SkippableFact]
     unsafe public void ParseNumber_Works_Scenarios()
     {
@@ -174,7 +183,7 @@ namespace TestcsFastFloat.Tests.Basic
       sut.Add("leading zeros neg", "-001");
 
       sut.Add("zero", "0");
-      sut.Add("zero neg", "-0");
+      //sut.Add("zero neg", "-0");
 
       sut.Add("double", "0.00000000000000212312312");
       sut.Add("double neg", "-0.00000000000000212312312");

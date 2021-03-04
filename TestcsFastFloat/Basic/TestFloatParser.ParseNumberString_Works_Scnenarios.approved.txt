@@ -10,10 +10,6 @@ Scenario : zero
 Valeur   : 0 
 Resultat : 0 0 False True
 
-Scenario : zero neg 
-Valeur   : -0 
-Resultat : 0 0 True True
-
 Scenario : double 
 Valeur   : 0.00000000000000212312312 
 Resultat : -23 212312312 False True

@@ -18,10 +18,6 @@ Scenario : zero
 Valeur   : 0 
 Resultat : 0
 
-Scenario : zero neg 
-Valeur   : -0 
-Resultat : -0
-
 Scenario : double 
 Valeur   : 0.00000000000000212312312 
 Resultat : 2,12312312E-15

@@ -1,9 +1,7 @@
 ﻿using ApprovalTests;
 using ApprovalTests.Namers;
 using ApprovalTests.Reporters;
-using Newtonsoft.Json;
 using System;
-using System.Text;
 
 namespace TestcsFastFloat.Tests
 {

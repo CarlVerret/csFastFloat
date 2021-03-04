@@ -1,11 +1,12 @@
-﻿using ApprovalUtilities.Persistence;
-using csFastFloat;
+﻿using csFastFloat;
 using System;
-using System.Threading.Tasks.Dataflow;
 using Xunit;
 
 namespace TestcsFastFloat.Tests.Exaustive
 {
+
+#if BitOperations
+
   public class FastParserTest
   {
     [Fact(Skip = "Waiting for test environ.")]
@@ -22,4 +23,7 @@ namespace TestcsFastFloat.Tests.Exaustive
       }
     }
   }
+
+#endif
+
 }
