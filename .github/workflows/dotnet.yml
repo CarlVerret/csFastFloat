@@ -20,10 +20,10 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
     
-    - name: Test
-      run: dotnet test  --verbosity normal --no-build -f net5.0
-      continue-on-error: false
+   # - name: Test
+   #   run: dotnet test  --verbosity normal --no-build -f net5.0
+   #   continue-on-error: false
 
     - name: Test
-      run: dotnet test  --verbosity normal --no-build -f net472
+      run: dotnet test  --verbosity normal -f net472
       continue-on-error: false
