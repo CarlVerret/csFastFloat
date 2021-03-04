@@ -20,14 +20,8 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
     
-    - name: Test .net 5.0
-      run: dotnet test  --verbosity m --no-build # -f net5.0
+    - name: Unit tests
+      run: dotnet test  --verbosity m --no-build 
       continue-on-error: false
 
-    #- name: Test .net core 3.1
-    #  run: dotnet test  --verbosity m --no-build -f netcoreapp3.1 
-    #  continue-on-error: false
-      
-    #- name: Test .net framework
-    #  run: dotnet test  --verbosity m --no-build -f net472
-    #  continue-on-error: false
+    
