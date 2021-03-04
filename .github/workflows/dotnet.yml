@@ -6,14 +6,25 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-     - name: Setup .NET 3.1
+    - name: restore nuget XUNIT
+      uses: NuGet/setup-nuget@v1.0.5
+      with: 
+        nuget-version: latest
+      
+    - name: Restore NuGet Packages
+      run: nuget install xunit.runner.visualstudio
+      
+      # install required .net versions
+    - name: Setup .NET 3.1
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.x
+        
     - name: Setup .NET 5.0
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.x
+        
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
