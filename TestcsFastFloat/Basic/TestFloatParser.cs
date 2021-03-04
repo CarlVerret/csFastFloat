@@ -108,8 +108,6 @@ namespace TestcsFastFloat.Tests.Basic
       sut.Add("leading zeros neg", "-001");
 
       sut.Add("zero", "0");
-     // sut.Add("zero neg", "-0");
-
       sut.Add("double", "0.00000000000000212312312");
       sut.Add("double neg", "-0.00000000000000212312312");
       sut.Add("int", "1");
@@ -159,10 +157,10 @@ namespace TestcsFastFloat.Tests.Basic
     }
 
     [Fact]
-    unsafe public void HandleNullValue() => Assert.Throws<System.ArgumentNullException>(() => Double.Parse(null));
+    unsafe public void HandleNullValue() => Assert.Throws<System.ArgumentNullException>(() => double.Parse(null));
 
     [Fact]
-    unsafe public void HandleEmptyString() => Assert.Throws<System.FormatException>(() => Double.Parse(string.Empty));
+    unsafe public void HandleEmptyString() => Assert.Throws<System.FormatException>(() => double.Parse(string.Empty));
 
 
 
@@ -183,8 +181,7 @@ namespace TestcsFastFloat.Tests.Basic
       sut.Add("leading zeros neg", "-001");
 
       sut.Add("zero", "0");
-      //sut.Add("zero neg", "-0");
-
+      
       sut.Add("double", "0.00000000000000212312312");
       sut.Add("double neg", "-0.00000000000000212312312");
       sut.Add("int", "1");

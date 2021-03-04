@@ -304,25 +304,6 @@ namespace TestcsFastFloat.Tests.Basic
 
 
 
-    [Fact]
-    public void issues()
-    {
-      var am = Utils.LeadingZeroCount( 212312312);
-
-
-      //    Scenario: double
-      //   Value   : 
-      //Result: 3.31901804925031E-16 :  Consummed: 25
-      //        Result: 2.12312312E-15 :  Consummed: 25
-
-      //Scen
-      //Scenario: double neg
-      //Value: -0.00000000000000212312312
-      //Result: -3.31901804925031E-16 :  Consummed: 26
-      //        Result: -2.12312312E-15 :  Consummed: 26
-
-    }
-
 
 
     [SkippableFact]
@@ -334,13 +315,8 @@ namespace TestcsFastFloat.Tests.Basic
 
       sut.Add("leading zeros", "001");
       sut.Add("leading zeros neg", "-001");
-
       sut.Add("leading spaces", "   1");
-
-
       sut.Add("zero", "0");
-    //  sut.Add("zero neg", "-0"); // donet 4.7.x does not handle -0, will allways return 0;
-
       sut.Add("double", "0.00000000000000212312312");
       sut.Add("double neg", "-0.00000000000000212312312");
       sut.Add("int", "1");
@@ -398,15 +374,6 @@ namespace TestcsFastFloat.Tests.Basic
     }
 
 
-    //[Fact]
-    //public void ZeroNeg() {
-
-    //  int nbCarConsummed = 0;
-
-    //  var res = FastDoubleParser.ParseDouble("-0", out nbCarConsummed);
-
-
-    //}
 
 
     [Trait("Category", "Smoke Test")]
