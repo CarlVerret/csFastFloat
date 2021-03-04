@@ -8,15 +8,15 @@ namespace TestcsFastFloat.Tests
   [UseReporter(typeof(DiffReporter))]
   public class BaseTestClass
   {
-    public static void VerifyData<T>(T data, string nomScenario = "")
+    public static void VerifyData<T>(T data, string scenarioName = "")
     {
 
 
 
 
-        if (!string.IsNullOrEmpty(nomScenario))
+        if (!string.IsNullOrEmpty(scenarioName))
         {
-          using (ApprovalResults.ForScenario(nomScenario))
+          using (ApprovalResults.ForScenario(scenarioName))
           {
             Approvals.Verify(data);
           }

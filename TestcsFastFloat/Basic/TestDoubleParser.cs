@@ -66,7 +66,6 @@ namespace TestcsFastFloat.Tests.Basic
       sut.Add("leading zeros neg", "-001");
 
       sut.Add("zero", "0");
-    //  sut.Add("zero neg", "-0");
 
       sut.Add("double", "0.00000000000000212312312");
       sut.Add("double neg", "-0.00000000000000212312312");
@@ -129,7 +128,6 @@ namespace TestcsFastFloat.Tests.Basic
       sut.Add("leading zeros neg", "-001");
 
       sut.Add("zero", "0");
-    //  sut.Add("zero neg", "-0");
 
       sut.Add("double", "0.00000000000000212312312");
       sut.Add("double neg", "-0.00000000000000212312312");
@@ -188,7 +186,6 @@ namespace TestcsFastFloat.Tests.Basic
         if (p == 23)
           p++;
 
-        //   var sut = new DoubleBinaryFormat();
         var am = FastDoubleParser.ComputeFloat(q: p, w: 1);
 
         double? d = FastDoubleParser.ToFloat(false, am);
