@@ -6,12 +6,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: restore nuget XUNIT
-      uses: NuGet/setup-nuget@v1.0.5
-      with: 
-        nuget-version: latest
-      
- 
       
       # install required .net versions
     - name: Setup .NET 3.1
