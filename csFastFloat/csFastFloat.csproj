@@ -12,7 +12,7 @@
     <FileVersion>2.0.0.0</FileVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Title>csFastFloat : a fast and accurate float parser</Title>
-    <PackageLicenseFile>README.md</PackageLicenseFile>
+    <PackageLicenseFile>License.md</PackageLicenseFile>
     <LangVersion>9</LangVersion>
     <Version>2.0.0</Version>
   </PropertyGroup>
@@ -30,7 +30,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\README.md">
+    <None Include="..\License.md">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
