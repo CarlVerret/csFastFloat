@@ -1,5 +1,4 @@
 using csFastFloat;
-using csFastFloat.Enums;
 using csFastFloat.Structures;
 using System;
 using System.Collections.Generic;
@@ -207,7 +206,7 @@ namespace TestcsFastFloat.Tests.Basic
         string sut = $"1e{p}";
         fixed (char* pstart = sut)
         {
-          double? d = FastDoubleParser.ParseDouble(pstart, pstart + sut.Length, chars_format.is_general);
+          double? d = FastDoubleParser.ParseDouble(pstart, pstart + sut.Length);
 
           if (!d.HasValue)
           {

@@ -12,8 +12,9 @@
     <FileVersion>2.0.0.0</FileVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Title>csFastFloat : a fast and accurate float parser</Title>
-    <PackageLicenseFile>License</PackageLicenseFile>
+  <PackageLicenseUrl></PackageLicenseUrl>
     <LangVersion>9</LangVersion>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)'!='netstandard2.0'">
@@ -28,15 +29,19 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+    <PackageReference Include="System.Memory" Version="4.5.4" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
+  </ItemGroup>
+
   <ItemGroup>
-    <None Include="..\License">
+    <None Include="..\License.md">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
-    <PackageReference Include="System.Memory" Version="4.5.4" />
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
+  <ItemGroup>
+    <Folder Include="Enums\" />
   </ItemGroup>
 </Project>

@@ -2,8 +2,8 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using csFastFloat.Enums;
 using csFastFloat.Structures;
+using System.Globalization;
 
 namespace csFastFloat
 {
@@ -52,7 +52,7 @@ namespace csFastFloat
     }
 
 
-    public static unsafe double ParseDouble(string s, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
+    public static unsafe double ParseDouble(string s, NumberStyles expectedFormat = NumberStyles.Float, char decimal_separator = '.')
     {
       if (s == null)
         ThrowArgumentNull();
@@ -64,7 +64,7 @@ namespace csFastFloat
       }
     }
 
-    public static unsafe double ParseDouble(string s, out int characters_consumed, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
+    public static unsafe double ParseDouble(string s, out int characters_consumed, NumberStyles expectedFormat = NumberStyles.Float, char decimal_separator = '.')
     {
       if (s == null)
         ThrowArgumentNull();
@@ -77,7 +77,7 @@ namespace csFastFloat
     }
 
 
-    public static unsafe double ParseDouble(ReadOnlySpan<char> s, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
+    public static unsafe double ParseDouble(ReadOnlySpan<char> s, NumberStyles expectedFormat = NumberStyles.Float, char decimal_separator = '.')
     {
       fixed (char* pStart = s)
       {
@@ -85,7 +85,7 @@ namespace csFastFloat
       }
     }
 
-    public static unsafe double ParseDouble(ReadOnlySpan<char> s, out int characters_consumed, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
+    public static unsafe double ParseDouble(ReadOnlySpan<char> s, out int characters_consumed, NumberStyles expectedFormat = NumberStyles.Float, char decimal_separator = '.')
     {
       fixed (char* pStart = s)
       {
@@ -93,11 +93,11 @@ namespace csFastFloat
       }
     }
 
-    unsafe static public double ParseDouble(char* first, char* last, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
+    unsafe static public double ParseDouble(char* first, char* last, NumberStyles expectedFormat = NumberStyles.Float, char decimal_separator = '.')
       => ParseNumber(first, last, out int _, expectedFormat, decimal_separator);
 
 
-    unsafe static internal double ParseNumber(char* first, char* last, out int characters_consumed, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
+    unsafe static internal double ParseNumber(char* first, char* last, out int characters_consumed, NumberStyles expectedFormat = NumberStyles.Float, char decimal_separator = '.')
     {
       var leading_spaces = 0;
       while ((first != last) && Utils.is_ascii_space(*first))
@@ -136,7 +136,7 @@ namespace csFastFloat
       return ToFloat(pns.negative, am);
     }
 
-    unsafe static internal double ParseNumber (byte* first, byte* last, out int characters_consumed, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
+    unsafe static internal double ParseNumber (byte* first, byte* last, out int characters_consumed, NumberStyles expectedFormat = NumberStyles.Float, byte decimal_separator = (byte)'.')
     {
       while ((first != last) && Utils.is_space(*first))
       {
@@ -173,14 +173,14 @@ namespace csFastFloat
       return ToFloat(pns.negative, am);
     }
 
-    public static unsafe double ParseDouble(ReadOnlySpan<byte> s, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
+    public static unsafe double ParseDouble(ReadOnlySpan<byte> s, NumberStyles expectedFormat = NumberStyles.Float, byte decimal_separator = (byte)'.')
     {
       fixed(byte* pStart = s)
       {
         return ParseNumber(pStart, pStart + s.Length, out int _, expectedFormat, decimal_separator);
       }
     }
-    public static unsafe double ParseDouble(ReadOnlySpan<byte> s, out int characters_consumed, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
+    public static unsafe double ParseDouble(ReadOnlySpan<byte> s, out int characters_consumed, NumberStyles expectedFormat = NumberStyles.Float, byte decimal_separator = (byte)'.')
     {
       fixed(byte* pStart = s)
       {
