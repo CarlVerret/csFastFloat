@@ -12,7 +12,7 @@
     <FileVersion>2.0.0.0</FileVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Title>csFastFloat : a fast and accurate float parser</Title>
-    <PackageLicenseFile>License.md</PackageLicenseFile>
+    <PackageLicenseFile>License</PackageLicenseFile>
     <LangVersion>9</LangVersion>
   </PropertyGroup>
 
@@ -29,7 +29,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\License.md">
+    <None Include="..\License">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
