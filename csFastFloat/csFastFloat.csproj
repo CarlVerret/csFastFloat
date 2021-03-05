@@ -8,11 +8,11 @@
     <PackageProjectUrl></PackageProjectUrl>
     <RepositoryUrl>https://github.com/CarlVerret/csFastFloat</RepositoryUrl>
     <PackageTags>C# Double Float Parsing</PackageTags>
-    <AssemblyVersion>1.0.1.0</AssemblyVersion>
-    <FileVersion>1.0.1.0</FileVersion>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <FileVersion>2.0.0.0</FileVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Title>csFastFloat : a fast and accurate float parser</Title>
-    <PackageLicenseFile>README.md</PackageLicenseFile>
+    <PackageLicenseFile>License.md</PackageLicenseFile>
     <LangVersion>9</LangVersion>
   </PropertyGroup>
 
@@ -29,7 +29,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\README.md">
+    <None Include="..\License.md">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
