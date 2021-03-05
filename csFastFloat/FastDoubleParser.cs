@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using csFastFloat.Enums;
@@ -137,7 +136,7 @@ namespace csFastFloat
       return ToFloat(pns.negative, am);
     }
 
-    unsafe static internal Double ParseNumber (byte* first, byte* last, out int characters_consumed, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
+    unsafe static internal double ParseNumber (byte* first, byte* last, out int characters_consumed, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
     {
       while ((first != last) && Utils.is_space(*first))
       {
@@ -216,7 +215,7 @@ namespace csFastFloat
       // At this point in time q is in [smallest_power_of_five, largest_power_of_five].
 
       // We want the most significant bit of i to be 1. Shift if needed.
-      int lz = BitOperations.LeadingZeroCount(w);
+      int lz = Utils.LeadingZeroCount(w);
       w <<= lz;
 
       // The required precision is mantissa_explicit_bits() + 3 because
@@ -560,10 +559,6 @@ namespace csFastFloat
 
 
 
-    // This should always succeed since it follows a call to parse_number_string
-    // This function could be optimized. In particular, we could stop after 19 digits
-    // and try to bail out. Furthermore, we should be able to recover the computed
-    // exponent from the pass in parse_number_string.
   }
 
 

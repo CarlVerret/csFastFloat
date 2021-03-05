@@ -14,10 +14,6 @@ Scenario : zero
 Value   : 0 
 Result : 0 :  Consummed :  1
 
-Scenario : zero neg 
-Value   : -0 
-Result : -0 :  Consummed :  2
-
 Scenario : double 
 Value   : 0.00000000000000212312312 
 Result : 2.12312312E-15 :  Consummed :  25

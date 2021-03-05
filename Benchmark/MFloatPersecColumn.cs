@@ -1,26 +1,15 @@
-using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Columns;
-using BenchmarkDotNet.Configs;
-using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Running;
 
 using BenchmarkDotNet.Reports;
-
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-
-using System.Runtime.CompilerServices;
 
 
 namespace csFastFloat.Benchmark
 {
 
-    public class MFloatPerSecColumn : IColumn
+  public class MFloatPerSecColumn : IColumn
     {
         public string Id => nameof(MFloatPerSecColumn);
 

@@ -45,6 +45,14 @@ namespace TestcsFastFloat.Tests.Basic
       }
     }
 
+    [Fact]
+    public void NegativeZero() {
+
+      Assert.Equal(-0, FastDoubleParser.ParseDouble("-0"));
+    
+    }
+
+
     [SkippableFact]
     unsafe public void ParseNumberString_Works_Scnenarios()
     {
@@ -58,7 +66,6 @@ namespace TestcsFastFloat.Tests.Basic
       sut.Add("leading zeros neg", "-001");
 
       sut.Add("zero", "0");
-      sut.Add("zero neg", "-0");
 
       sut.Add("double", "0.00000000000000212312312");
       sut.Add("double neg", "-0.00000000000000212312312");
@@ -101,9 +108,9 @@ namespace TestcsFastFloat.Tests.Basic
       try
       {
         VerifyData(sb.ToString());
-        
+
       }
-      catch(System.Exception ex)
+      catch (System.Exception ex)
       {
         Console.WriteLine(ex.Message);
       }
@@ -121,7 +128,6 @@ namespace TestcsFastFloat.Tests.Basic
       sut.Add("leading zeros neg", "-001");
 
       sut.Add("zero", "0");
-      sut.Add("zero neg", "-0");
 
       sut.Add("double", "0.00000000000000212312312");
       sut.Add("double neg", "-0.00000000000000212312312");
@@ -165,7 +171,7 @@ namespace TestcsFastFloat.Tests.Basic
       {
         VerifyData(sb.ToString());
       }
-      catch(System.Exception ex)
+      catch (System.Exception ex)
       {
         Console.WriteLine(ex.Message);
       }
@@ -180,7 +186,6 @@ namespace TestcsFastFloat.Tests.Basic
         if (p == 23)
           p++;
 
-     //   var sut = new DoubleBinaryFormat();
         var am = FastDoubleParser.ComputeFloat(q: p, w: 1);
 
         double? d = FastDoubleParser.ToFloat(false, am);
@@ -294,8 +299,12 @@ namespace TestcsFastFloat.Tests.Basic
       Assert.Throws<System.ArgumentException>(() => FastDoubleParser.ParseDouble("some alpha", out nbCarConsummed));
     }
 
+
+
+
+
     [SkippableFact]
-    public void ParseDouble_CharConsummed_Works_Scenarios() 
+    public void ParseDouble_CharConsummed_Works_Scenarios()
     {
       Skip.If(base.NoDiffToolDetected(), "No diff tool detected");
 
@@ -303,13 +312,8 @@ namespace TestcsFastFloat.Tests.Basic
 
       sut.Add("leading zeros", "001");
       sut.Add("leading zeros neg", "-001");
-
       sut.Add("leading spaces", "   1");
-
-
       sut.Add("zero", "0");
-      sut.Add("zero neg", "-0");
-
       sut.Add("double", "0.00000000000000212312312");
       sut.Add("double neg", "-0.00000000000000212312312");
       sut.Add("int", "1");
@@ -354,17 +358,19 @@ namespace TestcsFastFloat.Tests.Basic
         sb.AppendLine($"Value   : {kv.Value} ");
 
         int nbCarConsummed = 0;
-       
-          var res = FastDoubleParser.ParseDouble(kv.Value, out nbCarConsummed);
 
-          sb.AppendLine($"Result : {res.ToString(CultureInfo.InvariantCulture)} :  Consummed :  { nbCarConsummed }");
-          sb.AppendLine();
+        var res = FastDoubleParser.ParseDouble(kv.Value, out nbCarConsummed);
+
+        sb.AppendLine($"Result : {res.ToString(CultureInfo.InvariantCulture)} :  Consummed :  { nbCarConsummed }");
+        sb.AppendLine();
       }
 
       VerifyData(sb.ToString());
 
 
     }
+
+
 
 
     [Trait("Category", "Smoke Test")]

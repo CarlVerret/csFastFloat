@@ -1,5 +1,4 @@
 ﻿using csFastFloat.Enums;
-using System.Runtime.CompilerServices;
 
 namespace csFastFloat.Structures
 {
@@ -181,7 +180,7 @@ namespace csFastFloat.Structures
         {
           return answer;
         }
-        if (!Utils.is_integer(*p, out uint digit) && (*p != decimal_separator))
+        if (!Utils.is_integer(*p, out uint _) && (*p != decimal_separator))
         { // a  sign must be followed by an integer or the dot
           return answer;
         }
@@ -240,7 +239,7 @@ namespace csFastFloat.Structures
         {
           ++p;
         }
-        if ((p == pend) || !Utils.is_integer(*p, out uint digit))
+        if ((p == pend) || !Utils.is_integer(*p, out uint _))
         {
           if (expectedFormat != chars_format.is_fixed)
           {

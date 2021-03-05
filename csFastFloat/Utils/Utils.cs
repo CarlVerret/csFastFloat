@@ -2,7 +2,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Runtime.Intrinsics.X86;
 
 [assembly: InternalsVisibleTo("TestcsFastFloat")]
 
@@ -22,6 +21,16 @@ namespace csFastFloat
 
   public static class Utils
   {
+#if !HAS_BITOPERATIONS
+    private static ReadOnlySpan<byte> Log2DeBruijn => new byte[]
+    {
+      00, 09, 01, 10, 13, 21, 02, 29,
+      11, 14, 16, 18, 22, 25, 03, 30,
+      08, 12, 20, 28, 15, 17, 24, 07,
+      19, 27, 23, 06, 26, 05, 04, 31
+    };
+#endif
+    
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static uint parse_eight_digits_unrolled(ulong val)
     {
@@ -108,30 +117,25 @@ namespace csFastFloat
 #if NET5_0
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal unsafe static value128 FullMultiplication(ulong value1, ulong value2)
+    internal static value128 FullMultiplication(ulong value1, ulong value2)
     {
-      ulong lo;
-
-      ulong hi = Math.BigMul(value1, value2, out lo);
+      ulong hi = Math.BigMul(value1, value2, out ulong lo);
       return new value128(hi, lo);
     }
 
 #else
-
-    internal unsafe static value128 FullMultiplication(ulong value1, ulong value2)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static unsafe value128 FullMultiplication(ulong value1, ulong value2)
     {
-      ulong lo;
-
-      if( Bmi2.X64.IsSupported)
+#if HAS_INTRINSICS
+      if(System.Runtime.Intrinsics.X86.Bmi2.X64.IsSupported)
       {
+            ulong lo;
             ulong hi = System.Runtime.Intrinsics.X86.Bmi2.X64.MultiplyNoFlags(value1, value2, &lo);
             return new value128(hi, lo);
       }
-      else
-      {
-             return Emulate64x64to128( value1, value2);
-      }
-  
+#endif
+      return Emulate64x64to128( value1, value2);
     }
 
 
@@ -212,6 +216,47 @@ namespace csFastFloat
     }
 
     
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int LeadingZeroCount(ulong value)
+    {
+#if HAS_BITOPERATIONS
+      return System.Numerics.BitOperations.LeadingZeroCount(value);
+#else
+      uint hi = (uint)(value >> 32);
+ 
+      if (hi == 0)
+        return 32 + Log2SoftwareFallback((uint)value);
+ 
+      return Log2SoftwareFallback(hi);
+      
+      [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      static int Log2SoftwareFallback(uint value)
+      {
+        if (value == 0)
+          return 32;
+        
+        int n = 1;
+        if (value >> 16 == 0) { n += 16; value <<= 16; }
+        if (value >> 24 == 0) { n +=  8; value <<=  8; }
+        if (value >> 28 == 0) { n +=  4; value <<=  4; }
+        if (value >> 30 == 0) { n +=  2; value <<=  2; }
+        n -= (int) (value >> 31);
+        return n;
+    
+        }
+#endif
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static unsafe float Int32BitsToSingle(int value)
+    {
+#if HAS_BITOPERATIONS
+      return BitConverter.Int32BitsToSingle(value);
+#else
+      return *((float*)&value);
+#endif
+    }
 
   }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using csFastFloat.Enums;
@@ -30,7 +29,7 @@ namespace csFastFloat
       word |= (ulong)(uint)(am.power2) << FloatBinaryConstants.mantissa_explicit_bits;
       word = negative ? word | ((ulong)(1) << FloatBinaryConstants.sign_index) : word;
       uint truncated_word = (uint) word;
-      return BitConverter.Int32BitsToSingle((int)truncated_word);
+      return Utils.Int32BitsToSingle((int)truncated_word);
     }
 
     public static float FastPath(ParsedNumberString pns)
@@ -211,7 +210,7 @@ namespace csFastFloat
       // At this point in time q is in [smallest_power_of_five, largest_power_of_five].
 
       // We want the most significant bit of i to be 1. Shift if needed.
-      int lz = BitOperations.LeadingZeroCount(w);
+      int lz = Utils.LeadingZeroCount(w);
       w <<= lz;
 
       // The required precision is mantissa_explicit_bits() + 3 because
