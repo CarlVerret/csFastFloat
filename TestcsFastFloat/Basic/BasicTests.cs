@@ -1,5 +1,6 @@
 ﻿using csFastFloat;
 using System;
+using System.Globalization;
 using Xunit;
 
 namespace TestcsFastFloat.Tests.Basic
@@ -128,19 +129,19 @@ namespace TestcsFastFloat.Tests.Basic
     [Fact]
     private void ScientificFails_when_InconsistentInput()
     {
-      Assert.Throws<System.ArgumentException>(() => FastDoubleParser.ParseDouble("3.14", csFastFloat.Enums.chars_format.is_scientific));
+      Assert.Throws<System.ArgumentException>(() => FastDoubleParser.ParseDouble("3.14", NumberStyles.AllowExponent));
     }
 
     [Fact]
     private void ScientificWorks_when_ConsistentInput()
     {
-      Assert.Equal(3.14e10, FastDoubleParser.ParseDouble("3.14e10", csFastFloat.Enums.chars_format.is_scientific));
+      Assert.Equal(3.14e10, FastDoubleParser.ParseDouble("3.14e10", NumberStyles.AllowExponent));
     }
 
     [Fact]
     private void FixedWorks_when_ConsistentInput()
     {
-      Assert.Equal(3.14, FastDoubleParser.ParseDouble("3.14e10", csFastFloat.Enums.chars_format.is_fixed));
+      Assert.Equal(3.14, FastDoubleParser.ParseDouble("3.14e10", NumberStyles.AllowDecimalPoint));
     }
 
     [Trait("Category", "Smoke Test")]

@@ -1,4 +1,4 @@
-﻿using csFastFloat.Enums;
+﻿using System.Globalization;
 
 namespace csFastFloat.Structures
 {
@@ -13,7 +13,7 @@ namespace csFastFloat.Structures
     internal bool too_many_digits;
 
     // UTF-16 inputs.
-    unsafe static internal ParsedNumberString ParseNumberString(char* p, char* pend, chars_format expectedFormat = chars_format.is_general, char decimal_separator = '.')
+    unsafe static internal ParsedNumberString ParseNumberString(char* p, char* pend, NumberStyles expectedFormat = NumberStyles.Float, char decimal_separator = '.')
     {
       ParsedNumberString answer = new ParsedNumberString();
 
@@ -65,7 +65,7 @@ namespace csFastFloat.Structures
         return answer;
       }
       long exp_number = 0;            // explicit exponential part
-      if (expectedFormat.HasFlag(chars_format.is_scientific) && (p != pend) && (('e' == *p) || ('E' == *p)))
+      if (expectedFormat.HasFlag(NumberStyles.AllowExponent) && (p != pend) && (('e' == *p) || ('E' == *p)))
       {
         char* location_of_e = p;
         ++p;
@@ -81,7 +81,7 @@ namespace csFastFloat.Structures
         }
         if ((p == pend) || !Utils.is_integer(*p, out uint _))
         {
-          if (expectedFormat != chars_format.is_fixed)
+          if (expectedFormat != NumberStyles.AllowDecimalPoint) // ce n'est pas ça !
           {
             // We are in error.
             return answer;
@@ -107,7 +107,7 @@ namespace csFastFloat.Structures
       else
       {
         // If it scientific and not fixed, we have to bail out.
-        if ((expectedFormat.HasFlag(chars_format.is_scientific)) && !(expectedFormat.HasFlag(chars_format.is_fixed))) { return answer; }
+        if ((expectedFormat.HasFlag(NumberStyles.AllowExponent)) && !(expectedFormat.HasFlag(NumberStyles.AllowDecimalPoint))) { return answer; }
       }
       answer.valid = true;
       answer.characters_consumed = (int) (p - pstart);
@@ -165,7 +165,7 @@ namespace csFastFloat.Structures
     }
 
     // UTF-8 / ASCII inputs.
-    unsafe static internal ParsedNumberString ParseNumberString(byte* p, byte* pend, chars_format expectedFormat = chars_format.is_general, byte decimal_separator = (byte)'.')
+    unsafe static internal ParsedNumberString ParseNumberString(byte* p, byte* pend, NumberStyles expectedFormat = NumberStyles.Float, byte decimal_separator = (byte)'.')
     {
       ParsedNumberString answer = new ParsedNumberString();
 
@@ -225,7 +225,7 @@ namespace csFastFloat.Structures
         return answer;
       }
       long exp_number = 0;            // explicit exponential part
-      if (expectedFormat.HasFlag(chars_format.is_scientific) && (p != pend) && (('e' == *p) || ('E' == *p)))
+      if (expectedFormat.HasFlag(NumberStyles.AllowExponent) && (p != pend) && (('e' == *p) || ('E' == *p)))
       {
         byte* location_of_e = p;
         ++p;
@@ -241,7 +241,7 @@ namespace csFastFloat.Structures
         }
         if ((p == pend) || !Utils.is_integer(*p, out uint _))
         {
-          if (expectedFormat != chars_format.is_fixed)
+          if (!expectedFormat.HasFlag(NumberStyles.AllowDecimalPoint))
           {
             // We are in error.
             return answer;
@@ -266,7 +266,7 @@ namespace csFastFloat.Structures
       else
       {
         // If it scientific and not fixed, we have to bail out.
-        if ((expectedFormat.HasFlag(chars_format.is_scientific)) && !(expectedFormat.HasFlag(chars_format.is_fixed))) { return answer; }
+        if (expectedFormat.HasFlag(NumberStyles.AllowExponent) && !expectedFormat.HasFlag(NumberStyles.AllowDecimalPoint)) { return answer; }
       }
       answer.valid = true;
       answer.characters_consumed = (int) (p - pstart);
@@ -322,6 +322,10 @@ namespace csFastFloat.Structures
       answer.mantissa = i;
       return answer;
     }
+
+
+
+
 
   };
 }
