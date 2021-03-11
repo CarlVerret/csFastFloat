@@ -5,7 +5,7 @@
 namespace csFastFloat
 {
 
-  public static class DoubleBinaryConstants
+  internal static class DoubleBinaryConstants
 {
 
     public const int mantissa_explicit_bits= 52;

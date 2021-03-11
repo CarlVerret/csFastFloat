@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace csFastFloat
 {
-  public struct value128
+  internal struct value128
   {
     public ulong low;
     public ulong high;
@@ -19,7 +19,7 @@ namespace csFastFloat
     }
   }
 
-  public static class Utils
+  internal static class Utils
   {
 #if !HAS_BITOPERATIONS
     private static ReadOnlySpan<byte> Log2DeBruijn => new byte[]

@@ -1,0 +1,524 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>csFastFloat</name>
+    </assembly>
+    <members>
+        <member name="T:csFastFloat.FastDoubleParser">
+            <summary>
+            This class is intented to parse double values from inputs such as string, readonlyspans  and char pointers
+            There's two set of functions, one for UTF-16 encoding another for UTF-8 encoding
+            This is a C# port of Daniel Lemire's fast_float library written in C++
+            https://github.com/fastfloat/fast_float
+            </summary>
+        </member>
+        <member name="M:csFastFloat.FastDoubleParser.ToFloat(System.Boolean,csFastFloat.Structures.AdjustedMantissa)">
+            <summary>
+            Resolve the adjusted mantissa back to its corresponding double value
+            </summary>
+            <param name="negative">bool:  true indicates a negative value should be returned</param>
+            <param name="am">adjusted mantissa (mantissa and exponent)</param>
+            <returns>double value corresponding</returns>
+        </member>
+        <member name="M:csFastFloat.FastDoubleParser.FastPath(csFastFloat.Structures.ParsedNumberString)">
+            <summary>
+            Clinger's fast path
+            </summary>
+            <param name="pns">Parsed info of the input</param>
+            <returns></returns>
+        </member>
+        <member name="M:csFastFloat.FastDoubleParser.TryParseDouble(System.String,System.Double@,System.Globalization.NumberStyles,System.Char)">
+            <summary>
+            Try parsing a double from a UTF-16 encoded string in the given number style
+            </summary>
+            <param name="s">input string</param>
+            <param name="result">output double value</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>bool : true is sucessfuly parsed</returns>
+        </member>
+        <member name="M:csFastFloat.FastDoubleParser.TryParseDouble(System.String,System.Int32@,System.Double@,System.Globalization.NumberStyles,System.Char)">
+            <summary>
+            Try parsing a double from a UTF-16 encoded string in the given number style, counting number of consummed caracters
+            </summary>
+            <param name="s">input string</param>
+            <param name="characters_consumed">number of consummed caracters while parsing </param>
+            <param name="result">output double value</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>bool : true is sucessfuly parsed</returns>
+            <returns></returns>
+        </member>
+        <member name="M:csFastFloat.FastDoubleParser.TryParseDouble(System.ReadOnlySpan{System.Char},System.Double@,System.Globalization.NumberStyles,System.Char)">
+            <summary>
+            Try parsing a double from a UTF-16 encoded string in the given number style
+            </summary>
+            <param name="s">input as a readonly span</param>
+            <param name="result">output double value</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>bool : true is sucessfuly parsed</returns>
+        </member>
+        <member name="M:csFastFloat.FastDoubleParser.TryParseDouble(System.ReadOnlySpan{System.Char},System.Int32@,System.Double@,System.Globalization.NumberStyles,System.Char)">
+            <summary>
+            Try parsing a double from a UTF-16 encoded span of chars in the given number style, counting number of consummed caracters
+            </summary>
+            <param name="s">input as a readonly span</param>
+            <param name="characters_consumed">number of consummed caracters while parsing </param>
+            <param name="result">output double value</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>bool : true is sucessfuly parsed</returns>
+        </member>
+        <member name="M:csFastFloat.FastDoubleParser.TryParseDouble(System.Char*,System.Char*,System.Double@,System.Globalization.NumberStyles,System.Char)">
+            <summary>
+            Try parsing a double from a UTF-16 encoded input in the given number style
+            </summary>
+            <param name="first">char pointer to the begining of the string</param>
+            <param name="last">char pointer to the end of the string</param>
+            <param name="result">output double value</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>bool : true is sucessfuly parsed</returns>
+        </member>
+        <member name="M:csFastFloat.FastDoubleParser.TryParseDouble(System.ReadOnlySpan{System.Byte},System.Double@,System.Globalization.NumberStyles,System.Byte)">
+            <summary>
+            Try parsing a double from a UTF-8 encoded span of bytes in the given number style
+            </summary>
+            <param name="s">input string as Readonly span</param>
+            <param name="result">output double value</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>bool : true is sucessfuly parsed</returns>
+        </member>
+        <member name="M:csFastFloat.FastDoubleParser.TryParseDouble(System.ReadOnlySpan{System.Byte},System.Int32@,System.Double@,System.Globalization.NumberStyles,System.Byte)">
+            <summary>
+            Try parsing a double from a UTF-8 encoded span of bytes in the given number style, counting number of consummed caracters
+            </summary>
+            <param name="s">input string as Readonly span</param>
+            <param name="characters_consumed">number of consummed caracters while parsing </param>
+            <param name="result">output double value</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>bool : true is sucessfuly parsed</returns>
+        </member>
+        <member name="M:csFastFloat.FastDoubleParser.TryParseDouble(System.Char*,System.Char*,System.Int32@,System.Double@,System.Globalization.NumberStyles,System.Char)">
+            <summary>
+            Try parsing a double from a UTF-16 encoded input in the given number style, counting number of consummed caracters
+            </summary>
+            <param name="first">char pointer to the begining of the string</param>
+            <param name="last">char pointer to the end of the string</param>
+            <param name="characters_consumed">number of consummed caracters while parsing </param>
+            <param name="result">output double value</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>bool : true is sucessfuly parsed</returns>
+        </member>
+        <member name="M:csFastFloat.FastDoubleParser.TryParseDouble(System.Byte*,System.Byte*,System.Double@,System.Globalization.NumberStyles,System.Byte)">
+            <summary>
+            Try parsing a double from a UTF-8 encoded input in the given number style
+            </summary>
+            <param name="first">byte pointer to the begining of the string</param>
+            <param name="last">byte pointer to the end of the string</param>
+            <param name="result">output double value</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>bool : true is sucessfuly parsed</returns>
+        </member>
+        <member name="M:csFastFloat.FastDoubleParser.TryParseDouble(System.Byte*,System.Byte*,System.Int32@,System.Double@,System.Globalization.NumberStyles,System.Byte)">
+            <summary>
+            Try parsing a double from a UTF-8 encoded input in the given number style, counting number of consummed caracters
+            </summary>
+            <param name="first">byte pointer to the begining of the string</param>
+            <param name="last">byte pointer to the end of the string</param>
+            <param name="characters_consumed">number of consummed caracters while parsing </param>
+            <param name="result">output double value</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>bool : true is sucessfuly parsed</returns>
+        </member>
+        <member name="M:csFastFloat.FastDoubleParser.ParseDouble(System.String,System.Globalization.NumberStyles,System.Char)">
+            <summary>
+            Parses double from a UTF-16 encoded string in the given number style
+            </summary>
+            <param name="s">input string</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>parsed double value </returns>
+        </member>
+        <member name="M:csFastFloat.FastDoubleParser.ParseDouble(System.String,System.Int32@,System.Globalization.NumberStyles,System.Char)">
+            <summary>
+            Parses double from a UTF-16 encoded string in the given number style counting number of characters consummed
+            </summary>
+            <param name="s">input string</param>
+            <param name="characters_consumed">number of character consummed while parsing</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>parsed double value </returns>
+        </member>
+        <member name="M:csFastFloat.FastDoubleParser.ParseDouble(System.ReadOnlySpan{System.Char},System.Globalization.NumberStyles,System.Char)">
+            <summary>
+            Parses double from a UTF-16 encoded readonly span of chars in the given number style
+            </summary>
+            <param name="s">input as a readonly span of char</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>parsed double value </returns>
+        </member>
+        <member name="M:csFastFloat.FastDoubleParser.ParseDouble(System.ReadOnlySpan{System.Char},System.Int32@,System.Globalization.NumberStyles,System.Char)">
+            <summary>
+            Parses double from am UTF-16 encoded readonly span of chars in the given number style counting number of characters consummed
+            </summary>
+            <param name="s">input as a readonly span of char</param>
+            <param name="characters_consumed">number of character consummed while parsing</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>parsed double value </returns>
+        </member>
+        <member name="M:csFastFloat.FastDoubleParser.ParseDouble(System.Char*,System.Char*,System.Globalization.NumberStyles,System.Char)">
+            <summary>
+            Parses double from a UTF-16 encoded input in the given number style
+            </summary>
+            <param name="first">char pointer to the begining of the input</param>
+            <param name="last">char pointer to the end of the input</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>parsed double value </returns>
+        </member>
+        <member name="M:csFastFloat.FastDoubleParser.ParseDouble(System.ReadOnlySpan{System.Byte},System.Globalization.NumberStyles,System.Byte)">
+            <summary>
+            Parses double from a UTF-8 encoded readonly span of bytes  in the given number style
+            </summary>
+            <param name="s">input as a readonly span of bytes</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>parsed double value </returns>
+        </member>
+        <member name="M:csFastFloat.FastDoubleParser.ParseDouble(System.ReadOnlySpan{System.Byte},System.Int32@,System.Globalization.NumberStyles,System.Byte)">
+            <summary>
+            Parses double from a UTF-8 encoded readonly span of bytes in the given number style counting number of characters consummed
+            </summary>
+            <param name="s">input as a readonly span of bytes</param>
+            <param name="characters_consumed">number of character consummed while parsing</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>parsed double value </returns>
+        </member>
+        <member name="M:csFastFloat.FastDoubleParser.ParseDouble(System.Char*,System.Char*,System.Int32@,System.Globalization.NumberStyles,System.Char)">
+            <summary>
+            Parses double from a UTF-16 encoded input in the given number style counting number of characters consummed
+            </summary>
+            <param name="first">char pointer to the begining of the input</param>
+            <param name="last">char pointer to the end of the input</param>
+            <param name="characters_consumed">number of character consummed while parsing</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>parsed double value </returns>
+        </member>
+        <member name="M:csFastFloat.FastDoubleParser.ParseDouble(System.Byte*,System.Byte*,System.Int32@,System.Globalization.NumberStyles,System.Byte)">
+            <summary>
+            Parses double from a UTF-8 encoded input in the given number style counting number of characters consummed
+            </summary>
+            <param name="first">byte pointer to the begining of the input</param>
+            <param name="last">byte pointer to the end of the input</param>
+            <param name="characters_consumed">number of character consummed while parsing</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>parsed double value </returns>
+        </member>
+        <member name="M:csFastFloat.FastDoubleParser.TryParseNumber(System.Char*,System.Char*,System.Int32@,System.Double@,System.Globalization.NumberStyles,System.Char)">
+            <summary>
+            Try to parse the input (UTF-16) and compute the double value
+            </summary>
+            <param name="first">char pointer to the begining of the input</param>
+            <param name="last">char pointer to the end of the input</param>
+            <param name="characters_consumed">number of characters consummed while parsing</param>
+            <param name="result">out float : parsed float value </param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>bool : true indicates a succesful parsing</returns>
+        </member>
+        <member name="M:csFastFloat.FastDoubleParser.TryParseNumber(System.Byte*,System.Byte*,System.Int32@,System.Double@,System.Globalization.NumberStyles,System.Byte)">
+            <summary>
+            Try to parse the input (UTF-8) and compute the double value
+            </summary>
+            <param name="first">byte pointer to the begining of the input</param>
+            <param name="last">byte pointer to the end of the input</param>
+            <param name="characters_consumed">number of characters consummed while parsing</param>
+            <param name="result">out float : parsed float value </param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>bool : true indicates a succesful parsing</returns>
+        </member>
+        <member name="M:csFastFloat.FastDoubleParser.ComputeFloat(System.Int64,System.UInt64)">
+            <summary>
+            Daniel Lemire's Fast-float algorithm
+            please refer to https://arxiv.org/abs/2101.11408
+            </summary>
+            <param name="q">exponemt</param>
+            <param name="w">decimal mantissa</param>
+            <returns>Adjusted mantissa</returns>
+        </member>
+        <member name="T:csFastFloat.FastFloatParser">
+            <summary>
+            This class is intented to parse float values from inputs such as string, readonlyspans  and char pointers
+            There's two set of functions, one for UTF-16 encoding another for UTF-8 encoding
+            This is a C# port of Daniel Lemire's fast_float library written in C++
+            https://github.com/fastfloat/fast_float
+            </summary>
+        </member>
+        <member name="M:csFastFloat.FastFloatParser.ToFloat(System.Boolean,csFastFloat.Structures.AdjustedMantissa)">
+            <summary>
+            Resolve the adjusted mantissa back to its corresponding float value
+            </summary>
+            <param name="negative">bool:  true indicates a negative value should be returned</param>
+            <param name="am">adjusted mantissa (mantissa and exponent)</param>
+            <returns>float value corresponding</returns>
+        </member>
+        <member name="M:csFastFloat.FastFloatParser.FastPath(csFastFloat.Structures.ParsedNumberString)">
+            <summary>
+            Clinger's fast path
+            </summary>
+            <param name="pns">Parsed info of the input</param>
+            <returns></returns>
+        </member>
+        <member name="M:csFastFloat.FastFloatParser.TryParseFloat(System.String,System.Single@,System.Globalization.NumberStyles,System.Char)">
+            <summary>
+            Try parsing a float from a UTF-16 encoded string in the given number style
+            </summary>
+            <param name="s">input string</param>
+            <param name="result">output float value</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>bool : true is sucessfuly parsed</returns>
+        </member>
+        <member name="M:csFastFloat.FastFloatParser.TryParseFloat(System.String,System.Int32@,System.Single@,System.Globalization.NumberStyles,System.Char)">
+            <summary>
+            Try parsing a float from a UTF-16 encoded string in the given number style, counting number of consummed caracters
+            </summary>
+            <param name="s">input string</param>
+            <param name="characters_consumed">number of consummed caracters while parsing </param>
+            <param name="result">output float value</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>bool : true is sucessfuly parsed</returns>
+        </member>
+        <member name="M:csFastFloat.FastFloatParser.TryParseFloat(System.ReadOnlySpan{System.Char},System.Single@,System.Globalization.NumberStyles,System.Char)">
+            <summary>
+            Try parsing a float from a UTF-16 encoded readonly span of chars in the given number style
+            </summary>
+            <param name="s">input string</param>
+            <param name="result">output float value</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>bool : true is sucessfuly parsed</returns>
+        </member>
+        <member name="M:csFastFloat.FastFloatParser.TryParseFloat(System.ReadOnlySpan{System.Char},System.Int32@,System.Single@,System.Globalization.NumberStyles,System.Char)">
+            <summary>
+            Try parsing a float from a UTF-16 encoded readonly span of chars in the given number style, counting number of consummed caracters
+            </summary>
+            <param name="s">input string</param>
+            <param name="characters_consumed">number of consummed caracters while parsing </param>
+            <param name="result">output float value</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>bool : true is sucessfuly parsed</returns>
+        </member>
+        <member name="M:csFastFloat.FastFloatParser.TryParseFloat(System.Char*,System.Char*,System.Single@,System.Globalization.NumberStyles,System.Char)">
+            <summary>
+            Try parsing a float from a UTF-16 encoded input in the given number style
+            </summary>
+            <param name="first">char pointer to the begining of the input</param>
+            <param name="last">char pointer to the end of the input</param>
+            <param name="result">output float value</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>bool : true is sucessfuly parsed</returns>
+        </member>
+        <member name="M:csFastFloat.FastFloatParser.TryParseFloat(System.Char*,System.Char*,System.Int32@,System.Single@,System.Globalization.NumberStyles,System.Char)">
+            <summary>
+            Try parsing a float from a UTF-16 encoded input in the given number style, counting number of consummed caracters
+            </summary>
+            <param name="first">char pointer to the begining of the input</param>
+            <param name="last">char pointer to the end of the input</param>
+            <param name="characters_consumed">number of consummed caracters while parsing </param>
+            <param name="result">output float value</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>bool : true is sucessfuly parsed</returns>
+        </member>
+        <member name="M:csFastFloat.FastFloatParser.TryParseFloat(System.ReadOnlySpan{System.Byte},System.Single@,System.Globalization.NumberStyles,System.Byte)">
+            <summary>
+            Try parsing a float from a UTF-8 encoded readonly span of bytes in the given number style
+            </summary>
+            <param name="s">readonly span of bytes</param>
+            <param name="result">output float value</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>bool : true is sucessfuly parsed</returns>
+        </member>
+        <member name="M:csFastFloat.FastFloatParser.TryParseFloat(System.ReadOnlySpan{System.Byte},System.Int32@,System.Single@,System.Globalization.NumberStyles,System.Byte)">
+            <summary>
+            Try parsing a float from a UTF-8 encoded readonly span of bytes in the given number style, counting number of consummed caracters
+            </summary>
+            <param name="s">readonly span of bytes</param>
+            <param name="characters_consumed">number of consummed caracters while parsing </param>
+            <param name="result">output float value</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>bool : true is sucessfuly parsed</returns>
+        </member>
+        <member name="M:csFastFloat.FastFloatParser.TryParseFloat(System.Byte*,System.Byte*,System.Single@,System.Globalization.NumberStyles,System.Byte)">
+            <summary>
+            Try parsing a float from a UTF-8 encoded inputin the given number style
+            </summary>
+            <param name="first">byte pointer to the begining of the input</param>
+            <param name="last">byte pointer to the end of the input</param>
+            <param name="result">output float value</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>bool : true is sucessfuly parsed</returns>
+        </member>
+        <member name="M:csFastFloat.FastFloatParser.TryParseFloat(System.Byte*,System.Byte*,System.Int32@,System.Single@,System.Globalization.NumberStyles,System.Byte)">
+            <summary>
+            Try parsing a float from a UTF-8 encoded inputin the given number style, counting number of consummed caracters
+            </summary>
+            <param name="first">byte pointer to the begining of the input</param>
+            <param name="last">byte pointer to the end of the input</param>
+            <param name="characters_consumed">number of consummed caracters while parsing </param>
+            <param name="result">output float value</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>bool : true is sucessfuly parsed</returns>
+        </member>
+        <member name="M:csFastFloat.FastFloatParser.ParseFloat(System.String,System.Globalization.NumberStyles,System.Char)">
+            <summary>
+            Parses float from a UTF-16 encoded string in the given number style
+            </summary>
+            <param name="s">input string</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>parsed float value </returns>
+        </member>
+        <member name="M:csFastFloat.FastFloatParser.ParseFloat(System.String,System.Int32@,System.Globalization.NumberStyles,System.Char)">
+            <summary>
+            Parses float from a UTF-16 encoded string in the given number style counting number of characters consummed
+            </summary>
+            <param name="s">input string</param>
+            <param name="characters_consumed">number of character consummed while parsing</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>parsed float value </returns>
+        </member>
+        <member name="M:csFastFloat.FastFloatParser.ParseFloat(System.ReadOnlySpan{System.Char},System.Globalization.NumberStyles,System.Char)">
+            <summary>
+            Parses float from a UTF-16 encoded readonly span of chars in the given number style 
+            </summary>
+            <param name="s">readonly span of chars</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>parsed double value </returns>
+        </member>
+        <member name="M:csFastFloat.FastFloatParser.ParseFloat(System.ReadOnlySpan{System.Char},System.Int32@,System.Globalization.NumberStyles,System.Char)">
+            <summary>
+            Parses float from a UTF-16 encoded readonly span of chars in the given number style counting number of characters consummed
+            </summary>
+            <param name="s">readonly span of chars</param>
+            <param name="characters_consumed">number of character consummed while parsing</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>parsed float value </returns>
+        </member>
+        <member name="M:csFastFloat.FastFloatParser.ParseFloat(System.Char*,System.Char*,System.Globalization.NumberStyles,System.Char)">
+            <summary>
+            Parses float from a UTF-16 encoded input in the given number style
+            </summary>
+            <param name="first">char pointer to the begining of the input</param>
+            <param name="last">char pointer to the end of the input</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>parsed float value </returns>
+        </member>
+        <member name="M:csFastFloat.FastFloatParser.ParseFloat(System.ReadOnlySpan{System.Byte},System.Globalization.NumberStyles,System.Byte)">
+            <summary>
+            Parses float from a UTF-8 encoded readonly span of bytes in the given number
+            </summary>
+            <param name="s">readonly span of bytes</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>parsed float value </returns>
+        </member>
+        <member name="M:csFastFloat.FastFloatParser.ParseFloat(System.ReadOnlySpan{System.Byte},System.Int32@,System.Globalization.NumberStyles,System.Byte)">
+            <summary>
+            Parses float from a UTF-16 encoded string in the given number style counting number of characters consummed
+            </summary>
+            <param name="s">input string</param>
+            <param name="characters_consumed">number of character consummed while parsing</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>parsed float value </returns>
+        </member>
+        <member name="M:csFastFloat.FastFloatParser.ParseFloat(System.Char*,System.Char*,System.Int32@,System.Globalization.NumberStyles,System.Char)">
+            <summary>
+            Parses float from a UTF-16 encoded input in the given number style counting number of characters consummed
+            </summary>
+            <param name="first">char pointer to the begining of the input</param>
+            <param name="last">char pointer to the end of the input</param>
+            <param name="characters_consumed">number of character consummed while parsing</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>parsed float value </returns>
+        </member>
+        <member name="M:csFastFloat.FastFloatParser.ParseFloat(System.Byte*,System.Byte*,System.Int32@,System.Globalization.NumberStyles,System.Byte)">
+            <summary>
+            Parses float from a UTF-8 encoded input in the given number style counting number of characters consummed
+            </summary>
+            <param name="first">byte pointer to the begining of the input</param>
+            <param name="last">byte pointer to the end of the input</param>
+            <param name="characters_consumed">number of character consummed while parsing</param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>parsed float value </returns>
+        </member>
+        <member name="M:csFastFloat.FastFloatParser.TryParseNumber(System.Char*,System.Char*,System.Int32@,System.Single@,System.Globalization.NumberStyles,System.Char)">
+            <summary>
+            Try to parse the input (UTF-16) and compute the float value
+            </summary>
+            <param name="first">char pointer to the begining of the input</param>
+            <param name="last">char pointer to the end of the input</param>
+            <param name="characters_consumed">number of characters consummed while parsing</param>
+            <param name="result">out float : parsed float value </param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            <returns>bool:  true indicates a succesful parsing</returns>
+        </member>
+        <member name="M:csFastFloat.FastFloatParser.TryParseNumber(System.Byte*,System.Byte*,System.Int32@,System.Single@,System.Globalization.NumberStyles,System.Byte)">
+            <summary>
+            Try to parse the input (UTF-8) and compute the float value
+            </summary>
+            <param name="first">byte pointer to the begining of the input</param>
+            <param name="last">byte pointer to the end of the input</param>
+            <param name="characters_consumed">number of characters consummed while parsing</param>
+            <param name="result">out float : parsed float value </param>
+            <param name="styles">allowed styles for the input string</param>
+            <param name="decimal_separator">decimal separator to be used</param>
+            /// <returns>bool:  true indicates a succesful parsing</returns>
+        </member>
+        <member name="M:csFastFloat.FastFloatParser.ComputeFloat(System.Int64,System.UInt64)">
+            <summary>
+            Daniel Lemire's Fast-float algorithm
+            please refer to https://arxiv.org/abs/2101.11408
+            </summary>
+            <param name="q">exponemt</param>
+            <param name="w">decimal mantissa</param>
+            <returns>Adjusted mantissa</returns>
+        </member>
+        <member name="M:csFastFloat.FastFloatParser.ComputeFloat(csFastFloat.Structures.DecimalInfo)">
+            <summary>
+            Fast-float algorithm - fallback using decimal info
+            </summary>
+            <param name="d">Decimal info structure</param>
+            <returns>Adjusted mantissa</returns>
+        </member>
+    </members>
+</doc>

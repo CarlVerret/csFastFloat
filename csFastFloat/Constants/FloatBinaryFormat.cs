@@ -4,7 +4,7 @@
 
 namespace csFastFloat
 {
-  public sealed class FloatBinaryConstants
+  internal static class FloatBinaryConstants
   {
     public const int mantissa_explicit_bits= 23;
 
