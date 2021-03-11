@@ -12,7 +12,7 @@ namespace csFastFloat
     private static void ThrowArgumentException() => throw new ArgumentException();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static float exact_power_of_ten(long power)
+    internal static float exact_power_of_ten(long power)
     {
 #if NET5_0
       Debug.Assert(power < Constants.powers_of_ten_float.Length);
@@ -23,7 +23,7 @@ namespace csFastFloat
 #endif
     }
 
-    public static float ToFloat(bool negative, AdjustedMantissa am)
+    internal static float ToFloat(bool negative, AdjustedMantissa am)
     {
       ulong word = am.mantissa;
       word |= (ulong)(uint)(am.power2) << FloatBinaryConstants.mantissa_explicit_bits;
@@ -32,7 +32,7 @@ namespace csFastFloat
       return Utils.Int32BitsToSingle((int)truncated_word);
     }
 
-    public static float FastPath(ParsedNumberString pns)
+    internal static float FastPath(ParsedNumberString pns)
     {
       float value = (float)pns.mantissa;
       if (pns.exponent < 0)
@@ -48,49 +48,115 @@ namespace csFastFloat
     }
 
 
-    public static unsafe float ParseFloat(string s, NumberStyles expectedFormat = NumberStyles.Float, char decimal_separator = '.')
+    public static unsafe bool TryParseFloat(string s, out float result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+     => TryParseFloat(s, out _, out result, styles, decimal_separator);
+    public static unsafe bool TryParseFloat(string s, out int characters_consumed, out float result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
     {
       if (s == null)
         ThrowArgumentNull();
-        static void ThrowArgumentNull() => throw new ArgumentNullException(nameof(s));
+      static void ThrowArgumentNull() => throw new ArgumentNullException(nameof(s));
 
       fixed (char* pStart = s)
       {
-        return ParseFloat(pStart, pStart + (uint)s.Length, expectedFormat, decimal_separator);
+        return TryParseFloat(pStart, pStart + (uint)s.Length, out characters_consumed, out result, styles, decimal_separator);
       }
     }
 
-    public static unsafe float ParseFloat(string s, out int characters_consumed, NumberStyles expectedFormat = NumberStyles.Float, char decimal_separator = '.')
+    public static unsafe bool TryParseFloat(ReadOnlySpan<char> s, out float result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+      => TryParseFloat(s, out int _, out result, styles, decimal_separator);
+
+    public static unsafe bool TryParseFloat(ReadOnlySpan<char> s, out int characters_consumed, out float result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+    {
+      fixed (char* pStart = s)
+      {
+        return TryParseFloat(pStart, pStart + (uint)s.Length, out characters_consumed, out result, styles, decimal_separator);
+      }
+    }
+
+    public static unsafe bool TryParseFloat(char* first, char* last, out float result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+      => TryParseFloat(first, last, out int _, out result, styles, decimal_separator);
+
+    public static unsafe bool TryParseFloat(ReadOnlySpan<byte> s, out float result, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
+      => TryParseFloat(s, out int _, out result, styles, decimal_separator);
+
+    public static unsafe bool TryParseFloat(ReadOnlySpan<byte> s, out int characters_consumed, out float result, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
+    {
+      fixed (byte* pStart = s)
+      {
+        return TryParseFloat(pStart, pStart + s.Length, out characters_consumed, out result, styles, decimal_separator);
+      }
+    }
+
+    public static unsafe bool TryParseFloat(byte* first, byte* last, out float result, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
+      => TryParseFloat(first, last, out int _, out result, styles, decimal_separator);
+
+    public static unsafe bool TryParseFloat(char* first, char* last, out int characters_consumed, out float result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+      => TryParseNumber(first, last, out characters_consumed, out result, styles, decimal_separator);
+
+    public static unsafe bool TryParseFloat(byte* first, byte* last, out int characters_consumed, out float result, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
+      => TryParseNumber(first, last, out characters_consumed, out result, styles, decimal_separator);
+
+    public static unsafe float ParseFloat(string s, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+      => ParseFloat(s, out int _, styles, decimal_separator);
+
+    public static unsafe float ParseFloat(string s, out int characters_consumed, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
     {
       if (s == null)
         ThrowArgumentNull();
-        static void ThrowArgumentNull() => throw new ArgumentNullException(nameof(s));
+      static void ThrowArgumentNull() => throw new ArgumentNullException(nameof(s));
 
       fixed (char* pStart = s)
       {
-        return ParseNumber(pStart, pStart + (uint)s.Length, out characters_consumed, expectedFormat, decimal_separator);
+        return ParseFloat(pStart, pStart + (uint)s.Length, out characters_consumed, styles, decimal_separator);
       }
     }
 
-    public static unsafe float ParseFloat(ReadOnlySpan<char> s, NumberStyles expectedFormat = NumberStyles.Float, char decimal_separator = '.')
+    public static unsafe float ParseFloat(ReadOnlySpan<char> s, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+      => ParseFloat(s, out int _, styles, decimal_separator);
+
+    public static unsafe float ParseFloat(ReadOnlySpan<char> s, out int characters_consumed, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
     {
       fixed (char* pStart = s)
       {
-        return ParseFloat(pStart, pStart + (uint)s.Length, expectedFormat, decimal_separator);
+        return ParseFloat(pStart, pStart + (uint)s.Length, out characters_consumed, styles, decimal_separator);
       }
     }
-    public static unsafe float ParseFloat(ReadOnlySpan<char> s, out int characters_consumed, NumberStyles expectedFormat = NumberStyles.Float, char decimal_separator = '.')
+
+    public static unsafe float ParseFloat(char* first, char* last, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+      => ParseFloat(first, last, out int _, styles, decimal_separator);
+
+    public static unsafe float ParseFloat(ReadOnlySpan<byte> s, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
+      => ParseFloat(s, out int _, styles, decimal_separator);
+
+    public static unsafe float ParseFloat(ReadOnlySpan<byte> s, out int characters_consumed, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
     {
-      fixed (char* pStart = s)
+      fixed (byte* pStart = s)
       {
-        return ParseNumber(pStart, pStart + (uint)s.Length, out characters_consumed, expectedFormat, decimal_separator);
+        return ParseFloat(pStart, pStart + s.Length, out characters_consumed, styles, decimal_separator);
       }
     }
-    unsafe static public float ParseFloat(char* first, char* last, NumberStyles expectedFormat = NumberStyles.Float, char decimal_separator = '.')
-      => ParseNumber(first, last, out int _, expectedFormat, decimal_separator);
 
 
-    unsafe static internal float ParseNumber(char* first, char* last, out int characters_consumed, NumberStyles expectedFormat = NumberStyles.Float, char decimal_separator = '.')
+    public static unsafe float ParseFloat(char* first, char* last, out int characters_consumed, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+    {
+      if (!TryParseFloat(first, last, out characters_consumed, out float result, styles, decimal_separator))
+      {
+        ThrowArgumentException();
+      }
+      return result;
+    }
+    public static unsafe float ParseFloat(byte* first, byte* last, out int characters_consumed, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
+    {
+      if (!TryParseFloat(first, last, out characters_consumed, out float result, styles, decimal_separator))
+      {
+        ThrowArgumentException();
+      }
+      return result;
+    }
+
+
+
+    internal static unsafe bool TryParseNumber(char* first, char* last, out int characters_consumed, out float result, NumberStyles expectedFormat = NumberStyles.Float, char decimal_separator = '.')
     {
       while ((first != last) && Utils.is_ascii_space(*first))
       {
@@ -103,14 +169,18 @@ namespace csFastFloat
       ParsedNumberString pns = ParsedNumberString.ParseNumberString(first, last, expectedFormat);
       if (!pns.valid)
       {
-        return (float)FastDoubleParser.HandleInvalidInput(first, last, out characters_consumed);
+
+        var success = FastDoubleParser.TryHandleInvalidInput(first, last, out characters_consumed, out double temp) ;
+        result = (float)temp;
+        return success;
       }
       characters_consumed = pns.characters_consumed;
 
       // Next is Clinger's fast path.
       if (FloatBinaryConstants.min_exponent_fast_path <= pns.exponent && pns.exponent <= FloatBinaryConstants.max_exponent_fast_path && pns.mantissa <= FloatBinaryConstants.max_mantissa_fast_path && !pns.too_many_digits)
       {
-        return FastPath(pns);
+        result = FastPath(pns);
+        return true;
       }
 
       AdjustedMantissa am = ComputeFloat(pns.exponent, pns.mantissa);
@@ -124,11 +194,10 @@ namespace csFastFloat
       // If we called compute_float<binary_format<T>>(pns.exponent, pns.mantissa) and we have an invalid power (am.power2 < 0),
       // then we need to go the long way around again. This is very uncommon.
       if (am.power2 < 0) { am = ParseLongMantissa(first, last, decimal_separator); }
-      return ToFloat(pns.negative, am);
+      result =  ToFloat(pns.negative, am); 
+      return true;
     }
-
-
-    unsafe static internal float ParseNumber(byte* first, byte* last, out int characters_consumed, NumberStyles expectedFormat = NumberStyles.Float, byte decimal_separator = (byte)'.')
+    internal static unsafe bool TryParseNumber(byte* first, byte* last, out int characters_consumed, out float result, NumberStyles expectedFormat = NumberStyles.Float, byte decimal_separator = (byte)'.')
     {
       var leading_spaces = 0;
 
@@ -144,14 +213,17 @@ namespace csFastFloat
       ParsedNumberString pns = ParsedNumberString.ParseNumberString(first, last, expectedFormat);
       if (!pns.valid)
       {
-        return (float)FastDoubleParser.HandleInvalidInput(first, last, out characters_consumed);
+        var success = FastDoubleParser.TryHandleInvalidInput(first, last, out characters_consumed, out double temp);
+        result = (float)temp;
+        return success;
       }
       characters_consumed = pns.characters_consumed+ leading_spaces;
 
       // Next is Clinger's fast path.
       if (FloatBinaryConstants.min_exponent_fast_path <= pns.exponent && pns.exponent <= FloatBinaryConstants.max_exponent_fast_path && pns.mantissa <= FloatBinaryConstants.max_mantissa_fast_path && !pns.too_many_digits)
       {
-        return FastPath(pns);
+        result = FastPath(pns);
+        return true;
       }
 
       AdjustedMantissa am = ComputeFloat(pns.exponent, pns.mantissa);
@@ -165,29 +237,11 @@ namespace csFastFloat
       // If we called compute_float<binary_format<T>>(pns.exponent, pns.mantissa) and we have an invalid power (am.power2 < 0),
       // then we need to go the long way around again. This is very uncommon.
       if (am.power2 < 0) { am = ParseLongMantissa(first, last, (byte)decimal_separator); }
-      return ToFloat(pns.negative, am);
+      result = ToFloat(pns.negative, am);
+      return true;
     }
-    public static unsafe float ParseFloat(ReadOnlySpan<byte> s, NumberStyles expectedFormat = NumberStyles.Float, byte decimal_separator = (byte)'.')
-    {
-      fixed(byte* pStart = s)
-      {
-        return ParseNumber(pStart, pStart + s.Length, out int _, expectedFormat, decimal_separator);
-      }
-    }
-    public static unsafe float ParseFloat(ReadOnlySpan<byte> s, out int characters_consumed, NumberStyles expectedFormat = NumberStyles.Float, byte decimal_separator = (byte)'.')
-    {
-      fixed(byte* pStart = s)
-      {
-        return ParseNumber(pStart, pStart + s.Length, out characters_consumed, expectedFormat, decimal_separator);
-      }
-    }
-    /// <summary>
-    ///
-    /// </summary>
-    /// <param name="q"></param>
-    /// <param name="w"></param>
-    ///
-    /// <returns></returns>
+  
+       
 
     internal static AdjustedMantissa ComputeFloat(long q, ulong w)
     {
@@ -299,12 +353,6 @@ namespace csFastFloat
       }
       return answer;
     }
-
-
-
-
-
-
 
     internal static AdjustedMantissa ComputeFloat(DecimalInfo d)
     {
@@ -435,24 +483,18 @@ namespace csFastFloat
     }
 
     // UTF-16 inputs
-    unsafe static internal AdjustedMantissa ParseLongMantissa(char* first, char* last, char decimal_separator)
+    internal static unsafe AdjustedMantissa ParseLongMantissa(char* first, char* last, char decimal_separator)
     {
       DecimalInfo d = DecimalInfo.parse_decimal(first, last, decimal_separator);
       return ComputeFloat(d);
     }
 
     // UTF-8/ASCII inputs
-    unsafe static internal AdjustedMantissa ParseLongMantissa(byte* first, byte* last, byte decimal_separator)
+    internal static unsafe AdjustedMantissa ParseLongMantissa(byte* first, byte* last, byte decimal_separator)
     {
       DecimalInfo d = DecimalInfo.parse_decimal(first, last, decimal_separator);
       return ComputeFloat(d);
     }
-
-
-
-
-   
-
 
     
   }

@@ -15,7 +15,7 @@ namespace csFastFloat
     private static void ThrowArgumentException() => throw new ArgumentException();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public  static double exact_power_of_ten(long power)
+    internal static double exact_power_of_ten(long power)
     {
 #if NET5_0
       Debug.Assert(power < Constants.powers_of_ten_double.Length);
@@ -27,7 +27,7 @@ namespace csFastFloat
 
     }
 
-    public static double ToFloat(bool negative, AdjustedMantissa am)
+    internal static double ToFloat(bool negative, AdjustedMantissa am)
     {
       ulong word = am.mantissa;
       word |= (ulong)(uint)(am.power2) << DoubleBinaryConstants.mantissa_explicit_bits;
@@ -36,7 +36,7 @@ namespace csFastFloat
       return BitConverter.Int64BitsToDouble((long)word);
     }
 
-    public  static double FastPath(ParsedNumberString pns)
+    internal static double FastPath(ParsedNumberString pns)
     {
       double value = (double)pns.mantissa;
       if (pns.exponent < 0)
@@ -52,52 +52,119 @@ namespace csFastFloat
     }
 
 
-    public static unsafe double ParseDouble(string s, NumberStyles expectedFormat = NumberStyles.Float, char decimal_separator = '.')
+
+    public static unsafe bool TryParseDouble(string s, out double result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+      => TryParseDouble(s, out _, out result, styles, decimal_separator);
+    public static unsafe bool TryParseDouble(string s, out int characters_consumed, out double result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
     {
       if (s == null)
         ThrowArgumentNull();
-        static void ThrowArgumentNull() => throw new ArgumentNullException(nameof(s));
+      static void ThrowArgumentNull() => throw new ArgumentNullException(nameof(s));
 
       fixed (char* pStart = s)
       {
-        return ParseDouble(pStart, pStart + (uint)s.Length, expectedFormat, decimal_separator);
+        return TryParseDouble(pStart, pStart + (uint)s.Length, out characters_consumed, out result, styles, decimal_separator);
       }
     }
 
-    public static unsafe double ParseDouble(string s, out int characters_consumed, NumberStyles expectedFormat = NumberStyles.Float, char decimal_separator = '.')
+    public static unsafe bool TryParseDouble(ReadOnlySpan<char> s, out double result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+      => TryParseDouble(s, out int _, out result, styles, decimal_separator);
+
+    public static unsafe bool TryParseDouble(ReadOnlySpan<char> s, out int characters_consumed, out double result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+    {
+      fixed (char* pStart = s)
+      {
+        return TryParseDouble(pStart, pStart + (uint)s.Length, out characters_consumed, out result, styles, decimal_separator);
+      }
+    }
+
+    unsafe static public bool TryParseDouble(char* first, char* last, out double result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+      => TryParseDouble(first, last, out int _, out result, styles, decimal_separator);
+
+    public static unsafe bool TryParseDouble(ReadOnlySpan<byte> s, out double result, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
+      => TryParseDouble(s, out int _, out result, styles, decimal_separator);
+
+    public static unsafe bool TryParseDouble(ReadOnlySpan<byte> s, out int characters_consumed, out double result, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
+    {
+      fixed (byte* pStart = s)
+      {
+        return TryParseDouble(pStart, pStart + s.Length, out characters_consumed, out result, styles, decimal_separator);
+      }
+    }
+
+    public static unsafe bool TryParseDouble(byte* first, byte* last, out double result, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
+      => TryParseDouble(first, last, out int _, out result, styles, decimal_separator);
+
+
+    public static unsafe bool TryParseDouble(char* first, char* last, out int characters_consumed, out double result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+      => TryParseNumber(first, last, out characters_consumed, out result, styles, decimal_separator);
+
+    public static unsafe bool TryParseDouble(byte* first, byte* last, out int characters_consumed, out double result, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
+      => TryParseNumber(first, last, out characters_consumed, out result, styles, decimal_separator);
+
+
+
+
+    public static unsafe double ParseDouble(string s, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+      => ParseDouble(s, out int _, styles, decimal_separator);
+
+    public static unsafe double ParseDouble(string s, out int characters_consumed, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
     {
       if (s == null)
         ThrowArgumentNull();
-        static void ThrowArgumentNull() => throw new ArgumentNullException(nameof(s));
+      static void ThrowArgumentNull() => throw new ArgumentNullException(nameof(s));
 
       fixed (char* pStart = s)
       {
-        return ParseNumber(pStart, pStart + (uint)s.Length, out characters_consumed, expectedFormat, decimal_separator);
+        return ParseDouble(pStart, pStart + (uint)s.Length, out characters_consumed, styles, decimal_separator);
       }
     }
 
 
-    public static unsafe double ParseDouble(ReadOnlySpan<char> s, NumberStyles expectedFormat = NumberStyles.Float, char decimal_separator = '.')
+    public static unsafe double ParseDouble(ReadOnlySpan<char> s, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+      => ParseDouble(s, out int _, styles, decimal_separator);
+
+    public static unsafe double ParseDouble(ReadOnlySpan<char> s, out int characters_consumed, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
     {
       fixed (char* pStart = s)
       {
-        return ParseDouble(pStart, pStart + (uint)s.Length, expectedFormat, decimal_separator);
+        return ParseDouble(pStart, pStart + (uint)s.Length, out characters_consumed, styles, decimal_separator);
       }
     }
 
-    public static unsafe double ParseDouble(ReadOnlySpan<char> s, out int characters_consumed, NumberStyles expectedFormat = NumberStyles.Float, char decimal_separator = '.')
+    public static unsafe double ParseDouble(char* first, char* last, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+      => ParseDouble(first, last, out int _, styles, decimal_separator);
+
+    public static unsafe double ParseDouble(ReadOnlySpan<byte> s, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
+      => ParseDouble(s, out int _, styles, decimal_separator);
+
+    public static unsafe double ParseDouble(ReadOnlySpan<byte> s, out int characters_consumed, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
     {
-      fixed (char* pStart = s)
+      fixed (byte* pStart = s)
       {
-        return ParseNumber(pStart, pStart + (uint)s.Length, out characters_consumed, expectedFormat, decimal_separator);
+        return ParseDouble(pStart, pStart + s.Length, out characters_consumed, styles, decimal_separator);
       }
     }
+    public static unsafe double ParseDouble(char* first, char* last, out int characters_consumed, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+    {
+      if (!TryParseDouble(first, last, out characters_consumed, out double result, styles, decimal_separator))
+      {
+        ThrowArgumentException();
+      }
+      return result;
+    }
+    public static unsafe double ParseDouble(byte* first, byte* last, out int characters_consumed, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
+    {
+      if (!TryParseDouble(first, last, out characters_consumed, out double result, styles, decimal_separator))
+      {
+        ThrowArgumentException();
+      }
+      return result;
+    }
 
-    unsafe static public double ParseDouble(char* first, char* last, NumberStyles expectedFormat = NumberStyles.Float, char decimal_separator = '.')
-      => ParseNumber(first, last, out int _, expectedFormat, decimal_separator);
 
 
-    unsafe static internal double ParseNumber(char* first, char* last, out int characters_consumed, NumberStyles expectedFormat = NumberStyles.Float, char decimal_separator = '.')
+    internal static unsafe bool TryParseNumber(char* first, char* last, out int characters_consumed, out double result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
     {
       var leading_spaces = 0;
       while ((first != last) && Utils.is_ascii_space(*first))
@@ -107,19 +174,22 @@ namespace csFastFloat
       }
       if (first == last)
       {
-        ThrowArgumentException();
+        result = 0;
+        characters_consumed = 0;
+        return false;
       }
-      ParsedNumberString pns = ParsedNumberString.ParseNumberString(first, last, expectedFormat);
+      ParsedNumberString pns = ParsedNumberString.ParseNumberString(first, last, styles);
       if (!pns.valid)
       {
-        return HandleInvalidInput(first, last, out characters_consumed);
+        return TryHandleInvalidInput(first, last, out characters_consumed, out result);
       }
       characters_consumed = pns.characters_consumed + leading_spaces;
 
       // Next is Clinger's fast path.
       if (DoubleBinaryConstants.min_exponent_fast_path <= pns.exponent && pns.exponent <= DoubleBinaryConstants.max_exponent_fast_path && pns.mantissa <= DoubleBinaryConstants.max_mantissa_fast_path && !pns.too_many_digits)
       {
-        return FastPath(pns);
+        result = FastPath(pns);
+        return true;
       }
 
       AdjustedMantissa am = ComputeFloat(pns.exponent, pns.mantissa);
@@ -133,10 +203,11 @@ namespace csFastFloat
       // If we called compute_float<binary_format<T>>(pns.exponent, pns.mantissa) and we have an invalid power (am.power2 < 0),
       // then we need to go the long way around again. This is very uncommon.
       if (am.power2 < 0) { am = ParseLongMantissa(first, last, decimal_separator); }
-      return ToFloat(pns.negative, am);
-    }
 
-    unsafe static internal double ParseNumber (byte* first, byte* last, out int characters_consumed, NumberStyles expectedFormat = NumberStyles.Float, byte decimal_separator = (byte)'.')
+      result = ToFloat(pns.negative, am);
+      return true;
+    }
+    internal static unsafe bool TryParseNumber(byte* first, byte* last, out int characters_consumed, out double result, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
     {
       while ((first != last) && Utils.is_space(*first))
       {
@@ -146,17 +217,18 @@ namespace csFastFloat
       {
         ThrowArgumentException();
       }
-      ParsedNumberString pns = ParsedNumberString.ParseNumberString(first, last, expectedFormat);
+      ParsedNumberString pns = ParsedNumberString.ParseNumberString(first, last, styles);
       if (!pns.valid)
       {
-        return HandleInvalidInput(first, last, out characters_consumed);
+        return TryHandleInvalidInput(first, last, out characters_consumed, out result);
       }
       characters_consumed = pns.characters_consumed;
 
       // Next is Clinger's fast path.
       if (DoubleBinaryConstants.min_exponent_fast_path <= pns.exponent && pns.exponent <= DoubleBinaryConstants.max_exponent_fast_path && pns.mantissa <= DoubleBinaryConstants.max_mantissa_fast_path && !pns.too_many_digits)
       {
-        return FastPath(pns);
+        result = FastPath(pns);
+        return true;
       }
 
       AdjustedMantissa am = ComputeFloat(pns.exponent, pns.mantissa);
@@ -170,22 +242,8 @@ namespace csFastFloat
       // If we called compute_float<binary_format<T>>(pns.exponent, pns.mantissa) and we have an invalid power (am.power2 < 0),
       // then we need to go the long way around again. This is very uncommon.
       if (am.power2 < 0) { am = ParseLongMantissa(first, last, decimal_separator); }
-      return ToFloat(pns.negative, am);
-    }
-
-    public static unsafe double ParseDouble(ReadOnlySpan<byte> s, NumberStyles expectedFormat = NumberStyles.Float, byte decimal_separator = (byte)'.')
-    {
-      fixed(byte* pStart = s)
-      {
-        return ParseNumber(pStart, pStart + s.Length, out int _, expectedFormat, decimal_separator);
-      }
-    }
-    public static unsafe double ParseDouble(ReadOnlySpan<byte> s, out int characters_consumed, NumberStyles expectedFormat = NumberStyles.Float, byte decimal_separator = (byte)'.')
-    {
-      fixed(byte* pStart = s)
-      {
-        return ParseNumber(pStart, pStart + s.Length, out characters_consumed, expectedFormat, decimal_separator);
-      }
+      result = ToFloat(pns.negative, am);
+      return true;
     }
 
     /// <summary>
@@ -196,7 +254,7 @@ namespace csFastFloat
     ///
     /// <returns></returns>
 
-    internal static AdjustedMantissa ComputeFloat (long q, ulong w)
+    internal static AdjustedMantissa ComputeFloat(long q, ulong w)
     {
       var answer = new AdjustedMantissa();
 
@@ -435,129 +493,131 @@ namespace csFastFloat
     }
 
     // UTF-16 inputs
-    unsafe static internal AdjustedMantissa ParseLongMantissa(char* first, char* last,  char decimal_separator)
+    internal static unsafe AdjustedMantissa ParseLongMantissa(char* first, char* last, char decimal_separator)
     {
       DecimalInfo d = DecimalInfo.parse_decimal(first, last, decimal_separator);
       return ComputeFloat(d);
     }
 
     // UTF-8/ASCII inputs
-    unsafe static internal AdjustedMantissa ParseLongMantissa(byte* first, byte* last,  byte decimal_separator)
+    internal static unsafe AdjustedMantissa ParseLongMantissa(byte* first, byte* last, byte decimal_separator)
     {
       DecimalInfo d = DecimalInfo.parse_decimal(first, last, decimal_separator);
       return ComputeFloat(d);
     }
 
 
-    unsafe static internal double HandleInvalidInput(char* first, char* last, out int characters_consumed)
+    internal static unsafe bool TryHandleInvalidInput(char* first, char* last, out int characters_consumed, out double result)
     {
       if (last - first >= 3)
       {
         if (Utils.strncasecmp(first, "nan", 3))
         {
           characters_consumed = 3;
-          return DoubleBinaryConstants.NaN;
+          result = DoubleBinaryConstants.NaN; return true;
         }
         if (Utils.strncasecmp(first, "inf", 3))
         {
           if ((last - first >= 8) && Utils.strncasecmp(first, "infinity", 8))
           {
             characters_consumed = 8;
-            return DoubleBinaryConstants.PositiveInfinity;
+            result = DoubleBinaryConstants.PositiveInfinity; return true;
           }
           characters_consumed = 3;
-          return DoubleBinaryConstants.PositiveInfinity;
+          result = DoubleBinaryConstants.PositiveInfinity; return true;
         }
         if (last - first >= 4)
         {
           if (Utils.strncasecmp(first, "+nan", 4) || Utils.strncasecmp(first, "-nan", 4))
           {
             characters_consumed = 4;
-            return DoubleBinaryConstants.NaN;
+            result = DoubleBinaryConstants.NaN; return true;
           }
           if (Utils.strncasecmp(first, "+inf", 4) ||
               Utils.strncasecmp(first, "-inf", 4))
           {
-            if((last - first >= 9) && Utils.strncasecmp(first + 1, "infinity", 8))
+            if ((last - first >= 9) && Utils.strncasecmp(first + 1, "infinity", 8))
             {
               characters_consumed = 9;
-            } else {
+            }
+            else
+            {
               characters_consumed = 4;
             }
-            return (first[0] == '-') ? DoubleBinaryConstants.NegativeInfinity : DoubleBinaryConstants.PositiveInfinity;
+            result = (first[0] == '-') ? DoubleBinaryConstants.NegativeInfinity : DoubleBinaryConstants.PositiveInfinity;
+            return true;
           }
         }
       }
-      ThrowArgumentException();
+      result = 0;
       characters_consumed = 0;
-      return 0d;
+      ThrowArgumentException();
+      return false;
     }
 
-
-    unsafe static internal double HandleInvalidInput(byte* first, byte* last, out int characters_consumed)
+    internal unsafe static bool TryHandleInvalidInput(byte* first, byte* last, out int characters_consumed, out double result)
     {
       // C# does not (yet) allow literal ASCII strings (it uses UTF-16), so
       // we need to use byte arrays.
       // "infinity"  string in ASCII, e.g., 105 = i
-      ReadOnlySpan<byte> infinity_string = new byte[]{105, 110, 102, 105, 110, 105, 116, 121};
+      ReadOnlySpan<byte> infinity_string = new byte[] { 105, 110, 102, 105, 110, 105, 116, 121 };
       // "inf" string in ASCII
-      ReadOnlySpan<byte> inf_string = new byte[]{105, 110, 102};
+      ReadOnlySpan<byte> inf_string = new byte[] { 105, 110, 102 };
       // "+inf" string in ASCII
-      ReadOnlySpan<byte> pinf_string = new byte[]{43, 105, 110, 102};
+      ReadOnlySpan<byte> pinf_string = new byte[] { 43, 105, 110, 102 };
       // "-inf" string in ASCII
-      ReadOnlySpan<byte> minf_string = new byte[]{5, 105, 110, 102};
+      ReadOnlySpan<byte> minf_string = new byte[] { 5, 105, 110, 102 };
       // "nan" string in ASCII
-      ReadOnlySpan<byte> nan_string = new byte[]{110, 97, 110};
+      ReadOnlySpan<byte> nan_string = new byte[] { 110, 97, 110 };
       // "-nan" string in ASCII
-      ReadOnlySpan<byte> mnan_string = new byte[]{45, 110, 97, 110};
+      ReadOnlySpan<byte> mnan_string = new byte[] { 45, 110, 97, 110 };
       // "+nan" string in ASCII
-      ReadOnlySpan<byte> pnan_string = new byte[]{43, 110, 97, 110};
+      ReadOnlySpan<byte> pnan_string = new byte[] { 43, 110, 97, 110 };
 
       if (last - first >= 3)
       {
         if (Utils.strncasecmp(first, nan_string, 3))
         {
           characters_consumed = 3;
-          return DoubleBinaryConstants.NaN;
+          result = DoubleBinaryConstants.NaN; return true;
         }
         if (Utils.strncasecmp(first, inf_string, 3))
         {
           if ((last - first >= 8) && Utils.strncasecmp(first, infinity_string, 8))
           {
             characters_consumed = 8;
-            return DoubleBinaryConstants.PositiveInfinity;
+            result = DoubleBinaryConstants.PositiveInfinity; return true;
           }
           characters_consumed = 3;
-          return DoubleBinaryConstants.PositiveInfinity;
+          result = DoubleBinaryConstants.PositiveInfinity; return true;
         }
         if (last - first >= 4)
         {
           if (Utils.strncasecmp(first, pnan_string, 4) || Utils.strncasecmp(first, mnan_string, 4))
           {
             characters_consumed = 4;
-            return DoubleBinaryConstants.NaN;
+            result = DoubleBinaryConstants.NaN; return true;
           }
           if (Utils.strncasecmp(first, pinf_string, 4) ||
               Utils.strncasecmp(first, minf_string, 4))
           {
-            if((last - first >= 9) && Utils.strncasecmp(first + 1, infinity_string, 8))
+            if ((last - first >= 9) && Utils.strncasecmp(first + 1, infinity_string, 8))
             {
               characters_consumed = 9;
-            } else {
+            }
+            else
+            {
               characters_consumed = 4;
             }
-            return (first[0] == '-') ? DoubleBinaryConstants.NegativeInfinity : DoubleBinaryConstants.PositiveInfinity;
+            result = (first[0] == '-') ? DoubleBinaryConstants.NegativeInfinity : DoubleBinaryConstants.PositiveInfinity;
+            return true;
           }
         }
       }
       ThrowArgumentException();
       characters_consumed = 0;
-      return 0d;
+      result = 0d; return false;
     }
-
-
-
-
 
   }
 

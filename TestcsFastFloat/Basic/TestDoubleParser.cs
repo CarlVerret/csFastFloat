@@ -36,11 +36,12 @@ namespace TestcsFastFloat.Tests.Basic
     [InlineData("infinity", double.PositiveInfinity)]
     [InlineData("+infinity", double.PositiveInfinity)]
     [InlineData("-infinity", double.NegativeInfinity)]
-    unsafe public void DoubleParser_HandleInvalidInput_works(string input, double res)
+    unsafe public void DoubleParser_HandleInvalidInput_works(string input, double sut)
     {
       fixed (char* p = input)
       {
-        Assert.Equal(res, FastDoubleParser.HandleInvalidInput(p, p + input.Length, out int _));
+        Assert.True(FastDoubleParser.TryHandleInvalidInput(p, p + input.Length, out int _, out double result));
+        Assert.Equal(sut, result);
       }
     }
 
@@ -50,6 +51,24 @@ namespace TestcsFastFloat.Tests.Basic
       Assert.Equal(-0, FastDoubleParser.ParseDouble("-0"));
     
     }
+
+
+    [Fact]
+    private void Issue_74()
+    {
+      // Consumed=0 vs raising Exceptions
+      // Try parse should retrun false with consummed and result =0
+      Assert.False(FastDoubleParser.TryParseDouble("", out int nbChar, out double result));
+      Assert.Equal(0, nbChar);
+      Assert.Equal(0, result);
+
+      // as ParseDouble should throw with an empty input string
+      Assert.Throws<System.ArgumentException>(() => FastDoubleParser.ParseDouble(string.Empty));
+
+
+    }
+
+
 
 
     [SkippableFact]

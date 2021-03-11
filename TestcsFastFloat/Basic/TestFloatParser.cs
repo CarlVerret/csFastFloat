@@ -9,24 +9,7 @@ namespace TestcsFastFloat.Tests.Basic
 {
   public class TestFloatParser : BaseTestClass
   {
-    [Trait("Category", "Smoke Test")]
-    [Theory]
-    [InlineData("nan", double.NaN)]
-    [InlineData("inf", double.PositiveInfinity)]
-    [InlineData("+nan", double.NaN)]
-    [InlineData("-nan", double.NaN)]
-    [InlineData("+inf", double.PositiveInfinity)]
-    [InlineData("-inf", double.NegativeInfinity)]
-    [InlineData("infinity", double.PositiveInfinity)]
-    [InlineData("+infinity", double.PositiveInfinity)]
-    [InlineData("-infinity", double.NegativeInfinity)]
-    unsafe public void DoubleParser_HandleInvalidInput_works(string input, double res)
-    {
-      fixed (char* p = input)
-      {
-        Assert.Equal(res, FastDoubleParser.HandleInvalidInput(p, p + input.Length, out int _));
-      }
-    }
+ 
 
     [Trait("Category", "Smoke Test")]
     [Theory]
@@ -39,11 +22,12 @@ namespace TestcsFastFloat.Tests.Basic
     [InlineData("infinity", float.PositiveInfinity)]
     [InlineData("+infinity", float.PositiveInfinity)]
     [InlineData("-infinity", float.NegativeInfinity)]
-    unsafe public void FloatParser_HandleInvalidInput_works(string input, float res)
+    unsafe public void FloatParser_HandleInvalidInput_works(string input, float sut)
     {
       fixed (char* p = input)
       {
-        Assert.Equal(res, (float)FastDoubleParser.HandleInvalidInput(p, p + input.Length, out int _)); ;
+        Assert.True(FastDoubleParser.TryHandleInvalidInput(p, p + input.Length, out int _, out double result));
+        Assert.Equal(sut, (float)result);
       }
     }
 
@@ -209,7 +193,7 @@ namespace TestcsFastFloat.Tests.Basic
         fixed (char* p = kv.Value)
         {
           char* pend = p + kv.Value.Length;
-          var res = FastDoubleParser.ParseNumber(p, pend, out int _);
+          Assert.True( FastDoubleParser.TryParseNumber(p, pend, out int _, out double res));
 
           sb.AppendLine($"Resultat : {res}");
           sb.AppendLine();
