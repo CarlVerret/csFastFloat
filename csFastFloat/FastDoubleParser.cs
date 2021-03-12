@@ -90,9 +90,12 @@ namespace csFastFloat
     /// <returns></returns>
     public static unsafe bool TryParseDouble(string s, out int characters_consumed, out double result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
     {
-      if (s == null)
-        ThrowArgumentNull();
-      static void ThrowArgumentNull() => throw new ArgumentNullException(nameof(s));
+      if (string.IsNullOrEmpty(s))
+      {
+        characters_consumed = 0;
+        result = default;
+        return false;
+      }
 
       fixed (char* pStart = s)
       {
@@ -751,7 +754,6 @@ namespace csFastFloat
       }
       result = 0;
       characters_consumed = 0;
-      ThrowArgumentException();
       return false;
     }
 
@@ -814,7 +816,6 @@ namespace csFastFloat
           }
         }
       }
-      ThrowArgumentException();
       characters_consumed = 0;
       result = 0d; return false;
     }

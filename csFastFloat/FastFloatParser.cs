@@ -88,9 +88,12 @@ namespace csFastFloat
     /// <returns>bool : true is sucessfuly parsed</returns>
     public static unsafe bool TryParseFloat(string s, out int characters_consumed, out float result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
     {
-      if (s == null)
-        ThrowArgumentNull();
-      static void ThrowArgumentNull() => throw new ArgumentNullException(nameof(s));
+      if (string.IsNullOrEmpty(s))
+      {
+        characters_consumed = 0;
+        result = default;
+        return false;
+      }
 
       fixed (char* pStart = s)
       {

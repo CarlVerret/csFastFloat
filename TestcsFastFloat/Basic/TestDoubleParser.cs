@@ -68,6 +68,33 @@ namespace TestcsFastFloat.Tests.Basic
 
     }
 
+    [Fact]
+    unsafe public void ParseDouble_Throws_When_NULL() => Assert.Throws<System.ArgumentNullException>(() => FastDoubleParser.ParseDouble((string)null));
+
+    [Fact]
+    unsafe public void ParseDouble_Throws_When_Empty() => Assert.Throws<System.ArgumentException>(() => FastDoubleParser.ParseDouble(string.Empty));
+
+    [Theory]
+    [InlineData("some alpha")]
+    [InlineData("-")]
+    [InlineData("1ee10")]
+    unsafe public void ParseDouble_Throws_When_Invalid(string sut) => Assert.Throws<System.ArgumentException>(() => FastDoubleParser.ParseDouble(sut));
+
+
+    [Theory]
+    [InlineData("some alpha")]
+    [InlineData("")]
+    [InlineData(null)]
+    [InlineData("-")]
+    [InlineData("1ee10")]
+    public void TryParse_NeverThrows(string sut)
+    {
+
+      Assert.False(FastDoubleParser.TryParseDouble(sut, out _));
+
+
+    }
+
 
 
 
