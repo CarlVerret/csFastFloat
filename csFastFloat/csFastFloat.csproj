@@ -29,8 +29,8 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net5.0|AnyCPU'">
-    <DocumentationFile>E:\TELUQ\Maitrise\csFastFloat\csFastFloat\csFastFloat.xml</DocumentationFile>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <DocumentationFile>bin\Release\$(TargetFramework)\csFastFloat.xml</DocumentationFile>
   </PropertyGroup>
 
 
