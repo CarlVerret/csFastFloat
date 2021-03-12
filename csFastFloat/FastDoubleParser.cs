@@ -90,7 +90,7 @@ namespace csFastFloat
     /// <returns></returns>
     public static unsafe bool TryParseDouble(string s, out int characters_consumed, out double result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
     {
-      if (string.IsNullOrEmpty(s))
+      if (s == null)
       {
         characters_consumed = 0;
         result = default;
@@ -320,11 +320,12 @@ namespace csFastFloat
     /// <returns>parsed double value </returns>
     public static unsafe double ParseDouble(char* first, char* last, out int characters_consumed, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
     {
-      if (!TryParseDouble(first, last, out characters_consumed, out double result, styles, decimal_separator))
+      if (TryParseDouble(first, last, out characters_consumed, out double result, styles, decimal_separator))
       {
-        ThrowArgumentException();
+         return result;
       }
-      return result;
+      ThrowArgumentException();
+      throw null;
     }
 
 
@@ -339,11 +340,13 @@ namespace csFastFloat
     /// <returns>parsed double value </returns>
     public static unsafe double ParseDouble(byte* first, byte* last, out int characters_consumed, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
     {
-      if (!TryParseDouble(first, last, out characters_consumed, out double result, styles, decimal_separator))
+      if (TryParseDouble(first, last, out characters_consumed, out double result, styles, decimal_separator))
       {
-        ThrowArgumentException();
+        return result;
       }
-      return result;
+      ThrowArgumentException();
+      throw null;
+
     }
 
     /// <summary>
