@@ -2,7 +2,7 @@
 
 [assembly: InternalsVisibleTo("TestcsFastFloat")]
 
-namespace csFastFloat
+namespace csFastFloat.Constants
 {
 
   internal static class DoubleBinaryConstants

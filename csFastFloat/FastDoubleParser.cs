@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using csFastFloat.Structures;
 using System.Globalization;
+using csFastFloat.Constants;
 
 namespace csFastFloat
 {
@@ -23,11 +24,11 @@ namespace csFastFloat
     internal static double exact_power_of_ten(long power)
     {
 #if NET5_0
-      Debug.Assert(power < Constants.powers_of_ten_double.Length);
-      ref double tableRef = ref MemoryMarshal.GetArrayDataReference(Constants.powers_of_ten_double);
+      Debug.Assert(power < CalculationConstants.powers_of_ten_double.Length);
+      ref double tableRef = ref MemoryMarshal.GetArrayDataReference(CalculationConstants.powers_of_ten_double);
       return Unsafe.Add(ref tableRef, (nint)power);
 #else
-      return Constants.powers_of_ten_double[power];
+      return CalculationConstants.powers_of_ten_double[power];
 #endif
 
     }
@@ -597,10 +598,10 @@ namespace csFastFloat
       while (d.decimal_point > 0)
       {
         uint n = (uint)(d.decimal_point);
-        int shift = (n < num_powers) ? Constants.get_powers(n) : max_shift;
+        int shift = (n < num_powers) ? CalculationConstants.get_powers(n) : max_shift;
 
         d.decimal_right_shift(shift);
-        if (d.decimal_point < -Constants.decimal_point_range)
+        if (d.decimal_point < -CalculationConstants.decimal_point_range)
         {
           // should be zero
           answer.power2 = 0;
@@ -626,12 +627,12 @@ namespace csFastFloat
         else
         {
           uint n = (uint)(-d.decimal_point);
-          shift = (n < num_powers) ? Constants.get_powers(n) : max_shift;
+          shift = (n < num_powers) ? CalculationConstants.get_powers(n) : max_shift;
         }
 
         d.decimal_left_shift(shift);
 
-        if (d.decimal_point > Constants.decimal_point_range)
+        if (d.decimal_point > CalculationConstants.decimal_point_range)
         {
           // we want to get infinity:
           answer.power2 = DoubleBinaryConstants.infinite_power;
