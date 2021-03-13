@@ -1,4 +1,5 @@
 ﻿using csFastFloat.Constants;
+using csFastFloat.Structures;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
@@ -8,17 +9,6 @@ using System.Runtime.InteropServices;
 
 namespace csFastFloat
 {
-  internal struct value128
-  {
-    public ulong low;
-    public ulong high;
-
-    public value128(ulong h, ulong l) : this()
-    {
-      high = h;
-      low = l;
-    }
-  }
 
   internal static class Utils
   {
