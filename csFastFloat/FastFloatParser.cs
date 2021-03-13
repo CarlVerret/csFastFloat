@@ -87,19 +87,7 @@ namespace csFastFloat
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>bool : true is sucessfuly parsed</returns>
     public static unsafe bool TryParseFloat(string s, out int characters_consumed, out float result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
-    {
-      if (string.IsNullOrEmpty(s))
-      {
-        characters_consumed = 0;
-        result = default;
-        return false;
-      }
-
-      fixed (char* pStart = s)
-      {
-        return TryParseFloat(pStart, pStart + (uint)s.Length, out characters_consumed, out result, styles, decimal_separator);
-      }
-    }
+      => TryParseFloat(s.AsSpan(), out characters_consumed, out result, styles, decimal_separator);
 
     /// <summary>
     /// Try parsing a float from a UTF-16 encoded readonly span of chars in the given number style
@@ -361,7 +349,9 @@ namespace csFastFloat
       }
       if (first == last)
       {
-        ThrowArgumentException();
+        result = 0;
+        characters_consumed = 0;
+        return false;
       }
       ParsedNumberString pns = ParsedNumberString.ParseNumberString(first, last, styles);
       if (!pns.valid)

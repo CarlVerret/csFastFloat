@@ -89,19 +89,8 @@ namespace csFastFloat
     /// <returns>bool : true is sucessfuly parsed</returns>
     /// <returns></returns>
     public static unsafe bool TryParseDouble(string s, out int characters_consumed, out double result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
-    {
-      if (s == null)
-      {
-        characters_consumed = 0;
-        result = default;
-        return false;
-      }
-
-      fixed (char* pStart = s)
-      {
-        return TryParseDouble(pStart, pStart + (uint)s.Length, out characters_consumed, out result, styles, decimal_separator);
-      }
-    }
+    => TryParseDouble(s.AsSpan(), out characters_consumed, out result, styles, decimal_separator);
+    
 
     /// <summary>
     /// Try parsing a double from a UTF-16 encoded string in the given number style
