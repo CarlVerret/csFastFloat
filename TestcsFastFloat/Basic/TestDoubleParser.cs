@@ -57,7 +57,7 @@ namespace TestcsFastFloat.Tests.Basic
     private void Issue_74()
     {
       // Consumed=0 vs raising Exceptions
-      // Try parse should retrun false with consummed and result =0
+      // Try parse should retrun false with consumed and result =0
       Assert.False(FastDoubleParser.TryParseDouble("", out int nbChar, out double result));
       Assert.Equal(0, nbChar);
       Assert.Equal(0, result);
@@ -338,10 +338,10 @@ namespace TestcsFastFloat.Tests.Basic
 
 
     [Fact]
-    public void ParseDouble_CharConsummed_Throws_OnlyAlpha()
+    public void ParseDouble_CharConsumed_Throws_OnlyAlpha()
     {
-      int nbCarConsummed;
-      Assert.Throws<System.ArgumentException>(() => FastDoubleParser.ParseDouble("some alpha", out nbCarConsummed));
+      int nbCarConsumed;
+      Assert.Throws<System.ArgumentException>(() => FastDoubleParser.ParseDouble("some alpha", out nbCarConsumed));
     }
 
 
@@ -349,7 +349,7 @@ namespace TestcsFastFloat.Tests.Basic
 
 
     [SkippableFact]
-    public void ParseDouble_CharConsummed_Works_Scenarios()
+    public void ParseDouble_CharConsumed_Works_Scenarios()
     {
       Skip.If(base.NoDiffToolDetected(), "No diff tool detected");
 
@@ -402,11 +402,11 @@ namespace TestcsFastFloat.Tests.Basic
         sb.AppendLine($"Scenario : {kv.Key} ");
         sb.AppendLine($"Value   : {kv.Value} ");
 
-        int nbCarConsummed = 0;
+        int nbCarConsumed = 0;
 
-        var res = FastDoubleParser.ParseDouble(kv.Value, out nbCarConsummed);
+        var res = FastDoubleParser.ParseDouble(kv.Value, out nbCarConsumed);
 
-        sb.AppendLine($"Result : {res.ToString(CultureInfo.InvariantCulture)} :  Consummed :  { nbCarConsummed }");
+        sb.AppendLine($"Result : {res.ToString(CultureInfo.InvariantCulture)} :  Consumed :  { nbCarConsumed }");
         sb.AppendLine();
       }
 
@@ -420,7 +420,7 @@ namespace TestcsFastFloat.Tests.Basic
 
     [Trait("Category", "Smoke Test")]
     [SkippableFact]
-    public void ParseDouble_charConsummed_WholeString()
+    public void ParseDouble_charConsumed_WholeString()
     {
       Skip.If(base.NoDiffToolDetected(), "No diff tool detected");
 
@@ -431,10 +431,10 @@ namespace TestcsFastFloat.Tests.Basic
       
       while (pos < sut.Length)
       {
-        int nbCarConsummed;
-        var res = FastDoubleParser.ParseDouble(sut.AsSpan().Slice((int)pos), out nbCarConsummed);
-        sb.AppendLine($"Sut :{sut.Substring((int)pos)}  Result : {res.ToString(CultureInfo.InvariantCulture)} :  Consummed :  { nbCarConsummed }");
-        pos += nbCarConsummed;
+        int nbCarConsumed;
+        var res = FastDoubleParser.ParseDouble(sut.AsSpan().Slice((int)pos), out nbCarConsumed);
+        sb.AppendLine($"Sut :{sut.Substring((int)pos)}  Result : {res.ToString(CultureInfo.InvariantCulture)} :  Consumed :  { nbCarConsumed }");
+        pos += nbCarConsumed;
       
       }
 

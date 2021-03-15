@@ -79,10 +79,10 @@ namespace csFastFloat
      => TryParseFloat(s, out _, out result, styles, decimal_separator);
   
     /// <summary>
-    /// Try parsing a float from a UTF-16 encoded string in the given number style, counting number of consummed caracters
+    /// Try parsing a float from a UTF-16 encoded string in the given number style, counting number of consumed caracters
     /// </summary>
     /// <param name="s">input string</param>
-    /// <param name="characters_consumed">number of consummed caracters while parsing </param>
+    /// <param name="characters_consumed">number of consumed caracters while parsing </param>
     /// <param name="result">output float value</param>
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
@@ -102,10 +102,10 @@ namespace csFastFloat
       => TryParseFloat(s, out int _, out result, styles, decimal_separator);
 
     /// <summary>
-    /// Try parsing a float from a UTF-16 encoded readonly span of chars in the given number style, counting number of consummed caracters
+    /// Try parsing a float from a UTF-16 encoded readonly span of chars in the given number style, counting number of consumed caracters
     /// </summary>
     /// <param name="s">input string</param>
-    /// <param name="characters_consumed">number of consummed caracters while parsing </param>
+    /// <param name="characters_consumed">number of consumed caracters while parsing </param>
     /// <param name="result">output float value</param>
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
@@ -131,11 +131,11 @@ namespace csFastFloat
       => TryParseFloat(first, last, out int _, out result, styles, decimal_separator);
 
     /// <summary>
-    /// Try parsing a float from a UTF-16 encoded input in the given number style, counting number of consummed caracters
+    /// Try parsing a float from a UTF-16 encoded input in the given number style, counting number of consumed caracters
     /// </summary>
     /// <param name="first">char pointer to the begining of the input</param>
     /// <param name="last">char pointer to the end of the input</param>
-    /// <param name="characters_consumed">number of consummed caracters while parsing </param>
+    /// <param name="characters_consumed">number of consumed caracters while parsing </param>
     /// <param name="result">output float value</param>
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
@@ -156,10 +156,10 @@ namespace csFastFloat
       => TryParseFloat(s, out int _, out result, styles, decimal_separator);
 
     /// <summary>
-    /// Try parsing a float from a UTF-8 encoded readonly span of bytes in the given number style, counting number of consummed caracters
+    /// Try parsing a float from a UTF-8 encoded readonly span of bytes in the given number style, counting number of consumed caracters
     /// </summary>
     /// <param name="s">readonly span of bytes</param>
-    /// <param name="characters_consumed">number of consummed caracters while parsing </param>
+    /// <param name="characters_consumed">number of consumed caracters while parsing </param>
     /// <param name="result">output float value</param>
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
@@ -186,11 +186,11 @@ namespace csFastFloat
       => TryParseFloat(first, last, out int _, out result, styles, decimal_separator);
 
     /// <summary>
-    /// Try parsing a float from a UTF-8 encoded inputin the given number style, counting number of consummed caracters
+    /// Try parsing a float from a UTF-8 encoded inputin the given number style, counting number of consumed caracters
     /// </summary>
     /// <param name="first">byte pointer to the begining of the input</param>
     /// <param name="last">byte pointer to the end of the input</param>
-    /// <param name="characters_consumed">number of consummed caracters while parsing </param>
+    /// <param name="characters_consumed">number of consumed caracters while parsing </param>
     /// <param name="result">output float value</param>
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
@@ -209,10 +209,10 @@ namespace csFastFloat
       => ParseFloat(s, out int _, styles, decimal_separator);
 
     /// <summary>
-    /// Parses float from a UTF-16 encoded string in the given number style counting number of characters consummed
+    /// Parses float from a UTF-16 encoded string in the given number style counting number of characters consumed
     /// </summary>
     /// <param name="s">input string</param>
-    /// <param name="characters_consumed">number of character consummed while parsing</param>
+    /// <param name="characters_consumed">number of character consumed while parsing</param>
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>parsed float value </returns>
@@ -239,10 +239,10 @@ namespace csFastFloat
       => ParseFloat(s, out int _, styles, decimal_separator);
 
     /// <summary>
-    /// Parses float from a UTF-16 encoded readonly span of chars in the given number style counting number of characters consummed
+    /// Parses float from a UTF-16 encoded readonly span of chars in the given number style counting number of characters consumed
     /// </summary>
     /// <param name="s">readonly span of chars</param>
-    /// <param name="characters_consumed">number of character consummed while parsing</param>
+    /// <param name="characters_consumed">number of character consumed while parsing</param>
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>parsed float value </returns>
@@ -276,10 +276,10 @@ namespace csFastFloat
       => ParseFloat(s, out int _, styles, decimal_separator);
 
     /// <summary>
-    /// Parses float from a UTF-16 encoded string in the given number style counting number of characters consummed
+    /// Parses float from a UTF-16 encoded string in the given number style counting number of characters consumed
     /// </summary>
     /// <param name="s">input string</param>
-    /// <param name="characters_consumed">number of character consummed while parsing</param>
+    /// <param name="characters_consumed">number of character consumed while parsing</param>
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>parsed float value </returns>
@@ -292,11 +292,11 @@ namespace csFastFloat
     }
 
     /// <summary>
-    /// Parses float from a UTF-16 encoded input in the given number style counting number of characters consummed
+    /// Parses float from a UTF-16 encoded input in the given number style counting number of characters consumed
     /// </summary>
     /// <param name="first">char pointer to the begining of the input</param>
     /// <param name="last">char pointer to the end of the input</param>
-    /// <param name="characters_consumed">number of character consummed while parsing</param>
+    /// <param name="characters_consumed">number of character consumed while parsing</param>
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>parsed float value </returns>
@@ -313,11 +313,11 @@ namespace csFastFloat
     }
 
     /// <summary>
-    /// Parses float from a UTF-8 encoded input in the given number style counting number of characters consummed
+    /// Parses float from a UTF-8 encoded input in the given number style counting number of characters consumed
     /// </summary>
     /// <param name="first">byte pointer to the begining of the input</param>
     /// <param name="last">byte pointer to the end of the input</param>
-    /// <param name="characters_consumed">number of character consummed while parsing</param>
+    /// <param name="characters_consumed">number of character consumed while parsing</param>
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>parsed float value </returns>
@@ -337,7 +337,7 @@ namespace csFastFloat
     /// </summary>
     /// <param name="first">char pointer to the begining of the input</param>
     /// <param name="last">char pointer to the end of the input</param>
-    /// <param name="characters_consumed">number of characters consummed while parsing</param>
+    /// <param name="characters_consumed">number of characters consumed while parsing</param>
     /// <param name="result">out float : parsed float value </param>
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
@@ -391,7 +391,7 @@ namespace csFastFloat
     /// </summary>
     /// <param name="first">byte pointer to the begining of the input</param>
     /// <param name="last">byte pointer to the end of the input</param>
-    /// <param name="characters_consumed">number of characters consummed while parsing</param>
+    /// <param name="characters_consumed">number of characters consumed while parsing</param>
     /// <param name="result">out float : parsed float value </param>
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
