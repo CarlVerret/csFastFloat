@@ -99,7 +99,7 @@ Some unit tests are based on [Approvals.net library](https://github.com/approval
 
 # Usage
 
-Two functions are available: `FastDoubleParser.ParseDouble` and `FastFloatParser.ParseFloat`.
+Two functions are available: `FastDoubleParser.ParseDouble` and `FastFloatParser.ParseFloat`. Since v3.0, TryParse pattern is supported for each function.
 
 `String`, `char *`  and `ReadOnlySpan<char>` are supported inputs.
 
@@ -126,6 +126,8 @@ Trailing content in the string is ignored.  You may pass an optional `out int ch
 For UTF-8 or ASCII inputs, you may pass a `ReadOnlySpan<byte>` argument. You can also pass
 an optional `out int characters_consumed` parameter to track the number of characters consumed
 by the number pattern.
+
+
 
 
 # Credit
