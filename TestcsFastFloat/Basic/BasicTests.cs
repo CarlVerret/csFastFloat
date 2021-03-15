@@ -1,4 +1,5 @@
 ﻿using csFastFloat;
+using csFastFloat.Structures;
 using System;
 using System.Globalization;
 using Xunit;

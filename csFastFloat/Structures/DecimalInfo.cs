@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
+using csFastFloat.Constants;
 
 namespace csFastFloat.Structures
 {
@@ -213,7 +214,7 @@ namespace csFastFloat.Structures
         n += (ulong)(digits[read_index]) << shift;
         ulong quotient = n / 10;
         ulong remainder = n - (10 * quotient);
-        if (write_index < Constants.max_digits)
+        if (write_index < CalculationConstants.max_digits)
         {
           digits[write_index] = (byte)(remainder);
         }
@@ -229,7 +230,7 @@ namespace csFastFloat.Structures
       {
         ulong quotient = n / 10;
         ulong remainder = n - (10 * quotient);
-        if (write_index < Constants.max_digits)
+        if (write_index < CalculationConstants.max_digits)
         {
           digits[write_index] = (byte)(remainder);
         }
@@ -241,9 +242,9 @@ namespace csFastFloat.Structures
         write_index--;
       }
       num_digits += num_new_digits;
-      if (num_digits > Constants.max_digits)
+      if (num_digits > CalculationConstants.max_digits)
       {
-        num_digits = Constants.max_digits;
+        num_digits = CalculationConstants.max_digits;
       }
       decimal_point += (int)(num_new_digits);
       trim();
@@ -278,7 +279,7 @@ namespace csFastFloat.Structures
         }
       }
       decimal_point -= (int)(read_index - 1);
-      if (decimal_point < -Constants.decimal_point_range)
+      if (decimal_point < -CalculationConstants.decimal_point_range)
       { // it is zero
         num_digits = 0;
         decimal_point = 0;
@@ -297,7 +298,7 @@ namespace csFastFloat.Structures
       {
         byte new_digit = (byte)(n >> shift);
         n = 10 * (n & mask);
-        if (write_index < Constants.max_digits)
+        if (write_index < CalculationConstants.max_digits)
         {
           digits[write_index++] = new_digit;
         }
@@ -326,7 +327,7 @@ namespace csFastFloat.Structures
       }
       while ((p != pend) && Utils.is_integer(*p, out uint cMinus0))
       {
-        if (answer.num_digits < Constants.max_digits)
+        if (answer.num_digits < CalculationConstants.max_digits)
         {
           answer.digits[answer.num_digits] = (byte)cMinus0;
         }
@@ -348,7 +349,7 @@ namespace csFastFloat.Structures
         }
         while ((p != pend) && Utils.is_integer(*p, out uint cMinus0))
         {
-          if (answer.num_digits < Constants.max_digits)
+          if (answer.num_digits < CalculationConstants.max_digits)
           {
             answer.digits[answer.num_digits] = (byte)cMinus0;
           }
@@ -375,10 +376,10 @@ namespace csFastFloat.Structures
         answer.decimal_point += (int)(answer.num_digits);
         answer.num_digits -= (uint)(trailing_zeros);
       }
-      if (answer.num_digits > Constants.max_digits)
+      if (answer.num_digits > CalculationConstants.max_digits)
       {
         answer.truncated = true;
-        answer.num_digits = Constants.max_digits;
+        answer.num_digits = CalculationConstants.max_digits;
       }
       if ((p != pend) && (('e' == *p) || ('E' == *p)))
       {
@@ -407,7 +408,7 @@ namespace csFastFloat.Structures
       }
       // In very rare cases, we may have fewer than 19 digits, we want to be able to reliably
       // assume that all digits up to max_digit_without_overflow have been initialized.
-      for (uint i = answer.num_digits; i < Constants.max_digit_without_overflow; i++) { answer.digits[i] = 0; }
+      for (uint i = answer.num_digits; i < CalculationConstants.max_digit_without_overflow; i++) { answer.digits[i] = 0; }
 
       return answer;
     }
@@ -428,7 +429,7 @@ namespace csFastFloat.Structures
       }
       while ((p != pend) && Utils.is_integer(*p, out uint digit))
       {
-        if (answer.num_digits < Constants.max_digits)
+        if (answer.num_digits < CalculationConstants.max_digits)
         {
           answer.digits[answer.num_digits] = (byte)digit;
         }
@@ -450,7 +451,7 @@ namespace csFastFloat.Structures
         }
         while ((p != pend) && Utils.is_integer(*p, out uint digit))
         {
-          if (answer.num_digits < Constants.max_digits)
+          if (answer.num_digits < CalculationConstants.max_digits)
           {
             answer.digits[answer.num_digits] = (byte)digit;
           }
@@ -477,10 +478,10 @@ namespace csFastFloat.Structures
         answer.decimal_point += (int)(answer.num_digits);
         answer.num_digits -= (uint)(trailing_zeros);
       }
-      if (answer.num_digits > Constants.max_digits)
+      if (answer.num_digits > CalculationConstants.max_digits)
       {
         answer.truncated = true;
-        answer.num_digits = Constants.max_digits;
+        answer.num_digits = CalculationConstants.max_digits;
       }
       if ((p != pend) && (('e' == *p) || ('E' == *p)))
       {
@@ -508,7 +509,7 @@ namespace csFastFloat.Structures
       }
       // In very rare cases, we may have fewer than 19 digits, we want to be able to reliably
       // assume that all digits up to max_digit_without_overflow have been initialized.
-      for (uint i = answer.num_digits; i < Constants.max_digit_without_overflow; i++) { answer.digits[i] = 0; }
+      for (uint i = answer.num_digits; i < CalculationConstants.max_digit_without_overflow; i++) { answer.digits[i] = 0; }
 
       return answer;
     }

@@ -1,112 +1,112 @@
-﻿Scenario : leading zeros 
+Scenario : leading zeros 
 Value   : 001 
-Result : 1 :  Consummed :  3
+Result : 1 :  Consumed :  3
 
 Scenario : leading zeros neg 
 Value   : -001 
-Result : -1 :  Consummed :  4
+Result : -1 :  Consumed :  4
 
 Scenario : leading spaces 
 Value   :    1 
-Result : 1 :  Consummed :  4
+Result : 1 :  Consumed :  4
 
 Scenario : zero 
 Value   : 0 
-Result : 0 :  Consummed :  1
+Result : 0 :  Consumed :  1
 
 Scenario : double 
 Value   : 0.00000000000000212312312 
-Result : 2.12312312E-15 :  Consummed :  25
+Result : 2.12312312E-15 :  Consumed :  25
 
 Scenario : double neg 
 Value   : -0.00000000000000212312312 
-Result : -2.12312312E-15 :  Consummed :  26
+Result : -2.12312312E-15 :  Consumed :  26
 
 Scenario : int 
 Value   : 1 
-Result : 1 :  Consummed :  1
+Result : 1 :  Consumed :  1
 
 Scenario : int neg 
 Value   : -1 
-Result : -1 :  Consummed :  2
+Result : -1 :  Consumed :  2
 
 Scenario : autreint  
 Value   : 123124 
-Result : 123124 :  Consummed :  6
+Result : 123124 :  Consumed :  6
 
 Scenario : autreint neg 
 Value   : -123124 
-Result : -123124 :  Consummed :  7
+Result : -123124 :  Consumed :  7
 
 Scenario : notation scientifique 
 Value   : 4.56E+2 
-Result : 456 :  Consummed :  7
+Result : 456 :  Consumed :  7
 
 Scenario : notation scientifique neg 
 Value   : -4.56E-2 
-Result : -0.0456 :  Consummed :  8
+Result : -0.0456 :  Consumed :  8
 
 Scenario : notation scientifique 2 
 Value   : 4.5644E+2 
-Result : 456.44 :  Consummed :  9
+Result : 456.44 :  Consumed :  9
 
 Scenario : notation scientifique 2 neg 
 Value   : -4.5644E-2 
-Result : -0.045644 :  Consummed :  10
+Result : -0.045644 :  Consumed :  10
 
 Scenario : notation scientifique 3 
 Value   : 4424.5644E+22 
-Result : 4.4245644E+25 :  Consummed :  13
+Result : 4.4245644E+25 :  Consumed :  13
 
 Scenario : notation scientifique 3 neg 
 Value   : -4424.5644E-22 
-Result : -4.4245644E-19 :  Consummed :  14
+Result : -4.4245644E-19 :  Consumed :  14
 
 Scenario : notation scientifique 4 
 Value   : 4424.5644E+223 
-Result : 4.4245644E+226 :  Consummed :  14
+Result : 4.4245644E+226 :  Consumed :  14
 
 Scenario : notation scientifique 4 neg 
 Value   : -4424.5644E-223 
-Result : -4.4245644E-220 :  Consummed :  15
+Result : -4.4245644E-220 :  Consumed :  15
 
 Scenario : with trailling alpha 
 Value   : 4424.5644E+223 some alpha 
-Result : 4.4245644E+226 :  Consummed :  14
+Result : 4.4245644E+226 :  Consumed :  14
 
 Scenario : nan 
 Value   : nan 
-Result : NaN :  Consummed :  3
+Result : NaN :  Consumed :  3
 
 Scenario : inf 
 Value   : inf 
-Result : Infinity :  Consummed :  3
+Result : Infinity :  Consumed :  3
 
 Scenario : +nan 
 Value   : +nan 
-Result : NaN :  Consummed :  4
+Result : NaN :  Consumed :  4
 
 Scenario : -nan 
 Value   : -nan 
-Result : NaN :  Consummed :  4
+Result : NaN :  Consumed :  4
 
 Scenario : +inf 
 Value   : +inf 
-Result : Infinity :  Consummed :  4
+Result : Infinity :  Consumed :  4
 
 Scenario : -inf 
 Value   : -inf 
-Result : -Infinity :  Consummed :  4
+Result : -Infinity :  Consumed :  4
 
 Scenario : infinity 
 Value   : infinity 
-Result : Infinity :  Consummed :  8
+Result : Infinity :  Consumed :  8
 
 Scenario : +infinity 
 Value   : +infinity 
-Result : Infinity :  Consummed :  9
+Result : Infinity :  Consumed :  9
 
 Scenario : -infinity 
 Value   : -infinity 
-Result : -Infinity :  Consummed :  9
+Result : -Infinity :  Consumed :  9
 

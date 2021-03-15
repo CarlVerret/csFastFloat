@@ -9,24 +9,7 @@ namespace TestcsFastFloat.Tests.Basic
 {
   public class TestFloatParser : BaseTestClass
   {
-    [Trait("Category", "Smoke Test")]
-    [Theory]
-    [InlineData("nan", double.NaN)]
-    [InlineData("inf", double.PositiveInfinity)]
-    [InlineData("+nan", double.NaN)]
-    [InlineData("-nan", double.NaN)]
-    [InlineData("+inf", double.PositiveInfinity)]
-    [InlineData("-inf", double.NegativeInfinity)]
-    [InlineData("infinity", double.PositiveInfinity)]
-    [InlineData("+infinity", double.PositiveInfinity)]
-    [InlineData("-infinity", double.NegativeInfinity)]
-    unsafe public void DoubleParser_HandleInvalidInput_works(string input, double res)
-    {
-      fixed (char* p = input)
-      {
-        Assert.Equal(res, FastDoubleParser.HandleInvalidInput(p, p + input.Length, out int _));
-      }
-    }
+ 
 
     [Trait("Category", "Smoke Test")]
     [Theory]
@@ -39,16 +22,35 @@ namespace TestcsFastFloat.Tests.Basic
     [InlineData("infinity", float.PositiveInfinity)]
     [InlineData("+infinity", float.PositiveInfinity)]
     [InlineData("-infinity", float.NegativeInfinity)]
-    unsafe public void FloatParser_HandleInvalidInput_works(string input, float res)
+    unsafe public void FastDoubleParser_HandleInvalidInput_works(string input, float sut)
     {
       fixed (char* p = input)
       {
-        Assert.Equal(res, (float)FastDoubleParser.HandleInvalidInput(p, p + input.Length, out int _)); ;
+        Assert.True(FastDoubleParser.TryHandleInvalidInput(p, p + input.Length, out int _, out double result));
+        Assert.Equal(sut, (float)result);
       }
     }
 
+    [Theory]
+    [InlineData("some alpha")]
+    [InlineData("")]
+    [InlineData(null)]
+    [InlineData("-")]
+    [InlineData("1ee10")]
+    public void TryParse_NeverThrows(string sut) {
 
-  
+      Assert.False(FastFloatParser.TryParseFloat(sut, out  _));
+
+
+    }
+
+
+    
+
+
+
+
+
 
     [Trait("Category", "Smoke Test")]
     [Fact]
@@ -155,13 +157,18 @@ namespace TestcsFastFloat.Tests.Basic
     }
 
     [Fact]
-    unsafe public void HandleNullValue() => Assert.Throws<System.ArgumentNullException>(() => double.Parse(null));
+    unsafe public void PaseFloat_Throws_When_NULL() => Assert.Throws<System.ArgumentNullException>(() => FastFloatParser.ParseFloat((string) null));
 
     [Fact]
-    unsafe public void HandleEmptyString() => Assert.Throws<System.FormatException>(() => double.Parse(string.Empty));
+    unsafe public void PaseFloat_Throws_When_Empty() => Assert.Throws<System.ArgumentException>(() => FastFloatParser.ParseFloat(string.Empty));
 
+    [Theory]
+    [InlineData("some alpha")]
+    [InlineData("-")]
+    [InlineData("1ee10")]
+    unsafe public void PaseFloat_Throws_When_Invalid(string sut) => Assert.Throws<System.ArgumentException>(() => FastFloatParser.ParseFloat(sut));
 
-
+ 
 
     [SkippableFact]
     unsafe public void ParseNumber_Works_Scenarios()
@@ -209,7 +216,7 @@ namespace TestcsFastFloat.Tests.Basic
         fixed (char* p = kv.Value)
         {
           char* pend = p + kv.Value.Length;
-          var res = FastDoubleParser.ParseNumber(p, pend, out int _);
+          Assert.True( FastDoubleParser.TryParseNumber(p, pend, out int _, out double res));
 
           sb.AppendLine($"Resultat : {res}");
           sb.AppendLine();
