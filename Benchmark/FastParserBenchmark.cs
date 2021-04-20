@@ -117,7 +117,7 @@ public class FFBencmark
   }
 
 
-   [Params(@"data/canada.txt", @"data/mesh.txt")]
+   [Params(@"data/canada.txt", @"data/mesh.txt", @"data/synthetic.txt")]
    public string FileName;
 
   [GlobalSetup]
