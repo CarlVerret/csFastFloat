@@ -136,4 +136,4 @@ A special thanks to [Egor Bogatov](https://github.com/EgorBo) and all contributo
 
 # Reference
 
-- Daniel Lemire, [Number Parsing at a Gigabyte per Second](https://arxiv.org/abs/2101.11408), arXiv:2101.11408
+- Daniel Lemire, [Number Parsing at a Gigabyte per Second](https://arxiv.org/abs/2101.11408), Software: Pratice and Experience (to appear)
