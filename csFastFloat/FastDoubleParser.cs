@@ -393,6 +393,12 @@ namespace csFastFloat
       return true;
     }
 
+
+
+
+
+
+
     /// <summary>
     /// Try to parse the input (UTF-8) and compute the double value
     /// </summary>
