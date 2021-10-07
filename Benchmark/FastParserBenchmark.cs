@@ -50,7 +50,7 @@ public class FFBencmark
   //}
 
   
-  [Benchmark( Description = "FastFloat.ParseDouble()")]
+ // [Benchmark( Description = "FastFloat.ParseDouble()")]
   public double FullParse_Usual()
   {
    double max = double.MinValue;
@@ -63,7 +63,7 @@ public class FFBencmark
    return max;
   }
 
-[Benchmark(Description = "FastFloat.ParseDouble() - SIMD")]
+// [Benchmark(Description = "FastFloat.ParseDouble() - SIMD")]
   public double FullParse_SIMD()
   {
    double max = double.MinValue;
@@ -78,7 +78,7 @@ public class FFBencmark
    return max;
   }
 
-[Benchmark(Description = "FastFloat.ParseDouble() - UTF8")]
+// [Benchmark(Description = "FastFloat.ParseDouble() - UTF8")]
   public double FullParse_UTF8()
   {
    double max = double.MinValue;
@@ -93,7 +93,7 @@ public class FFBencmark
 
 
 
- // [Benchmark(Description = "ParseNumberString() usual")]
+  [Benchmark(Description = "ParseNumberString() usual")]
   public double ParseNumberString_usual()
   {
    double max = double.MinValue;
@@ -115,7 +115,7 @@ public class FFBencmark
    return max;
   }
 
-  //  [Benchmark(Baseline = true, Description = "ParseNumberString() SIMD")]
+    [Benchmark(Baseline = true, Description = "ParseNumberString() SIMD")]
     public double ParseOnly_SIMD()
     {
       double max = double.MinValue;
@@ -138,7 +138,7 @@ public class FFBencmark
       return max;
     }
 
-  //[Benchmark(Description = "ParseNumberString() UTF8")]
+  [Benchmark(Description = "ParseNumberString() UTF8")]
     public double ParseOnly_UTF8()
     {
       double max = double.MinValue;
@@ -162,7 +162,7 @@ public class FFBencmark
     }
 
 
-   [Benchmark(Baseline = true, Description = "Double.Parse()")]
+  // [Benchmark(Baseline = true, Description = "Double.Parse()")]
   public double Double_std()
   {
   double max = double.MinValue;
