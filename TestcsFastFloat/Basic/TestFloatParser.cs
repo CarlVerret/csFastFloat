@@ -9,7 +9,7 @@ namespace TestcsFastFloat.Tests.Basic
 {
   public class TestFloatParser : BaseTestClass
   {
- 
+
 
     [Trait("Category", "Smoke Test")]
     [Theory]
@@ -39,14 +39,81 @@ namespace TestcsFastFloat.Tests.Basic
     [InlineData("1ee10")]
     public void TryParse_NeverThrows(string sut) {
 
-      Assert.False(FastFloatParser.TryParseFloat(sut, out  _));
+      Assert.False(FastFloatParser.TryParseFloat(sut, out _));
 
 
     }
 
 
-    
+#if NET5_0_OR_GREATER
 
+    [Fact]
+    public void parse_eight_digits_simd_works_rnd()
+    {
+
+      Random RandNum = new Random();
+
+      for (int i = 0; i!= 850000; i++)
+      {
+
+        int RandomNumber = RandNum.Next(10000000, 99999999);
+
+        string sut = RandomNumber.ToString();
+        unsafe
+        {
+          fixed (char* start = sut)
+          {
+            Assert.True(Utils.is_made_of_eight_digits_fast_simd(start));
+            uint res = Utils.parse_eight_digits_simd(start);
+            Assert.Equal(double.Parse(sut), res);      
+          }
+        }
+      
+      }
+
+
+    
+    }
+
+
+    [Fact]
+    public void parse_eight_digits_simd_works()
+    {
+
+      Random RandNum = new Random();
+
+      for (int i = 0; i <=9; i++)
+      {
+
+
+        string sut = new string(i.ToString()[0], 8);
+        unsafe
+        {
+          fixed (char* start = sut)
+          {
+            Assert.True(Utils.is_made_of_eight_digits_fast_simd(start));
+            uint res = Utils.parse_eight_digits_simd(start);
+            Assert.Equal(double.Parse(sut), res);
+          }
+
+          fixed (byte* start = System.Text.Encoding.UTF8.GetBytes( sut))
+          {
+            Assert.True(Utils.is_made_of_eight_digits_fast_simd(start));
+            uint res = Utils.parse_eight_digits_simd(start);
+            Assert.Equal(double.Parse(sut), res);
+          }
+
+
+        }
+
+      }
+
+
+
+    }
+
+
+#endif
 
 
 

@@ -4,6 +4,8 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.Intrinsics;
+using System.Runtime.Intrinsics.X86;
 
 [assembly: InternalsVisibleTo("TestcsFastFloat")]
 
@@ -66,7 +68,56 @@ namespace csFastFloat
       cMinus0 = cc;
       return res;
     }
-    
+
+#if NET5_0
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    unsafe internal static bool is_made_of_eight_digits_fast_simd(char* chars)
+    {
+      // We only enable paths depending on this function on little endian
+      // platforms (it happens to be effectively nearly everywhere).
+
+      Vector128<short> ascii0 = Vector128.Create((short)47);
+      Vector128<short> after_ascii9 = Vector128.Create((short)58);
+
+
+      Vector128<short> raw = Sse41.LoadDquVector128((short*)chars);
+
+      var a = Sse2.CompareGreaterThan(raw, ascii0);
+      var b = Sse2.CompareLessThan(raw, after_ascii9);
+      var c = Sse2.Subtract(a, b); ;
+
+      //was: return Sse2.Equals(c, Vector128<short>.Zero);
+      return (Sse41.TestZ(c, c));
+
+    }
+
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    unsafe internal static uint parse_eight_digits_simd(char* start)
+    {
+      
+        Vector128<ushort> raw = Sse3.LoadDquVector128((ushort*)start);
+        Vector128<ushort> mask0 = Vector128.Create((ushort)48);
+        raw = Sse2.SubtractSaturate(raw, mask0);
+        Vector128<short> mul0 = Vector128.Create(10, 1, 10, 1, 10, 1, 10, 1);
+        Vector128<int> res = Sse2.MultiplyAddAdjacent(raw.AsInt16(), mul0);
+        Vector128<int> mul1 = Vector128.Create(1000000, 10000, 100, 1);
+        res = Sse41.MultiplyLow(res, mul1);
+        Vector128<int> shuf = Sse2.Shuffle(res, 0x1b); // 0 1 2 3 => 3 2 1 0
+        res = Sse2.Add(shuf, res);
+        shuf = Sse2.Shuffle(res, 0x41); // 0 1 2 3 => 1 0 3 2
+        res = Sse2.Add(shuf, res);
+
+        return (uint)res.GetElement(0);
+      
+    }
+
+   
+
+#endif   
+
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static bool is_integer(byte c, out uint cMinus0)
     {
