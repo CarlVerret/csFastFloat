@@ -96,7 +96,7 @@ namespace TestcsFastFloat.Tests.Basic
             Assert.Equal(double.Parse(sut), res);
           }
 
-          fixed (byte* start = System.Text.Encoding.UTF8.GetBytes( sut))
+          fixed (char* start =  sut)
           {
             Assert.True(Utils.is_made_of_eight_digits_fast_simd(start));
             uint res = Utils.parse_eight_digits_simd(start);
