@@ -72,7 +72,7 @@ public class FFBencmark
 
    foreach (string l in _lines)
    {
-     double d = FastDoubleParserSIMD.ParseDouble(l);
+     double d = FastDoubleParser.ParseDouble(l);
      max = d > max ? d : max;
    }
    return max;
@@ -87,7 +87,7 @@ public class FFBencmark
 
    foreach (string l in _lines)
    {
-     double d = FastDoubleParserSIMD2.ParseDouble(l);
+     double d = FastDoubleParser.ParseDouble(l);
      max = d > max ? d : max;
    }
    return max;
@@ -101,7 +101,7 @@ public class FFBencmark
 
    foreach (string l in _lines)
    {
-     double d = FastDoubleParserSIMD3.ParseDouble(l);
+     double d = FastDoubleParser.ParseDouble(l);
      max = d > max ? d : max;
    }
    return max;
@@ -155,7 +155,7 @@ public class FFBencmark
 
           fixed (char* p = l)
           {
-            var pni = ParsedNumberString.ParseNumberStringSIMD(p, p + l.Length);
+            var pni = ParsedNumberString.ParseNumberString(p, p + l.Length);
             max = pni.exponent > max ? pni.exponent : max;
           }
 
@@ -178,7 +178,7 @@ public class FFBencmark
 
           fixed (char* p = l)
           {
-            var pni = ParsedNumberString.ParseNumberStringSIMD2(p, p + l.Length);
+            var pni = ParsedNumberString.ParseNumberString(p, p + l.Length);
             max = pni.exponent > max ? pni.exponent : max;
           }
 

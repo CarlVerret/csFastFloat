@@ -14,7 +14,7 @@ namespace TestcsFastFloat.Basic.SIMD
   {
 
 
-#if NET5_0_OR_GREATER
+#if HAS_INTRINSICS
 
     [Fact]
     public void parse_eight_digits_simd_works_rnd()
@@ -135,7 +135,7 @@ namespace TestcsFastFloat.Basic.SIMD
           {
             char* pos = start;
 
-            Assert.True(Utils.eval_parse_variable_digits_simd2(pos, pos + sut.Length, out uint nbCars, out uint res));
+            Assert.True(Utils.eval_parse_eight_digits_simd(pos, pos + sut.Length,  out uint res));
           //  Assert.Equal(8, pos - start);
             Assert.Equal(double.Parse(sut), res);
           }
@@ -192,7 +192,7 @@ namespace TestcsFastFloat.Basic.SIMD
         fixed (char* p = kv.Value)
         {
           char* pend = p + kv.Value.Length;
-          var res = ParsedNumberString.ParseNumberStringSIMD3(p, pend);
+          var res = ParsedNumberString.ParseNumberString(p, pend);
 
           sb.AppendLine($"Resultat : {res.exponent} {res.mantissa} {res.negative} {res.valid}");
           sb.AppendLine();
@@ -231,7 +231,7 @@ namespace TestcsFastFloat.Basic.SIMD
 
               // Assert.True(Utils.is_made_of_eight_digits_fast_simd(start));
 
-              Assert.True(Utils.eval_parse_variable_digits_simd2(pos, pos + sut.Length, out uint nbCars, out uint res));
+              Assert.True(Utils.eval_parse_eight_digits_simd(pos, pos + sut.Length,  out uint res));
               //Assert.Equal(8, pos- start);
               Assert.Equal(double.Parse(sut), res);
             }
@@ -263,7 +263,7 @@ namespace TestcsFastFloat.Basic.SIMD
           {
             char* pos = start;
 
-            Assert.True(Utils.eval_parse_variable_digits_simd2(pos, pos + sut.Length, out uint nbCars, out uint res));
+            Assert.True(Utils.eval_parse_eight_digits_simd(pos, pos + sut.Length,  out uint res));
             //  Assert.Equal(8, pos - start);
             Assert.Equal(double.Parse(sut), res);
           }
@@ -319,7 +319,7 @@ namespace TestcsFastFloat.Basic.SIMD
         fixed (char* p = kv.Value)
         {
           char* pend = p + kv.Value.Length;
-          var res = ParsedNumberString.ParseNumberStringSIMD3(p, pend);
+          var res = ParsedNumberString.ParseNumberString(p, pend);
 
           sb.AppendLine($"Resultat : {res.exponent} {res.mantissa} {res.negative} {res.valid}");
           sb.AppendLine();

@@ -78,7 +78,7 @@ namespace TestcsFastFloat.Tests.Basic
     [InlineData("some alpha")]
     [InlineData("-")]
     [InlineData("1ee10")]
-    unsafe public void ParseDouble_Throws_When_Invalid(string sut) => Assert.Throws<System.ArgumentException>(() => FastDoubleParser.ParseDouble(sut));
+    unsafe public void ParseDouble_Throws_When_Invalid(string sut) => Assert.Throws<System.ArgumentException>(() => FastDoubleParser.ParseDouble(   sut));
 
 
     [Theory]

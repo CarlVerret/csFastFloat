@@ -4,8 +4,12 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+
+
+#if HAS_INTRINSICS
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
+#endif
 
 [assembly: InternalsVisibleTo("TestcsFastFloat")]
 [assembly: InternalsVisibleTo("vTuneBench")]
@@ -70,57 +74,9 @@ namespace csFastFloat
       return res;
     }
 
-#if NET5_0
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    unsafe internal static bool is_made_of_eight_digits_fast_simd(char* chars)
-    {
-
-      
-      // We only enable paths depending on this function on little endian
-      // platforms (it happens to be effectively nearly everywhere).
-
-      Vector128<short> ascii0 = Vector128.Create((short)47);
-      Vector128<short> after_ascii9 = Vector128.Create((short)58);
 
 
-      Vector128<short> raw = Sse41.LoadDquVector128((short*)chars);
-
-      var a = Sse41.CompareGreaterThan(raw, ascii0);
-      var b = Sse41.CompareLessThan(raw, after_ascii9);
-      var c = Sse41.Subtract(a, b); ;
-
-      //was: return Sse2.Equals(c, Vector128<short>.Zero);
-      var res = (Sse41.TestZ(c, c));
-      return res;
-
-    }
-
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    unsafe internal static uint parse_eight_digits_simd(char* start)
-    {
-
-
-
-        Vector128<ushort> raw = Sse41.LoadDquVector128((ushort*)start);
-        Vector128<ushort> mask0 = Vector128.Create((ushort)48);
-        raw = Sse2.SubtractSaturate(raw, mask0);
-        Vector128<short> mul0 = Vector128.Create(10, 1, 10, 1, 10, 1, 10, 1);
-        Vector128<int> res = Sse41.MultiplyAddAdjacent(raw.AsInt16(), mul0);
-        Vector128<int> mul1 = Vector128.Create(1000000, 10000, 100, 1);
-        res = Sse41.MultiplyLow(res, mul1);
-        Vector128<int> shuf = Sse41.Shuffle(res, 0x1b); // 0 1 2 3 => 3 2 1 0
-        res = Sse41.Add(shuf, res);
-        shuf = Sse41.Shuffle(res, 0x41); // 0 1 2 3 => 1 0 3 2
-        res = Sse41.Add(shuf, res);
-
-        return (uint)res.GetElement(0);
-      
-    }
-
-
-
+#if HAS_INTRINSICS
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     unsafe internal static bool eval_parse_eight_digits_simd(char* start,  char* end, out uint value )
@@ -129,7 +85,6 @@ namespace csFastFloat
       value = 0;
 
       Vector128<short> raw = Sse41.LoadDquVector128((short*)start);
-
       Vector128<short> ascii0 = Vector128.Create((short)47);
       Vector128<short> after_ascii9 = Vector128.Create((short)58);
 
@@ -139,7 +94,9 @@ namespace csFastFloat
 
       if (!Sse41.TestZ(c, c))
         return false;
-   
+
+      // Credit : @aepot
+      // https://stackoverflow.com/questions/66371621/hardware-simd-parsing-in-c-sharp-performance-improvement/66430672
       Vector128<short> mask0 = Vector128.Create((short)48); // adapter à la longueur
       raw = Sse41.SubtractSaturate(raw, mask0);
       Vector128<short> mul0 = Vector128.Create(10, 1, 10, 1, 10, 1, 10, 1);
@@ -157,58 +114,7 @@ namespace csFastFloat
 
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    unsafe internal static bool eval_parse_variable_digits_simd2(char* start, char* end, out uint nbCars, out uint value)
-    {
-      nbCars = 0;
-      value = 0;
-      int lenght = Math.Min(8, (int)(end - start));
-
-      while (!is_integer(*(start + lenght-1), out _))
-      {
-        lenght -= 1;
-        if (lenght == 0) return false;
-      }
-
-      Vector128<short> raw = Sse41.LoadDquVector128((short*)start - 8 + lenght);
-      Vector128<short> mask0 = Vector128.Create((short)48); // adapter à la longueur
-
-      Vector128<short> ascii0 = Vector128.Create((short)47);
-      Vector128<short> after_ascii9 = Vector128.Create((short)58);
-      const string mask = "\x0000\x0000\x0000\x0000\x0000\x0000\x0000\x0000\xffff\xffff\xffff\xffff\xffff\xffff\xffff\xffff";
-      fixed (char* m = mask)
-      {
-        Vector128<short> input_mask = Sse3.LoadDquVector128((short*)m + lenght);
-
-        var a = Sse41.CompareGreaterThan(raw, ascii0);
-        var b = Sse41.CompareLessThan(raw, after_ascii9);
-        var c = Sse41.And(Sse41.Subtract(a, b), input_mask);
-
-
-        if (!Sse41.TestZ(c, c))
-          return false;
-
-        raw = Sse41.Subtract(raw, mask0);
-        raw = Sse41.And(raw, input_mask);
-
-
-        Vector128<short> mul0 = Vector128.Create(10, 1, 10, 1, 10, 1, 10, 1);
-        Vector128<int> res = Sse41.MultiplyAddAdjacent(raw.AsInt16(), mul0);
-        Vector128<int> mul1 = Vector128.Create(1000000, 10000, 100, 1);
-        res = Sse41.MultiplyLow(res, mul1);
-        Vector128<int> shuf = Sse41.Shuffle(res, 0x1b); // 0 1 2 3 => 3 2 1 0
-        res = Sse41.Add(shuf, res);
-        shuf = Sse41.Shuffle(res, 0x41); // 0 1 2 3 => 1 0 3 2
-        res = Sse41.Add(shuf, res);
-
-        nbCars = (uint)lenght;
-        value = (uint)res.GetElement(0);
-
-        return true;
-
-      }
-    }
-
+  
 
 #endif
 
