@@ -26,7 +26,7 @@ namespace vTuneBench
       //  {
 
 
-      double value = csFastFloat.FastDoubleParserSIMD.ParseDouble("0.0123456789");
+      double value = csFastFloat.FastDoubleParserSIMD2.ParseDouble(System.Text.Encoding.UTF8.GetBytes( "0.0123456789"));
       Console.WriteLine($"valeur: {value} ");
       //    if (value > max) max = value;  
 

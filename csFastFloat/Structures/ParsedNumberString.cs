@@ -370,16 +370,7 @@ namespace csFastFloat.Structures
           i = i * 100000000 + tmp;
           p += 8;
         }
-        //if ((p + 8 <= pend) && Utils.is_made_of_eight_digits_fast_simd(p))
-        //{
-        //  i = i * 100000000 + Utils.parse_eight_digits_simd(p);
-        //  p += 8;
-        //  if ((p + 8 <= pend) && Utils.is_made_of_eight_digits_fast_simd(p))
-        //  {
-        //    i = i * 100000000 + Utils.parse_eight_digits_simd(p);
-        //    p += 8;
-        //  }
-        //}
+       
         while ((p != pend) && Utils.is_integer(*p, out uint digit))
         {
           ++p;
