@@ -50,7 +50,7 @@ public class FFBencmark
   //}
 
   
-  [Benchmark( Description = "FastFloat.ParseDouble()")]
+  //[Benchmark( Description = "FastFloat.ParseDouble()")]
   public double FullParse_Usual()
   {
    double max = double.MinValue;
@@ -63,7 +63,7 @@ public class FFBencmark
    return max;
   }
 
- [Benchmark(Description = "FastFloat.ParseDouble() - SIMD")]
+ //[Benchmark(Description = "FastFloat.ParseDouble() - SIMD")]
   public double FullParse_SIMD()
   {
    double max = double.MinValue;
@@ -92,8 +92,21 @@ public class FFBencmark
    }
    return max;
   }
+[Benchmark(Baseline = true,Description = "FastFloat.ParseDouble() - SIMD3")]
+  public double FullParse_SIMD3()
+  {
+   double max = double.MinValue;
 
- [Benchmark(Description = "FastFloat.ParseDouble() - UTF8")]
+
+
+   foreach (string l in _lines)
+   {
+     double d = FastDoubleParserSIMD3.ParseDouble(l);
+     max = d > max ? d : max;
+   }
+   return max;
+  }
+ //[Benchmark(Description = "FastFloat.ParseDouble() - UTF8")]
   public double FullParse_UTF8()
   {
    double max = double.MinValue;
@@ -200,7 +213,7 @@ public class FFBencmark
     }
 
 
-   [Benchmark(Baseline = true, Description = "Double.Parse()")]
+  // [Benchmark(Baseline = true, Description = "Double.Parse()")]
   public double Double_std()
   {
   double max = double.MinValue;

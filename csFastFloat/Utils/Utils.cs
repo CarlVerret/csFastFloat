@@ -157,7 +157,41 @@ namespace csFastFloat
 
     }
 
+[MethodImpl(MethodImplOptions.AggressiveInlining)]
+    unsafe internal static bool eval_parse_eight_digits_simd2(char* start,  char* end, out uint nbCars, out uint value )
+    {
+      nbCars = 0;
+      value = 0;
 
+      Vector128<short> raw = Sse41.LoadDquVector128((short*)start);
+
+      Vector128<short> ascii0 = Vector128.Create((short)47);
+      Vector128<short> after_ascii9 = Vector128.Create((short)58);
+
+      var a = Sse41.CompareGreaterThan(raw, ascii0);
+      var b = Sse41.CompareLessThan(raw, after_ascii9);
+      var c = Sse41.Subtract(a, b);
+
+      if (!Sse41.TestZ(c, c))
+        return false;
+   
+      Vector128<short> mask0 = Vector128.Create((short)48); // adapter à la longueur
+      raw = Sse41.SubtractSaturate(raw, mask0);
+      Vector128<short> mul0 = Vector128.Create(10, 1, 10, 1, 10, 1, 10, 1);
+      Vector128<int> res = Sse41.MultiplyAddAdjacent(raw.AsInt16(), mul0);
+      Vector128<int> mul1 = Vector128.Create(1000000, 10000, 100, 1);
+      res = Sse41.MultiplyLow(res, mul1);
+      Vector128<int> shuf = Sse41.Shuffle(res, 0x1b); // 0 1 2 3 => 3 2 1 0
+      res = Sse41.Add(shuf, res);
+      shuf = Sse41.Shuffle(res, 0x41); // 0 1 2 3 => 1 0 3 2
+      res = Sse41.Add(shuf, res);
+
+      value = (uint)res.GetElement(0);
+      nbCars = 8;
+
+      return true;
+
+    }
 
 
 
