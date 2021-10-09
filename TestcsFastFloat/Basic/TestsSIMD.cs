@@ -101,8 +101,8 @@ namespace TestcsFastFloat.Basic.SIMD
 
             Assert.True(Utils.is_made_of_eight_digits_fast_simd(start));
 
-            Assert.True(Utils.eval_parse_eight_digits_simd(&pos , pos+ sut.Length, out uint res));
-            Assert.Equal(8, pos- start);
+            Assert.True(Utils.eval_parse_eight_digits_simd(pos , pos+ sut.Length, out uint res));
+            //Assert.Equal(8, pos- start);
             Assert.Equal(double.Parse(sut), res);
           }
 
@@ -135,8 +135,8 @@ namespace TestcsFastFloat.Basic.SIMD
           {
             char* pos = start;
 
-            Assert.True(Utils.eval_parse_eight_digits_simd(&pos, pos + sut.Length, out uint res));
-            Assert.Equal(8, pos - start);
+            Assert.True(Utils.eval_parse_eight_digits_simd(pos, pos + sut.Length, out uint res));
+          //  Assert.Equal(8, pos - start);
             Assert.Equal(double.Parse(sut), res);
           }
 
