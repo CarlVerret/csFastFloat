@@ -12,10 +12,11 @@
     <FileVersion>3.0.0.0</FileVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Title>csFastFloat : a fast and accurate float parser</Title>
-
+  <DebugType>full</DebugType>
     <LangVersion>9</LangVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Version>3.0.0</Version>
+    <Configurations>Debug;Release;x86</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)'!='netstandard2.0'">
@@ -30,8 +31,20 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='x86|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <DocumentationFile>bin\Release\$(TargetFramework)\csFastFloat.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='x86'">
+    <DocumentationFile>bin\Release\$(TargetFramework)\csFastFloat.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net5.0|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
 
