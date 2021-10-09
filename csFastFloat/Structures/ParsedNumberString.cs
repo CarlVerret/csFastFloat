@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 
 namespace csFastFloat.Structures
 {
@@ -514,6 +515,13 @@ unsafe static internal ParsedNumberString ParseNumberStringSIMD3(char* p, char* 
 
       ulong i = 0; // an unsigned int avoids signed overflows (which are bad)
 
+      while ((p < pend) && Utils.eval_parse_variable_digits_simd2(p, pend, out uint nbcars, out uint tmp))
+      {
+        i = (i * (ulong)Math.Pow(10, nbcars)) + tmp;
+        p += nbcars;
+      }
+
+
       while ((p != pend) && Utils.is_integer(*p, out uint digit))
       {
         // a multiplication by 10 is cheaper than an arbitrary integer
@@ -527,21 +535,12 @@ unsafe static internal ParsedNumberString ParseNumberStringSIMD3(char* p, char* 
       if ((p != pend) && (*p == decimal_separator))
       {
         ++p;
-        while ((p + 8 <= pend) && Utils.eval_parse_eight_digits_simd2(p, p+8, out uint nbcars, out uint tmp))
+        while ((p  < pend) && Utils.eval_parse_variable_digits_simd2(p, pend, out uint nbcars, out uint tmp))
         {
-          i = i * 100000000 + tmp;
+          i = (i * (ulong)Math.Pow(10,nbcars)) + tmp;
           p+= nbcars;
         }
-        //if ((p + 8 <= pend) && Utils.is_made_of_eight_digits_fast_simd(p))
-        //{
-        //  i = i * 100000000 + Utils.parse_eight_digits_simd(p);
-        //  p += 8;
-        //  if ((p + 8 <= pend) && Utils.is_made_of_eight_digits_fast_simd(p))
-        //  {
-        //    i = i * 100000000 + Utils.parse_eight_digits_simd(p);
-        //    p += 8;
-        //  }
-        //}
+    
         while ((p != pend) && Utils.is_integer(*p, out uint digit))
         {
           ++p;
