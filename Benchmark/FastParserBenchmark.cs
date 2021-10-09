@@ -50,7 +50,7 @@ public class FFBencmark
   //}
 
   
-  //[Benchmark( Description = "FastFloat.ParseDouble()")]
+  [Benchmark( Description = "FastFloat.ParseDouble()")]
   public double FullParse_Usual()
   {
    double max = double.MinValue;
@@ -63,50 +63,8 @@ public class FFBencmark
    return max;
   }
 
- //[Benchmark(Description = "FastFloat.ParseDouble() - SIMD")]
-  public double FullParse_SIMD()
-  {
-   double max = double.MinValue;
-
-
-
-   foreach (string l in _lines)
-   {
-     double d = FastDoubleParser.ParseDouble(l);
-     max = d > max ? d : max;
-   }
-   return max;
-  }
  
- [Benchmark(Description = "FastFloat.ParseDouble() - SIMD2")]
-  public double FullParse_SIMD2()
-  {
-   double max = double.MinValue;
-
-
-
-   foreach (string l in _lines)
-   {
-     double d = FastDoubleParser.ParseDouble(l);
-     max = d > max ? d : max;
-   }
-   return max;
-  }
-[Benchmark(Baseline = true,Description = "FastFloat.ParseDouble() - SIMD3")]
-  public double FullParse_SIMD3()
-  {
-   double max = double.MinValue;
-
-
-
-   foreach (string l in _lines)
-   {
-     double d = FastDoubleParser.ParseDouble(l);
-     max = d > max ? d : max;
-   }
-   return max;
-  }
- //[Benchmark(Description = "FastFloat.ParseDouble() - UTF8")]
+ [Benchmark(Description = "FastFloat.ParseDouble() - UTF8")]
   public double FullParse_UTF8()
   {
    double max = double.MinValue;
@@ -121,29 +79,9 @@ public class FFBencmark
 
 
 
-  //[Benchmark(Description = "ParseNumberString() usual")]
-  public double ParseNumberString_usual()
-  {
-   double max = double.MinValue;
+  
 
-   foreach (string l in _lines)
-   {
-     unsafe { 
-      
-     fixed (char* p = l)
-     {
-       var pni = ParsedNumberString.ParseNumberString(p, p + l.Length);
-       max = pni.exponent > max ? pni.exponent: max;
-     }
-      
-      
-      
-     }
-   }
-   return max;
-  }
-
-  //  [Benchmark( Description = "ParseNumberString() SIMD")]
+    [Benchmark( Description = "ParseNumberString() only")]
     public double ParseOnly_SIMD()
     {
       double max = double.MinValue;
@@ -166,54 +104,9 @@ public class FFBencmark
       return max;
     }
 
-   //  [Benchmark( Description = "ParseNumberString2() SIMD")]
-    public double ParseOnly_SIMD2()
-    {
-      double max = double.MinValue;
+   
 
-      foreach (string l in _lines)
-      {
-        unsafe
-        {
-
-          fixed (char* p = l)
-          {
-            var pni = ParsedNumberString.ParseNumberString(p, p + l.Length);
-            max = pni.exponent > max ? pni.exponent : max;
-          }
-
-
-
-        }
-      }
-      return max;
-    }
-
- //  [Benchmark(Description = "ParseNumberString() UTF8")]
-    public double ParseOnly_UTF8()
-    {
-      double max = double.MinValue;
-
-      foreach (var l in _linesUtf8)
-      {
-        unsafe
-        {
-
-          fixed (byte* p = l)
-          {
-            var pni = ParsedNumberString.ParseNumberString(p, p + l.Length);
-            max = pni.exponent > max ? pni.exponent : max;
-          }
-
-
-
-        }
-      }
-      return max;
-    }
-
-
-  // [Benchmark(Baseline = true, Description = "Double.Parse()")]
+   [Benchmark(Baseline = true, Description = "Double.Parse()")]
   public double Double_std()
   {
   double max = double.MinValue;
