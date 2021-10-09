@@ -39,18 +39,6 @@ namespace csFastFloat.Structures
 
       ulong i = 0; // an unsigned int avoids signed overflows (which are bad)
 
-
-
-#if HAS_INTRINSICS
-
-      while ((p + 8 <= pend) && Utils.eval_parse_eight_digits_simd(p, p + 8, out uint tmp))
-      {
-        i = i * 100000000 + tmp;
-        p += 8;
-      }
-#endif
-
-
       while ((p != pend) && Utils.is_integer(*p, out uint cMinus0))
       {
         // a multiplication by 10 is cheaper than an arbitrary integer
