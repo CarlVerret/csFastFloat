@@ -1,13 +1,15 @@
 # csFastFloat : a fast and accurate float parser
 [![.NET](https://github.com/CarlVerret/csFastFloat/actions/workflows/dotnet.yml/badge.svg)](https://github.com/CarlVerret/csFastFloat/actions/workflows/dotnet.yml)
 
-C# port of Daniel Lemire's [fast_float](https://github.com/fastfloat/fast_float)  fully ported from C++ to C#. It is almost 7 times faster than the standard library in some cases while providing exact results.
+C# port of Daniel Lemire's [fast_float](https://github.com/fastfloat/fast_float)  fully ported from C++ to C#. It is over 8 times faster than the standard library in some cases while providing exact results.  It takes advantage of SIMD instructions for quick parsing.
 
 
 
 # Benchmarks
 
-We use the realistic files  in /data. The mesh.txt data file contains numbers that are easier to parse whereas the canada.txt data file is representative of a more challenging scenario. We compare  the `Double.Parse()` function from the runtime library with our `FastFloat.ParseDouble()` function. The `ParseNumberString() only` function parses the string itself without any float computation: it might represent an upper bound on the possible performance.
+We use the realistic files  in /data. The mesh.txt data file contains numbers that are easier to parse whereas the canada.txt data file is representative of a more challenging scenario. We compare  the `Double.Parse()` function from the runtime library with our `FastFloat.ParseDouble()` function. The `ParseNumberString() only` function parses the string itself without any float computation: it might represent an upper bound on the possible performance. 
+
+By default, C# uses UTF-16 encoding for string reprsentation.  Our parser does support both UTF-16 and UTF-8 inputs.
 
 
 ``` ini
@@ -20,15 +22,19 @@ AMD EPYC 7262, 1 CPU, 16 logical and 8 physical cores
 
 Job=.NET Core 5.0  Runtime=.NET Core 5.0
 
-|                     Method |        FileName |      Mean |     Error |    StdDev |       Min | Ratio | MFloat/s |     MB/s |
-|--------------------------- |---------------- |----------:|----------:|----------:|----------:|------:|---------:|---------:|
-|    FastFloat.ParseDouble() | data/canada.txt |  5.140 ms | 0.0280 ms | 0.0262 ms |  5.105 ms |  0.14 |    21.77 |   408.99 |
-| 'ParseNumberString() only' | data/canada.txt |  2.540 ms | 0.0053 ms | 0.0047 ms |  2.531 ms |  0.07 |    43.90 |   824.87 |
-|             Double.Parse() | data/canada.txt | 37.147 ms | 0.3284 ms | 0.3071 ms | 36.443 ms |  1.00 |     3.05 |    57.29 |
-|                            |                 |           |           |           |           |       |          |          |
-|    FastFloat.ParseDouble() |   data/mesh.txt |  2.083 ms | 0.0029 ms | 0.0024 ms |  2.080 ms |  0.29 |    35.10 |   298.07 |
-| 'ParseNumberString() only' |   data/mesh.txt |  1.298 ms | 0.0034 ms | 0.0032 ms |  1.294 ms |  0.18 |    56.45 |   479.30 |
-|             Double.Parse() |   data/mesh.txt |  7.086 ms | 0.0911 ms | 0.0852 ms |  6.931 ms |  1.00 |    10.54 |    89.45 |
+|                           Method |           FileName |      Mean |     Error |    StdDev |       Min | Ratio | MFloat/s |     MB/s |
+|--------------------------------- |------------------- |----------:|----------:|----------:|----------:|------:|---------:|---------:|
+|                   Double.Parse() |    data/canada.txt | 37.731 ms | 0.2460 ms | 0.2301 ms | 37.205 ms |  1.00 |     2.99 |    56.12 |
+|          FastFloat.ParseDouble() |    data/canada.txt |  5.510 ms | 0.0063 ms | 0.0056 ms |  5.501 ms |  0.15 |    20.20 |   379.58 |
+|       'ParseNumberString() only' |    data/canada.txt |  2.558 ms | 0.0046 ms | 0.0036 ms |  2.551 ms |  0.07 |    43.55 |   818.35 |
+|                                  |                    |           |           |           |           |       |          |          |
+|                   Double.Parse() |      data/mesh.txt |  6.875 ms | 0.0385 ms | 0.0341 ms |  6.814 ms |  1.00 |    10.72 |    90.99 |
+|          FastFloat.ParseDouble() |      data/mesh.txt |  2.122 ms | 0.0079 ms | 0.0066 ms |  2.113 ms |  0.31 |    34.55 |   293.36 |
+|       'ParseNumberString() only' |      data/mesh.txt |  1.189 ms | 0.0017 ms | 0.0014 ms |  1.186 ms |  0.17 |    61.57 |   522.80 |
+|                                  |                    |           |           |           |           |       |          |          |
+|                   Double.Parse() | data/synthetic.txt | 49.318 ms | 0.4962 ms | 0.4641 ms | 48.760 ms |  1.00 |     3.08 |    60.89 |
+|          FastFloat.ParseDouble() | data/synthetic.txt |  5.747 ms | 0.0176 ms | 0.0156 ms |  5.712 ms |  0.12 |    26.26 |   519.79 |
+|       'ParseNumberString() only' | data/synthetic.txt |  2.744 ms | 0.0045 ms | 0.0039 ms |  2.738 ms |  0.06 |    54.79 |  1084.47 |
 
 ```
 
