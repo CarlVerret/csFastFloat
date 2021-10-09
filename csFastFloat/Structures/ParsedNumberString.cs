@@ -326,6 +326,7 @@ namespace csFastFloat.Structures
       return answer;
     }
 
+    // UTF-16 inputs.
     unsafe static internal ParsedNumberString ParseNumberStringSIMD2(char* p, char* pend, NumberStyles expectedFormat = NumberStyles.Float, char decimal_separator = '.')
     {
       ParsedNumberString answer = new ParsedNumberString();
@@ -350,14 +351,6 @@ namespace csFastFloat.Structures
 
       ulong i = 0; // an unsigned int avoids signed overflows (which are bad)
 
-
-      while (Utils.eval_parse_eight_digits_simd(&p, pend, out uint tmp))
-      {
-        i = i * 100000000 + tmp;
-      }
-
-
-
       while ((p != pend) && Utils.is_integer(*p, out uint digit))
       {
         // a multiplication by 10 is cheaper than an arbitrary integer
@@ -365,20 +358,27 @@ namespace csFastFloat.Structures
         i = 10 * i + digit; // might overflow, we will handle the overflow later
         ++p;
       }
-
-
-
-
       char* end_of_integer_part = p;
       long digit_count = (long)(end_of_integer_part - start_digits);
       long exponent = 0;
       if ((p != pend) && (*p == decimal_separator))
       {
         ++p;
-        while (Utils.eval_parse_eight_digits_simd(&p, pend,  out uint tmp))
+        while ((p + 8 <= pend) && Utils.eval_parse_eight_digits_simd(p, p+8, out uint tmp))
         {
           i = i * 100000000 + tmp;
+          p += 8;
         }
+        //if ((p + 8 <= pend) && Utils.is_made_of_eight_digits_fast_simd(p))
+        //{
+        //  i = i * 100000000 + Utils.parse_eight_digits_simd(p);
+        //  p += 8;
+        //  if ((p + 8 <= pend) && Utils.is_made_of_eight_digits_fast_simd(p))
+        //  {
+        //    i = i * 100000000 + Utils.parse_eight_digits_simd(p);
+        //    p += 8;
+        //  }
+        //}
         while ((p != pend) && Utils.is_integer(*p, out uint digit))
         {
           ++p;
@@ -490,7 +490,6 @@ namespace csFastFloat.Structures
       answer.mantissa = i;
       return answer;
     }
-
 
 
     // UTF-8 / ASCII inputs.

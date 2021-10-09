@@ -103,17 +103,17 @@ namespace csFastFloat
 
 
 
-        Vector128<ushort> raw = Sse3.LoadDquVector128((ushort*)start);
+        Vector128<ushort> raw = Sse41.LoadDquVector128((ushort*)start);
         Vector128<ushort> mask0 = Vector128.Create((ushort)48);
         raw = Sse2.SubtractSaturate(raw, mask0);
         Vector128<short> mul0 = Vector128.Create(10, 1, 10, 1, 10, 1, 10, 1);
-        Vector128<int> res = Sse2.MultiplyAddAdjacent(raw.AsInt16(), mul0);
+        Vector128<int> res = Sse41.MultiplyAddAdjacent(raw.AsInt16(), mul0);
         Vector128<int> mul1 = Vector128.Create(1000000, 10000, 100, 1);
         res = Sse41.MultiplyLow(res, mul1);
-        Vector128<int> shuf = Sse2.Shuffle(res, 0x1b); // 0 1 2 3 => 3 2 1 0
-        res = Sse2.Add(shuf, res);
-        shuf = Sse2.Shuffle(res, 0x41); // 0 1 2 3 => 1 0 3 2
-        res = Sse2.Add(shuf, res);
+        Vector128<int> shuf = Sse41.Shuffle(res, 0x1b); // 0 1 2 3 => 3 2 1 0
+        res = Sse41.Add(shuf, res);
+        shuf = Sse41.Shuffle(res, 0x41); // 0 1 2 3 => 1 0 3 2
+        res = Sse41.Add(shuf, res);
 
         return (uint)res.GetElement(0);
       
@@ -123,14 +123,12 @@ namespace csFastFloat
 
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    unsafe internal static bool eval_parse_eight_digits_simd(char** start,  char* end, out uint value )
+    unsafe internal static bool eval_parse_eight_digits_simd(char* start,  char* end, out uint value )
     {
 
       value = 0;
-      var length = 8;//Math.Min(end - start, 8);
-    
 
-      Vector128<short> raw = Sse41.LoadDquVector128((short*)*start);
+      Vector128<short> raw = Sse41.LoadDquVector128((short*)start);
 
       Vector128<short> ascii0 = Vector128.Create((short)47);
       Vector128<short> after_ascii9 = Vector128.Create((short)58);
@@ -141,9 +139,7 @@ namespace csFastFloat
 
       if (!Sse41.TestZ(c, c))
         return false;
-
-      *start += length;
-
+   
       Vector128<short> mask0 = Vector128.Create((short)48); // adapter à la longueur
       raw = Sse41.SubtractSaturate(raw, mask0);
       Vector128<short> mul0 = Vector128.Create(10, 1, 10, 1, 10, 1, 10, 1);
