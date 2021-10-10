@@ -168,7 +168,7 @@ namespace csFastFloat.Benchmark
 
         max = d > max ? d : max;
       }
-      return max;
+      return max; 
     }
 
 
