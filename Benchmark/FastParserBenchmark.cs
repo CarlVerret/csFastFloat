@@ -75,7 +75,19 @@ namespace csFastFloat.Benchmark
       }
       return max;
     }
+    
+ [Benchmark(Description = "FastFloat.ParseDouble() - UTF8")]
+    public double FullParse_UTF8()
+    {
+      double max = double.MinValue;
 
+      foreach (byte[] l in _linesUtf8)
+      {
+        double d = FastDoubleParser.ParseDouble(l);
+        max = d > max ? d : max;
+      }
+      return max;
+    }
 
  [Benchmark(Description = "FastFloat.TryParseDouble() - UTF8")]
     public double FullTryParse_UTF8()
@@ -90,18 +102,7 @@ namespace csFastFloat.Benchmark
       return max;
     }
 
-    [Benchmark(Description = "FastFloat.ParseDouble() - UTF8")]
-    public double FullParse_UTF8()
-    {
-      double max = double.MinValue;
-
-      foreach (byte[] l in _linesUtf8)
-      {
-        double d = FastDoubleParser.ParseDouble(l);
-        max = d > max ? d : max;
-      }
-      return max;
-    }
+   
 
 
 
