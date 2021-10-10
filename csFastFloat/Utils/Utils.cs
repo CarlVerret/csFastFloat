@@ -28,7 +28,7 @@ namespace csFastFloat
       19, 27, 23, 06, 26, 05, 04, 31
     };
 #endif
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static uint parse_eight_digits_unrolled(ulong val)
     {
@@ -79,7 +79,7 @@ namespace csFastFloat
 #if HAS_INTRINSICS
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    unsafe internal static bool eval_parse_eight_digits_simd(char* start,  char* end, out uint value )
+    unsafe internal static bool eval_parse_eight_digits_simd(char* start, char* end, out uint value)
     {
 
       value = 0;
@@ -114,7 +114,7 @@ namespace csFastFloat
 
     }
 
-  
+
 
 #endif
 
@@ -127,7 +127,7 @@ namespace csFastFloat
       cMinus0 = cc;
       return res;
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static value128 compute_product_approximation(int bitPrecision, long q, ulong w)
     {
@@ -157,7 +157,7 @@ namespace csFastFloat
       return (((152170 + 65536) * q) >> 16) + 63;
     }
 
-#if NET5_0
+#if NET5_0_OR_GREATER
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static value128 FullMultiplication(ulong value1, ulong value2)
@@ -199,19 +199,19 @@ namespace csFastFloat
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static bool is_ascii_space(char c)
     {
-        // ROS for one byte types can be read directly from metadata avoiding the array allocation.
-        ReadOnlySpan<bool> table = new bool[] {
+      // ROS for one byte types can be read directly from metadata avoiding the array allocation.
+      ReadOnlySpan<bool> table = new bool[] {
             false, false, false, false, false, false, false, false, false, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false, false, true};
-        // Avoid bound checking.
-        return (c >32) ? false : Unsafe.AddByteOffset(ref MemoryMarshal.GetReference(table), (nint)c);
+      // Avoid bound checking.
+      return (c > 32) ? false : Unsafe.AddByteOffset(ref MemoryMarshal.GetReference(table), (nint)c);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static bool is_space(byte c)
     {
-        // ROS for one byte types can be read directly from metadata avoiding the array allocation.
-        ReadOnlySpan<bool> table = new bool[] {
+      // ROS for one byte types can be read directly from metadata avoiding the array allocation.
+      ReadOnlySpan<bool> table = new bool[] {
             false, false, false, false, false, false, false, false, false, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
@@ -223,9 +223,9 @@ namespace csFastFloat
             false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
-        
-        // Avoid bound checking.
-        return Unsafe.AddByteOffset(ref MemoryMarshal.GetReference(table), (nint)c);
+
+      // Avoid bound checking.
+      return Unsafe.AddByteOffset(ref MemoryMarshal.GetReference(table), (nint)c);
     }
 
     [ExcludeFromCodeCoverage]
@@ -258,7 +258,7 @@ namespace csFastFloat
       return (running_diff == 0) || (running_diff == 32);
     }
 
-    
+
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int LeadingZeroCount(ulong value)
