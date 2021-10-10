@@ -52,22 +52,22 @@ AMD EPYC 7262, 1 CPU, 16 logical and 8 physical cores
   .NET Core 5.0 : .NET Core 5.0.2 (CoreCLR 5.0.220.61120, CoreFX 5.0.220.61120), X64 RyuJIT
 
 Job=.NET Core 5.0  Runtime=.NET Core 5.0
-|                                Method |      fileName | fileSize | nbFloat |      Mean |    Error |   StdDev |       Min | Ratio | RatioSD | MFloat/s |
-|-------------------------------------- |-------------- |--------- |-------- |----------:|---------:|---------:|----------:|------:|--------:|---------:|
-|          'Double.Parse() - singlecol' |    canada.txt |     2088 |  111126 |  85.74 ms | 0.361 ms | 0.320 ms |  85.08 ms |  1.00 |    0.00 |     1.31 |
-| 'FastFloat.ParseDouble() - singlecol' |    canada.txt |     2088 |  111126 |  41.61 ms | 0.161 ms | 0.150 ms |  41.34 ms |  0.49 |    0.00 |     2.69 |
-|                                       |               |          |         |           |          |          |           |       |         |          |
-|          'Double.Parse() - singlecol' |      mesh.txt |      691 |   73019 |  35.29 ms | 0.252 ms | 0.236 ms |  34.91 ms |  1.00 |    0.00 |     2.09 |
-| 'FastFloat.ParseDouble() - singlecol' |      mesh.txt |      691 |   73019 |  20.89 ms | 0.177 ms | 0.166 ms |  20.64 ms |  0.59 |    0.01 |     3.54 |
-|                                       |               |          |         |           |          |          |           |       |         |          |
-|          'Double.Parse() - singlecol' | synthetic.csv |     2969 |  150000 | 114.15 ms | 0.760 ms | 0.673 ms | 113.23 ms |  1.00 |    0.00 |     1.32 |
-| 'FastFloat.ParseDouble() - singlecol' | synthetic.csv |     2969 |  150000 |  56.53 ms | 0.403 ms | 0.377 ms |  55.85 ms |  0.49 |    0.00 |     2.69 |
-|                                       |               |          |         |           |          |          |           |       |         |          |
-|           'Double.Parse() - multicol' |  w-c-100K.csv |     4842 |  200002 | 191.88 ms | 1.811 ms | 1.694 ms | 189.68 ms |  1.00 |    0.00 |     1.05 |
-|        'FastFloat.Parse() - multicol' |  w-c-100K.csv |     4842 |  200002 | 171.18 ms | 1.386 ms | 1.082 ms | 168.70 ms |  0.89 |    0.01 |     1.19 |
-|                                       |               |          |         |           |          |          |           |       |         |          |
-|           'Double.Parse() - multicol' |  w-c-300K.csv |    14526 |  600002 | 587.42 ms | 2.435 ms | 2.277 ms | 582.98 ms |  1.00 |    0.00 |     1.03 |
-|        'FastFloat.Parse() - multicol' |  w-c-300K.csv |    14526 |  600002 | 493.40 ms | 5.625 ms | 4.697 ms | 487.38 ms |  0.84 |    0.01 |     1.23 |
+|                                Method |      fileName |      Mean |    Error |   StdDev |       Min | Ratio | MFloat/s |
+|-------------------------------------- |-------------- |----------:|---------:|---------:|----------:|------:| --------:|
+|          'Double.Parse() - singlecol' |    canada.txt |  85.74 ms | 0.361 ms | 0.320 ms |  85.08 ms |  1.00 |     1.31 |
+| 'FastFloat.ParseDouble() - singlecol' |    canada.txt |  41.61 ms | 0.161 ms | 0.150 ms |  41.34 ms |  0.49 |     2.69 |
+|                                       |               |           |          |          |           |       |          |
+|          'Double.Parse() - singlecol' |      mesh.txt |   5.29 ms | 0.252 ms | 0.236 ms |  34.91 ms |  1.00 |     2.09 |
+| 'FastFloat.ParseDouble() - singlecol' |      mesh.txt |   0.89 ms | 0.177 ms | 0.166 ms |  20.64 ms |  0.59 |     3.54 |
+|                                       |               |           |          |          |           |       |          |
+|          'Double.Parse() - singlecol' | synthetic.csv |   4.15 ms | 0.760 ms | 0.673 ms | 113.23 ms |  1.00 |     1.32 |
+| 'FastFloat.ParseDouble() - singlecol' | synthetic.csv |   6.53 ms | 0.403 ms | 0.377 ms |  55.85 ms |  0.49 |     2.69 |
+|                                       |               |           |          |          |           |       |          |
+|           'Double.Parse() - multicol' |  w-c-100K.csv | 191.88 ms | 1.811 ms | 1.694 ms | 189.68 ms |  1.00 |     1.05 |
+|        'FastFloat.Parse() - multicol' |  w-c-100K.csv | 171.18 ms | 1.386 ms | 1.082 ms | 168.70 ms |  0.89 |     1.19 |
+|                                       |               |           |          |          |           |       |          |
+|           'Double.Parse() - multicol' |  w-c-300K.csv | 587.42 ms | 2.435 ms | 2.277 ms | 582.98 ms |  1.00 |     1.03 |
+|        'FastFloat.Parse() - multicol' |  w-c-300K.csv | 493.40 ms | 5.625 ms | 4.697 ms | 487.38 ms |  0.84 |     1.23 |
 
 ```
 
