@@ -61,8 +61,34 @@ namespace csFastFloat.Benchmark
         max = d > max ? d : max;
       }
       return max;
+    } 
+    
+    [Benchmark(Description = "FastFloat.TryParseDouble()")]
+    public double FullTryParse_Usual()
+    {
+      double max = double.MinValue;
+
+      foreach (string l in _lines)
+      {
+        FastDoubleParser.TryParseDouble(l, out double d);
+        max = d > max ? d : max;
+      }
+      return max;
     }
 
+
+ [Benchmark(Description = "FastFloat.TryParseDouble() - UTF8")]
+    public double FullTryParse_UTF8()
+    {
+      double max = double.MinValue;
+
+      foreach (byte[] l in _linesUtf8)
+      {
+        FastDoubleParser.TryParseDouble(l, out double d);
+        max = d > max ? d : max;
+      }
+      return max;
+    }
 
     [Benchmark(Description = "FastFloat.ParseDouble() - UTF8")]
     public double FullParse_UTF8()
@@ -105,7 +131,32 @@ namespace csFastFloat.Benchmark
     }
 
 
+ [Benchmark(Description = "ParseNumberString UTF-8")]
+    public double ParseOnly_UTF8()
+    {
+      double max = double.MinValue;
 
+      foreach (var l in _linesUtf8)
+      {
+        unsafe
+        {
+
+          fixed (byte* p = l)
+          {
+            var pni = ParsedNumberString.ParseNumberString(p, p + l.Length);
+            max = pni.exponent > max ? pni.exponent : max;
+          }
+
+
+
+        }
+      }
+      return max;
+    }
+    
+    
+    
+    
     [Benchmark(Baseline = true, Description = "Double.Parse()")]
     public double Double_std()
     {
@@ -120,7 +171,7 @@ namespace csFastFloat.Benchmark
     }
 
 
-    [Params(@"data/canada.txt", @"data/mesh.txt", @"data/synthetic.txt")]
+    [Params(@"data/canada.txt")] //, @"data/mesh.txt", @"data/synthetic.txt")]
     public string FileName;
 
     [GlobalSetup]
