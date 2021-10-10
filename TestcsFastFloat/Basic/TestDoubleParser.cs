@@ -46,10 +46,11 @@ namespace TestcsFastFloat.Tests.Basic
     }
 
     [Fact]
-    public void NegativeZero() {
+    public void NegativeZero()
+    {
 
       Assert.Equal(-0, FastDoubleParser.ParseDouble("-0"));
-    
+
     }
 
 
@@ -78,7 +79,7 @@ namespace TestcsFastFloat.Tests.Basic
     [InlineData("some alpha")]
     [InlineData("-")]
     [InlineData("1ee10")]
-    unsafe public void ParseDouble_Throws_When_Invalid(string sut) => Assert.Throws<System.ArgumentException>(() => FastDoubleParser.ParseDouble(   sut));
+    unsafe public void ParseDouble_Throws_When_Invalid(string sut) => Assert.Throws<System.ArgumentException>(() => FastDoubleParser.ParseDouble(sut));
 
 
     [Theory]
@@ -428,14 +429,14 @@ namespace TestcsFastFloat.Tests.Basic
       StringBuilder sb = new StringBuilder();
 
       long pos = 0;
-      
+
       while (pos < sut.Length)
       {
         int nbCarConsumed;
         var res = FastDoubleParser.ParseDouble(sut.AsSpan().Slice((int)pos), out nbCarConsumed);
         sb.AppendLine($"Sut :{sut.Substring((int)pos)}  Result : {res.ToString(CultureInfo.InvariantCulture)} :  Consumed :  { nbCarConsumed }");
         pos += nbCarConsumed;
-      
+
       }
 
       VerifyData(sb.ToString());

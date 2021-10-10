@@ -37,7 +37,8 @@ namespace TestcsFastFloat.Tests.Basic
     [InlineData(null)]
     [InlineData("-")]
     [InlineData("1ee10")]
-    public void TryParse_NeverThrows(string sut) {
+    public void TryParse_NeverThrows(string sut)
+    {
 
       Assert.False(FastFloatParser.TryParseFloat(sut, out _));
 
@@ -62,7 +63,7 @@ namespace TestcsFastFloat.Tests.Basic
 
         float? f = FastFloatParser.ToFloat(false, am);
 
-       
+
 
         if (!f.HasValue)
           throw new ApplicationException($"Can't parse p=> {p}");
@@ -94,7 +95,7 @@ namespace TestcsFastFloat.Tests.Basic
       }
     }
 
-   [SkippableFact]
+    [SkippableFact]
     unsafe public void ParseNumberString_Works_Scnenarios()
     {
       Skip.If(base.NoDiffToolDetected(), "No diff tool detected");
@@ -147,14 +148,14 @@ namespace TestcsFastFloat.Tests.Basic
       {
         VerifyData(sb.ToString());
       }
-      catch(System.Exception ex)
+      catch (System.Exception ex)
       {
         Console.WriteLine(ex.Message);
       }
     }
 
     [Fact]
-    unsafe public void PaseFloat_Throws_When_NULL() => Assert.Throws<System.ArgumentNullException>(() => FastFloatParser.ParseFloat((string) null));
+    unsafe public void PaseFloat_Throws_When_NULL() => Assert.Throws<System.ArgumentNullException>(() => FastFloatParser.ParseFloat((string)null));
 
     [Fact]
     unsafe public void PaseFloat_Throws_When_Empty() => Assert.Throws<System.ArgumentException>(() => FastFloatParser.ParseFloat(string.Empty));
@@ -165,7 +166,7 @@ namespace TestcsFastFloat.Tests.Basic
     [InlineData("1ee10")]
     unsafe public void PaseFloat_Throws_When_Invalid(string sut) => Assert.Throws<System.ArgumentException>(() => FastFloatParser.ParseFloat(sut));
 
- 
+
 
     [SkippableFact]
     unsafe public void ParseNumber_Works_Scenarios()
@@ -183,7 +184,7 @@ namespace TestcsFastFloat.Tests.Basic
       sut.Add("leading zeros neg", "-001");
 
       sut.Add("zero", "0");
-      
+
       sut.Add("double", "0.00000000000000212312312");
       sut.Add("double neg", "-0.00000000000000212312312");
       sut.Add("int", "1");
@@ -213,7 +214,7 @@ namespace TestcsFastFloat.Tests.Basic
         fixed (char* p = kv.Value)
         {
           char* pend = p + kv.Value.Length;
-          Assert.True( FastDoubleParser.TryParseNumber(p, pend, out int _, out double res));
+          Assert.True(FastDoubleParser.TryParseNumber(p, pend, out int _, out double res));
 
           sb.AppendLine($"Resultat : {res}");
           sb.AppendLine();
@@ -226,7 +227,7 @@ namespace TestcsFastFloat.Tests.Basic
       {
         VerifyData(sb.ToString());
       }
-      catch(System.Exception ex)
+      catch (System.Exception ex)
       {
         Console.WriteLine(ex.Message);
       }
