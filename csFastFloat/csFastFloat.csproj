@@ -23,17 +23,12 @@
     <DefineConstants>$(DefineConstants);HAS_BITOPERATIONS;HAS_INTRINSICS</DefineConstants>
   </PropertyGroup>
     
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+  <PropertyGroup >
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='x86|AnyCPU'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
+
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <DocumentationFile>bin\Release\$(TargetFramework)\csFastFloat.xml</DocumentationFile>
@@ -43,7 +38,7 @@
     <DocumentationFile>bin\Release\$(TargetFramework)\csFastFloat.xml</DocumentationFile>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net5.0|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='debug|net5.0|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
@@ -59,9 +54,5 @@
     <None Remove="Enums\**" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="FastDoubleParserSIMD.cs" />
-    <Compile Remove="FastDoubleParserSMD2.cs" />
-    <Compile Remove="FastDoubleParserSMD3.cs" />
-  </ItemGroup>
+ 
 </Project>
