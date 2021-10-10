@@ -42,7 +42,7 @@ namespace csFastFloat.Structures
 
     private static ushort get_number_of_digits_decimal_left_shift(int shift)
     {
-#if NET5_0_OR_GREATER
+#if NET5_0
       Debug.Assert(shift < number_of_digits_decimal_left_shift_table.Length);
       ref ushort tableRef = ref MemoryMarshal.GetArrayDataReference(number_of_digits_decimal_left_shift_table);
       return Unsafe.Add(ref tableRef, (IntPtr)(uint)shift);

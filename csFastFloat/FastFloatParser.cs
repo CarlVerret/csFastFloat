@@ -22,7 +22,7 @@ namespace csFastFloat
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static float exact_power_of_ten(long power)
     {
-#if NET5_0_OR_GREATER
+#if NET5_0
       Debug.Assert(power < CalculationConstants.powers_of_ten_float.Length);
       ref float tableRef = ref MemoryMarshal.GetArrayDataReference(CalculationConstants.powers_of_ten_float);
       return Unsafe.Add(ref tableRef, (nint)power);

@@ -157,7 +157,7 @@ namespace csFastFloat
       return (((152170 + 65536) * q) >> 16) + 63;
     }
 
-#if NET5_0_OR_GREATER
+#if NET5_0
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static value128 FullMultiplication(ulong value1, ulong value2)

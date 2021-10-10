@@ -53,7 +53,7 @@ namespace BenchmarkHandCoded
       double answer = 0;
       foreach (string l in lines)
       {
-        x = FastDoubleParser.ParseDouble(l);
+         FastDoubleParser.TryParseDouble(l, out x);
         answer = answer > x ? answer : x;
       }
 
