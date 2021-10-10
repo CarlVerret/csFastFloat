@@ -1,13 +1,11 @@
 # csFastFloat : a fast and accurate float parser
 [![.NET](https://github.com/CarlVerret/csFastFloat/actions/workflows/dotnet.yml/badge.svg)](https://github.com/CarlVerret/csFastFloat/actions/workflows/dotnet.yml)
 
-C# port of Daniel Lemire's [fast_float](https://github.com/fastfloat/fast_float)  fully ported from C++ to C#. It is over 8 times faster than the standard library in some cases while providing exact results.  It takes advantage of SIMD instructions for quick parsing.
-
-
+C# port of Daniel Lemire's [fast_float](https://github.com/fastfloat/fast_float)  fully ported from C++ to C#. It is over 8 times faster than the standard library in some cases while providing exact results.  
 
 # Benchmarks
 
-We use the realistic files  in /data. The mesh.txt data file contains numbers that are easier to parse whereas the canada.txt data file is representative of a more challenging scenario. We compare  the `Double.Parse()` function from the runtime library with our `FastFloat.ParseDouble()` function. The `ParseNumberString() only` function parses the string itself without any float computation: it might represent an upper bound on the possible performance. 
+We use the realistic files  in /data. The mesh.txt data file contains numbers that are easier to parse whereas the canada.txt data file is representative of a more challenging scenario. Synthetic.txt contains 150 000 random floats. We compare  the `Double.Parse()` function from the runtime library with our `FastFloat.ParseDouble()` function. The `ParseNumberString()` function parses the string itself without any float computation: it might represent an upper bound on the possible performance. 
 
 By default, C# uses UTF-16 encoding for string reprsentation.  Our parser does support both UTF-16 and UTF-8 inputs.
 
@@ -22,27 +20,25 @@ AMD EPYC 7262, 1 CPU, 16 logical and 8 physical cores
 
 Job=.NET Core 5.0  Runtime=.NET Core 5.0
 
-|                           Method |           FileName |      Mean |     Error |    StdDev |       Min | Ratio | MFloat/s |     MB/s |
-|--------------------------------- |------------------- |----------:|----------:|----------:|----------:|------:|---------:|---------:|
-|                   Double.Parse() |    data/canada.txt | 37.731 ms | 0.2460 ms | 0.2301 ms | 37.205 ms |  1.00 |     2.99 |    56.12 |
-|          FastFloat.ParseDouble() |    data/canada.txt |  5.510 ms | 0.0063 ms | 0.0056 ms |  5.501 ms |  0.15 |    20.20 |   379.58 |
-|       'ParseNumberString() only' |    data/canada.txt |  2.558 ms | 0.0046 ms | 0.0036 ms |  2.551 ms |  0.07 |    43.55 |   818.35 |
-|                                  |                    |           |           |           |           |       |          |          |
-|                   Double.Parse() |      data/mesh.txt |  6.875 ms | 0.0385 ms | 0.0341 ms |  6.814 ms |  1.00 |    10.72 |    90.99 |
-|          FastFloat.ParseDouble() |      data/mesh.txt |  2.122 ms | 0.0079 ms | 0.0066 ms |  2.113 ms |  0.31 |    34.55 |   293.36 |
-|       'ParseNumberString() only' |      data/mesh.txt |  1.189 ms | 0.0017 ms | 0.0014 ms |  1.186 ms |  0.17 |    61.57 |   522.80 |
-|                                  |                    |           |           |           |           |       |          |          |
-|                   Double.Parse() | data/synthetic.txt | 49.318 ms | 0.4962 ms | 0.4641 ms | 48.760 ms |  1.00 |     3.08 |    60.89 |
-|          FastFloat.ParseDouble() | data/synthetic.txt |  5.747 ms | 0.0176 ms | 0.0156 ms |  5.712 ms |  0.12 |    26.26 |   519.79 |
-|       'ParseNumberString() only' | data/synthetic.txt |  2.744 ms | 0.0045 ms | 0.0039 ms |  2.738 ms |  0.06 |    54.79 |  1084.47 |
-
+|                     Method |      FileName |      Mean |     Error |    StdDev |       Min | Ratio | MFloat/s |     MB/s |
+|--------------------------- |-------------- |----------:|----------:|----------:|----------:|------:|---------:|---------:|
+|    FastFloat.ParseDouble() |    canada.txt |  5.266 ms | 0.0044 ms | 0.0042 ms |  5.257 ms |  0.14 |    21.14 |   397.18 | 
+|        ParseNumberString() |    canada.txt |  2.493 ms | 0.0021 ms | 0.0020 ms |  2.490 ms |  0.07 |    44.64 |   838.71 |
+|             Double.Parse() |    canada.txt | 37.171 ms | 0.2416 ms | 0.2141 ms | 36.911 ms |  1.00 |     3.01 |    56.57 |
+|                            |               |           |           |           |           |       |          |          |
+|    FastFloat.ParseDouble() |      mesh.txt |  2.118 ms | 0.0101 ms | 0.0094 ms |  2.101 ms |  0.31 |    34.75 |   295.09 |  
+|        ParseNumberString() |      mesh.txt |  1.227 ms | 0.0003 ms | 0.0003 ms |  1.227 ms |  0.18 |    59.53 |   505.44 |
+|             Double.Parse() |      mesh.txt |  6.923 ms | 0.0503 ms | 0.0470 ms |  6.800 ms |  1.00 |    10.74 |    91.18 |
+|                            |               |           |           |           |           |       |          |          |
+|    FastFloat.ParseDouble() | synthetic.txt |  5.687 ms | 0.0058 ms | 0.0048 ms |  5.677 ms |  0.12 |    26.42 |   522.97 |
+|        ParseNumberString() | synthetic.txt |  2.713 ms | 0.0118 ms | 0.0104 ms |  2.701 ms |  0.06 |    55.54 |  1099.39 |
+|             Double.Parse() | synthetic.txt | 48.622 ms | 0.2161 ms | 0.2022 ms | 48.324 ms |  1.00 |     3.10 |    61.44 |
 ```
 
 In this repo [FastFloatTestBench](https://github.com/CarlVerret/FastFloatTestBench) we demonstrate a concrete performance gain obtained with FastFloat.ParseDouble() with the [CSVHelper](https://github.com/JoshClose/CsvHelper) library.  This is one of the fastest CSV parser available.
 
 Single and multiple columns files have been tested. :
-- Canada.txt and mesh.txt are the same from previous benchmark.
-- Syntethic.csv is composed of 150 000 random floats.
+- Canada.txt mesh.txt and Synthetic.txt are the same from previous benchmark.
 - World cities population data (100k/300k) are real data obtained from [OpenDataSoft](https://public.opendatasoft.com/explore/dataset/worldcitiespop).
 
 Benchmark is run on same environment.
@@ -56,27 +52,22 @@ AMD EPYC 7262, 1 CPU, 16 logical and 8 physical cores
   .NET Core 5.0 : .NET Core 5.0.2 (CoreCLR 5.0.220.61120, CoreFX 5.0.220.61120), X64 RyuJIT
 
 Job=.NET Core 5.0  Runtime=.NET Core 5.0
-|                                Method |               fileName | fileSize | nbFloat |      Mean |    Error |   StdDev |       Min | Ratio | MFloat/s |
-|-------------------------------------- |----------------------- |--------- |-------- |----------:|---------:|---------:|----------:|------:|---------:|
-|          'Double.Parse() - singlecol' |    TestData/canada.txt |     2088 |  111126 |  84.46 ms | 0.271 ms | 0.226 ms |  84.16 ms |  1.00 |     1.32 |
-|                  'Zeroes - singlecol' |    TestData/canada.txt |     2088 |  111126 |  33.59 ms | 0.214 ms | 0.178 ms |  33.21 ms |  0.40 |     3.35 |
-| 'FastFloat.ParseDouble() - singlecol' |    TestData/canada.txt |     2088 |  111126 |  40.58 ms | 0.265 ms | 0.235 ms |  40.13 ms |  0.48 |     2.77 |
-|                                       |                        |          |         |           |          |          |           |       |          |
-|          'Double.Parse() - singlecol' |      TestData/mesh.txt |      691 |   73019 |  29.64 ms | 0.157 ms | 0.146 ms |  29.41 ms |  1.00 |     2.48 |
-|                  'Zeroes - singlecol' |      TestData/mesh.txt |      691 |   73019 |  17.68 ms | 0.077 ms | 0.064 ms |  17.58 ms |  0.60 |     4.15 |
-| 'FastFloat.ParseDouble() - singlecol' |      TestData/mesh.txt |      691 |   73019 |  20.06 ms | 0.188 ms | 0.176 ms |  19.82 ms |  0.68 |     3.68 |
-|                                       |                        |          |         |           |          |          |           |       |          |
-|          'Double.Parse() - singlecol' | TestData/synthetic.csv |     2969 |  150000 | 114.10 ms | 1.355 ms | 1.202 ms | 111.87 ms |  1.00 |     1.34 |
-|                  'Zeroes - singlecol' | TestData/synthetic.csv |     2969 |  150000 |  46.48 ms | 0.197 ms | 0.184 ms |  46.20 ms |  0.41 |     3.25 |
-| 'FastFloat.ParseDouble() - singlecol' | TestData/synthetic.csv |     2969 |  150000 |  54.29 ms | 0.683 ms | 0.605 ms |  53.40 ms |  0.48 |     2.81 |
-|                                       |                        |          |         |           |          |          |           |       |          |
-|           'Double.Parse() - multicol' |  TestData/w-c-100K.csv |     4842 |  200002 | 182.30 ms | 2.629 ms | 2.459 ms | 179.70 ms |  1.00 |     1.11 |
-|                 'Zeroes() - multicol' |  TestData/w-c-100K.csv |     4842 |  200002 | 160.47 ms | 1.368 ms | 1.068 ms | 158.88 ms |  0.88 |     1.26 |
-|        'FastFloat.Parse() - multicol' |  TestData/w-c-100K.csv |     4842 |  200002 | 168.60 ms | 1.217 ms | 1.079 ms | 166.84 ms |  0.92 |     1.20 |
-|                                       |                        |          |         |           |          |          |           |       |          |
-|           'Double.Parse() - multicol' |  TestData/w-c-300K.csv |    14526 |  600002 | 572.31 ms | 4.286 ms | 3.799 ms | 566.87 ms |  1.00 |     1.06 |
-|                 'Zeroes() - multicol' |  TestData/w-c-300K.csv |    14526 |  600002 | 451.54 ms | 3.379 ms | 2.822 ms | 445.87 ms |  0.79 |     1.35 |
-|        'FastFloat.Parse() - multicol' |  TestData/w-c-300K.csv |    14526 |  600002 | 479.76 ms | 3.103 ms | 2.423 ms | 477.05 ms |  0.84 |     1.26 |
+|                                Method |      fileName | fileSize | nbFloat |      Mean |    Error |   StdDev |       Min | Ratio | RatioSD | MFloat/s |
+|-------------------------------------- |-------------- |--------- |-------- |----------:|---------:|---------:|----------:|------:|--------:|---------:|
+|          'Double.Parse() - singlecol' |    canada.txt |     2088 |  111126 |  85.74 ms | 0.361 ms | 0.320 ms |  85.08 ms |  1.00 |    0.00 |     1.31 |
+| 'FastFloat.ParseDouble() - singlecol' |    canada.txt |     2088 |  111126 |  41.61 ms | 0.161 ms | 0.150 ms |  41.34 ms |  0.49 |    0.00 |     2.69 |
+|                                       |               |          |         |           |          |          |           |       |         |          |
+|          'Double.Parse() - singlecol' |      mesh.txt |      691 |   73019 |  35.29 ms | 0.252 ms | 0.236 ms |  34.91 ms |  1.00 |    0.00 |     2.09 |
+| 'FastFloat.ParseDouble() - singlecol' |      mesh.txt |      691 |   73019 |  20.89 ms | 0.177 ms | 0.166 ms |  20.64 ms |  0.59 |    0.01 |     3.54 |
+|                                       |               |          |         |           |          |          |           |       |         |          |
+|          'Double.Parse() - singlecol' | synthetic.csv |     2969 |  150000 | 114.15 ms | 0.760 ms | 0.673 ms | 113.23 ms |  1.00 |    0.00 |     1.32 |
+| 'FastFloat.ParseDouble() - singlecol' | synthetic.csv |     2969 |  150000 |  56.53 ms | 0.403 ms | 0.377 ms |  55.85 ms |  0.49 |    0.00 |     2.69 |
+|                                       |               |          |         |           |          |          |           |       |         |          |
+|           'Double.Parse() - multicol' |  w-c-100K.csv |     4842 |  200002 | 191.88 ms | 1.811 ms | 1.694 ms | 189.68 ms |  1.00 |    0.00 |     1.05 |
+|        'FastFloat.Parse() - multicol' |  w-c-100K.csv |     4842 |  200002 | 171.18 ms | 1.386 ms | 1.082 ms | 168.70 ms |  0.89 |    0.01 |     1.19 |
+|                                       |               |          |         |           |          |          |           |       |         |          |
+|           'Double.Parse() - multicol' |  w-c-300K.csv |    14526 |  600002 | 587.42 ms | 2.435 ms | 2.277 ms | 582.98 ms |  1.00 |    0.00 |     1.03 |
+|        'FastFloat.Parse() - multicol' |  w-c-300K.csv |    14526 |  600002 | 493.40 ms | 5.625 ms | 4.697 ms | 487.38 ms |  0.84 |    0.01 |     1.23 |
 
 ```
 
@@ -84,7 +75,7 @@ Job=.NET Core 5.0  Runtime=.NET Core 5.0
 
 # Requirements
 
-.NET Core 3.1 or better. Under .NET 5 framework, the library takes advantage of the new Math.BigMul() function.
+.NET standaard 2.0 or better. Under .NET 5 framework, the library takes advantage of the new Math.BigMul() & System.Runtime.Intrinsics.X86 SIMD functions.
 
 # Compile and testing
 
