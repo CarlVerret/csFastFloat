@@ -75,7 +75,7 @@ Job=.NET Core 5.0  Runtime=.NET Core 5.0
 
 # Requirements
 
-.NET standard 2.0 or better. Under .NET 5 framework, the library takes advantage of the new Math.BigMul() & System.Runtime.Intrinsics.X86 SIMD functions.
+.NET standard 2.0 or newer. Under .NET 5 framework, the library takes advantage of the new Math.BigMul() & System.Runtime.Intrinsics.X86 SIMD functions.
 
 # Compile and testing
 
