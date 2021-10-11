@@ -17,7 +17,7 @@ namespace csFastFloat.Benchmark
 {
 
   //[MemoryDiagnoser]
-  [SimpleJob(RuntimeMoniker.NetCoreApp50)]
+  [SimpleJob(RuntimeMoniker.Net50)]
   [Config(typeof(Config))]
   public class FFBencmark
   {
@@ -37,16 +37,16 @@ namespace csFastFloat.Benchmark
     [Benchmark(Description = "Utf8Parser")]
     public double Utf8Parser()
     {
-     double max = double.MinValue;
+      double max = double.MinValue;
 
-     foreach (byte[] l in _linesUtf8)
-     {
-       if (!System.Buffers.Text.Utf8Parser.TryParse(l, out double d, out int consumed) || consumed != l.Length)
-         throw new InvalidOperationException();
+      foreach (byte[] l in _linesUtf8)
+      {
+        if (!System.Buffers.Text.Utf8Parser.TryParse(l, out double d, out int consumed) || consumed != l.Length)
+          throw new InvalidOperationException();
 
-       max = d > max ? d : max;
-     }
-     return max;
+        max = d > max ? d : max;
+      }
+      return max;
     }
 
 
@@ -57,17 +57,18 @@ namespace csFastFloat.Benchmark
 
       foreach (string l in _lines)
       {
-        unsafe { 
+        unsafe
+        {
           fixed (char* c = l)
-          { 
+          {
             double d = FastDoubleParser.ParseDouble(c, c + l.Length);
             max = d > max ? d : max;
           }
         }
       }
       return max;
-    } 
-    
+    }
+
     [Benchmark(Description = "FastFloat.TryParseDouble()")]
     public double FullTryParse_Usual()
     {
@@ -75,13 +76,13 @@ namespace csFastFloat.Benchmark
 
       foreach (string l in _lines)
       {
-       if(FastDoubleParser.TryParseDouble(l, out double d)) 
-        max = d > max ? d : max;
+        if (FastDoubleParser.TryParseDouble(l, out double d))
+          max = d > max ? d : max;
       }
       return max;
     }
-    
- [Benchmark(Description = "FastFloat.ParseDouble() - UTF8")]
+
+    [Benchmark(Description = "FastFloat.ParseDouble() - UTF8")]
     public double FullParse_UTF8()
     {
       double max = double.MinValue;
@@ -94,113 +95,83 @@ namespace csFastFloat.Benchmark
       return max;
     }
 
- [Benchmark(Description = "FastFloat.TryParseDouble() - UTF8")]
+    [Benchmark(Description = "FastFloat.TryParseDouble() - UTF8")]
     public double FullTryParse_UTF8()
     {
       double max = double.MinValue;
 
       foreach (byte[] l in _linesUtf8)
       {
-        if(FastDoubleParser.TryParseDouble(l, out double d))
+        if (FastDoubleParser.TryParseDouble(l, out double d))
           max = d > max ? d : max;
       }
       return max;
     }
-    
- //[Benchmark(Description = "FastFloat.ParseDouble() - UTF8")]
- //   public double FullParse_UTF8()
- //   {
- //     double max = double.MinValue;
-
- //     foreach (byte[] l in _linesUtf8)
- //     {
- //       double d = FastDoubleParser.ParseDouble(l);
- //       max = d > max ? d : max;
- //     }
- //     return max;
- //   }
-
- //[Benchmark(Description = "FastFloat.TryParseDouble() - UTF8")]
- //   public double FullTryParse_UTF8()
- //   {
- //     double max = double.MinValue;
-
- //     foreach (byte[] l in _linesUtf8)
- //     {
- //       FastDoubleParser.TryParseDouble(l, out double d);
- //       max = d > max ? d : max;
- //     }
- //     return max;
- //   }
-
-   
 
 
 
+    [Benchmark(Description = "ParseNumberString() only")]
+    public double ParseOnly_SIMD()
+    {
+      double max = double.MinValue;
 
+      foreach (string l in _lines)
+      {
+        unsafe
+        {
 
- //   [Benchmark(Description = "ParseNumberString() only")]
- //   public double ParseOnly_SIMD()
- //   {
- //     double max = double.MinValue;
-
- //     foreach (string l in _lines)
- //     {
- //       unsafe
- //       {
-
- //         fixed (char* p = l)
- //         {
- //           var pni = ParsedNumberString.ParseNumberString(p, p + l.Length);
- //           max = pni.exponent > max ? pni.exponent : max;
- //         }
-
-
-
- //       }
- //     }
- //     return max;
- //   }
-
-
- //[Benchmark(Description = "ParseNumberString UTF-8")]
- //   public double ParseOnly_UTF8()
- //   {
- //     double max = double.MinValue;
-
- //     foreach (var l in _linesUtf8)
- //     {
- //       unsafe
- //       {
-
- //         fixed (byte* p = l)
- //         {
- //           var pni = ParsedNumberString.ParseNumberString(p, p + l.Length);
- //           max = pni.exponent > max ? pni.exponent : max;
- //         }
+          fixed (char* p = l)
+          {
+            var pni = ParsedNumberString.ParseNumberString(p, p + l.Length);
+            max = pni.exponent > max ? pni.exponent : max;
+          }
 
 
 
- //       }
- //     }
- //     return max;
- //   }
-    
-    
-    
-    
- //   [Benchmark(Baseline = true, Description = "Double.Parse()")]
- //   public double Double_std()
- //   {
- //     double max = double.MinValue;
- //     foreach (string l in _lines)
- //     {
- //       double d = double.Parse(l, CultureInfo.InvariantCulture);
+        }
+      }
+      return max;
+    }
 
- //       max = d > max ? d : max;
- //     }
- //     return max; 
- //   }
+
+    [Benchmark(Description = "ParseNumberString UTF-8")]
+    public double ParseOnly_UTF8()
+    {
+      double max = double.MinValue;
+
+      foreach (var l in _linesUtf8)
+      {
+        unsafe
+        {
+
+          fixed (byte* p = l)
+          {
+            var pni = ParsedNumberString.ParseNumberString(p, p + l.Length);
+            max = pni.exponent > max ? pni.exponent : max;
+          }
+
+
+
+        }
+      }
+      return max;
+    }
+
+
+
+
+    [Benchmark(Baseline = true, Description = "Double.Parse()")]
+    public double Double_std()
+    {
+      double max = double.MinValue;
+      foreach (string l in _lines)
+      {
+        double d = double.Parse(l, CultureInfo.InvariantCulture);
+
+        max = d > max ? d : max;
+      }
+      return max;
+    }
 
 
     [Params(@"data/canada.txt")] //, @"data/mesh.txt", @"data/synthetic.txt")]
