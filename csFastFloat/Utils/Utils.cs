@@ -112,9 +112,9 @@ namespace csFastFloat
 
       var a = Sse41.Subtract(raw, ascii0);
       var b = Sse41.CompareLessThan(a, after_ascii9);
-      //var c = Sse41.Subtract(a, b);
+      var c = Sse41.Add(b, Vector128.Create((short)(1)));
 
-      if (!Sse41.Equals(b, Vector128.Create((short)-1)))
+      if (!Sse41.TestZ(c,c))
         return false;
 
       // Credit : @aepot

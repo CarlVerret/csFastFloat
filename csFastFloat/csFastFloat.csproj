@@ -16,7 +16,7 @@
     <LangVersion>9</LangVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Version>3.0.0</Version>
-    <Configurations>Debug;Release;x86</Configurations>
+    <Configurations>Debug;Release</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)'!='netstandard2.0'">
@@ -35,9 +35,6 @@
     <Optimize>true</Optimize>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='x86'">
-    <DocumentationFile>bin\Release\$(TargetFramework)\csFastFloat.xml</DocumentationFile>
-  </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='debug|net5.0|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
