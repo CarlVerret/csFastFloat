@@ -77,6 +77,28 @@ namespace csFastFloat
 
 
 #if HAS_INTRINSICS
+    unsafe internal static bool eval_parse_eight_digits_simd(string text, out uint value)
+    {
+
+      fixed (char* c = text)
+      {
+        Vector128<byte> mul1 = Vector128.Create(0x14C814C8, 0x010A0A64, 0, 0).AsByte();
+        Vector128<short> mul2 = Vector128.Create(0x00FA61A8, 0x0001000A, 0, 0).AsInt16();
+        Vector128<long> shift_amount = Sse2.ConvertScalarToVector128Int32(8 - text.Length << 3).AsInt64();
+
+        Vector128<short> vs = Sse2.LoadVector128((short*)c);
+        Vector128<byte> vb = Sse2.PackUnsignedSaturate(vs, vs);
+        vb = Sse2.SubtractSaturate(vb, Vector128.Create((byte)'0'));
+        vb = Sse2.ShiftLeftLogical(vb.AsInt64(), shift_amount).AsByte();
+
+        Vector128<int> v = Sse2.MultiplyAddAdjacent(Ssse3.MultiplyAddAdjacent(mul1, vb.AsSByte()), mul2);
+        v = Sse2.Add(Sse2.Add(v, v), Sse2.Shuffle(v, 1));
+        value= (uint)v.GetElement(0);
+        return true;
+      }
+
+
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     unsafe internal static bool eval_parse_eight_digits_simd(char* start, char* end, out uint value)
@@ -85,14 +107,14 @@ namespace csFastFloat
       value = 0;
 
       Vector128<short> raw = Sse41.LoadDquVector128((short*)start);
-      Vector128<short> ascii0 = Vector128.Create((short)47);
-      Vector128<short> after_ascii9 = Vector128.Create((short)58);
+      Vector128<short> ascii0 = Vector128.Create((short)( 48 + short.MinValue));
+      Vector128<short> after_ascii9 = Vector128.Create((short)( short.MinValue+10));
 
-      var a = Sse41.CompareGreaterThan(raw, ascii0);
-      var b = Sse41.CompareLessThan(raw, after_ascii9);
-      var c = Sse41.Subtract(a, b);
+      var a = Sse41.Subtract(raw, ascii0);
+      var b = Sse41.CompareLessThan(a, after_ascii9);
+      //var c = Sse41.Subtract(a, b);
 
-      if (!Sse41.TestZ(c, c))
+      if (!Sse41.Equals(b, Vector128.Create((short)-1)))
         return false;
 
       // Credit : @aepot

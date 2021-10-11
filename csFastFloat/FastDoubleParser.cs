@@ -121,8 +121,6 @@ namespace csFastFloat
       }
     }
 
-
-
     /// <summary>
     /// Try parsing a double from a UTF-16 encoded input in the given number style
     /// </summary>
@@ -132,7 +130,7 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>bool : true is sucessfuly parsed</returns>
-    unsafe static public bool TryParseDouble(char* first, char* last, out double result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+    public static unsafe bool TryParseDouble(char* first, char* last, out double result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
       => TryParseDouble(first, last, out int _, out result, styles, decimal_separator);
 
     /// <summary>
