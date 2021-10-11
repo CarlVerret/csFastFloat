@@ -209,7 +209,7 @@ namespace TestcsFastFloat.Tests.Basic
         fixed (char* p = kv.Value)
         {
           char* pend = p + kv.Value.Length;
-          FastDoubleParser.TryParseNumber(p, pend, out int _, out double res);
+          double res = FastDoubleParser.ParseNumber(p, pend, out int _);
 
           sb.AppendLine($"Resultat : {res}");
           sb.AppendLine();

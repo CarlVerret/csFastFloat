@@ -72,8 +72,7 @@ namespace csFastFloat
 
       fixed (char* pStart = s)
       {
-        TryParseNumber(pStart, pStart + (uint)s.Length, out characters_consumed, out double res, expectedFormat, decimal_separator  );
-        return res;
+        return ParseNumber(pStart, pStart + (uint)s.Length, out characters_consumed,  expectedFormat, decimal_separator  );
       }
     }
 
@@ -90,19 +89,19 @@ namespace csFastFloat
     {
       fixed (char* pStart = s)
       {
-         TryParseNumber(pStart, pStart + (uint)s.Length, out characters_consumed , out double res, expectedFormat, decimal_separator);
-         return res;
+         return ParseNumber(pStart, pStart + (uint)s.Length, out characters_consumed ,  expectedFormat, decimal_separator);
+         //return res;
       }
     }
 
     unsafe static public double ParseDouble(char* first, char* last, NumberStyles expectedFormat = NumberStyles.Float, char decimal_separator = '.')
       {
-         TryParseNumber(first, last, out int _, out double res,  expectedFormat, decimal_separator);
-         return res;
+         return ParseNumber(first, last, out int _,  expectedFormat, decimal_separator);
+         //return res;
       } 
 
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+   // [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static unsafe bool TryParseNumber(char* first, char* last, out int characters_consumed, out double result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
     {
       var leading_spaces = 0;
@@ -149,7 +148,7 @@ namespace csFastFloat
     }
 
 
-
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     unsafe static internal double ParseNumber(char* first, char* last, out int characters_consumed, NumberStyles expectedFormat = NumberStyles.Float, char decimal_separator = '.')
     {
       var leading_spaces = 0;
@@ -165,10 +164,7 @@ namespace csFastFloat
       ParsedNumberString pns = ParsedNumberString.ParseNumberString(first, last, expectedFormat);
       if (!pns.valid)
       {
-        
-       //  FastDoubleParser.TryHandleInvalidInput(first, last, out characters_consumed, out double x);
-       //  return x;
-
+       
         return FastDoubleParser.HandleInvalidInput(first, last, out characters_consumed);
 
       }
@@ -194,6 +190,7 @@ namespace csFastFloat
       return ToFloat(pns.negative, am);
     }
 
+[MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal unsafe static  double ParseNumber (byte* first, byte* last, out int characters_consumed, NumberStyles expectedFormat = NumberStyles.Float, byte decimal_separator = (byte)'.')
     {
       while ((first != last) && Utils.is_space(*first))
