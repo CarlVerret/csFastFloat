@@ -2,7 +2,6 @@
 using BenchmarkDotNet.Columns;
 using BenchmarkDotNet.Configs;
 
-//using BenchmarkDotNet.Diagnostics.Windows;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Running;
 using csFastFloat.Structures;
@@ -12,12 +11,16 @@ using System.Globalization;
 
 
 using BenchmarkDotNet.Reports;
+using BenchmarkDotNet.Diagnostics.Windows.Configs;
+
 
 namespace csFastFloat.Benchmark
 {
 
   //[MemoryDiagnoser]
   [SimpleJob(RuntimeMoniker.NetCoreApp50)]
+  [InliningDiagnoser(logFailuresOnly: true, allowedNamespaces: new[] { "csFastFloat" })]
+
 [Config(typeof(Config))]
 public class FFBencmark
 {
@@ -34,7 +37,7 @@ public class FFBencmark
     }
   }
 
-  [Benchmark(Description = "Utf8Parser")]
+  // SKIP [Benchmark(Description = "Utf8Parser")]
   public double Utf8Parser()
   {
     double max = double.MinValue;
@@ -49,7 +52,7 @@ public class FFBencmark
     return max;
   }
 
-  [Benchmark(Description = "FastFloat.ParseDouble() - UTF8")]
+ // SKIP  [Benchmark(Description = "FastFloat.ParseDouble() - UTF8")]
   public double FastParserUtf8_()
   {
     double max = double.MinValue;
@@ -79,7 +82,7 @@ public class FFBencmark
 
 
 
-  [Benchmark(Description = "ParseNumberString() only")]
+  // SKIP [Benchmark(Description = "ParseNumberString() only")]
   public double FastParser_PNS()
   {
    double max = double.MinValue;

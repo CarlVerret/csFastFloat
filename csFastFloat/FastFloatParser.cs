@@ -103,7 +103,8 @@ namespace csFastFloat
       ParsedNumberString pns = ParsedNumberString.ParseNumberString(first, last, expectedFormat);
       if (!pns.valid)
       {
-        return (float)FastDoubleParser.HandleInvalidInput(first, last, out characters_consumed);
+        return (float) FastDoubleParser.HandleInvalidInput(first, last, out characters_consumed);
+        
       }
       characters_consumed = pns.characters_consumed;
 
@@ -144,7 +145,8 @@ namespace csFastFloat
       ParsedNumberString pns = ParsedNumberString.ParseNumberString(first, last, expectedFormat);
       if (!pns.valid)
       {
-        return (float)FastDoubleParser.HandleInvalidInput(first, last, out characters_consumed);
+        FastDoubleParser.TryHandleInvalidInput(first, last, out characters_consumed, out double result );
+        return (float) result;
       }
       characters_consumed = pns.characters_consumed+ leading_spaces;
 
