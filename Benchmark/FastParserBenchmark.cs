@@ -34,20 +34,20 @@ namespace csFastFloat.Benchmark
       }
     }
 
-    //[Benchmark(Description = "Utf8Parser")]
-    //public double Utf8Parser()
-    //{
-    //  double max = double.MinValue;
+    [Benchmark(Description = "Utf8Parser")]
+    public double Utf8Parser()
+    {
+     double max = double.MinValue;
 
-    //  foreach (byte[] l in _linesUtf8)
-    //  {
-    //    if (!System.Buffers.Text.Utf8Parser.TryParse(l, out double d, out int consumed) || consumed != l.Length)
-    //      throw new InvalidOperationException();
+     foreach (byte[] l in _linesUtf8)
+     {
+       if (!System.Buffers.Text.Utf8Parser.TryParse(l, out double d, out int consumed) || consumed != l.Length)
+         throw new InvalidOperationException();
 
-    //    max = d > max ? d : max;
-    //  }
-    //  return max;
-    //}
+       max = d > max ? d : max;
+     }
+     return max;
+    }
 
 
     [Benchmark(Description = "FastFloat.ParseDouble()")]
@@ -70,7 +70,7 @@ namespace csFastFloat.Benchmark
 
       foreach (string l in _lines)
       {
-        FastDoubleParser.TryParseDouble(l, out double d);
+       if(FastDoubleParser.TryParseDouble(l, out double d)) 
         max = d > max ? d : max;
       }
       return max;
@@ -96,8 +96,8 @@ namespace csFastFloat.Benchmark
 
       foreach (byte[] l in _linesUtf8)
       {
-        FastDoubleParser.TryParseDouble(l, out double d);
-        max = d > max ? d : max;
+        if(FastDoubleParser.TryParseDouble(l, out double d))
+          max = d > max ? d : max;
       }
       return max;
     }
