@@ -1,0 +1,3 @@
+Sut :1.23213 321e10 3132e-1  Result : 1.23213 :  Consumed :  7
+Sut : 321e10 3132e-1  Result : 3210000000000 :  Consumed :  7
+Sut : 3132e-1  Result : 313.2 :  Consumed :  8

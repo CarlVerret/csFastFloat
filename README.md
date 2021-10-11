@@ -99,7 +99,7 @@ Some unit tests are based on [Approvals.net library](https://github.com/approval
 
 # Usage
 
-Two functions are available: `FastDoubleParser.ParseDouble` and `FastFloatParser.ParseFloat`.
+Two functions are available: `FastDoubleParser.ParseDouble` and `FastFloatParser.ParseFloat`. Since v3.0, TryParse pattern is supported for each function.
 
 `String`, `char *`  and `ReadOnlySpan<char>` are supported inputs.
 
@@ -128,10 +128,12 @@ an optional `out int characters_consumed` parameter to track the number of chara
 by the number pattern.
 
 
+
+
 # Credit
 This library is the main project in my master's degree under the direction of Professor [Daniel Lemire](https://github.com/lemire) at TELUQ University.
 A special thanks to [Egor Bogatov](https://github.com/EgorBo) and all contributors for their really meaningful contribution.
 
 # Reference
 
-- Daniel Lemire, [Number Parsing at a Gigabyte per Second](https://arxiv.org/abs/2101.11408), arXiv:2101.11408
+- Daniel Lemire, [Number Parsing at a Gigabyte per Second](https://arxiv.org/abs/2101.11408), [Software: Pratice and Experience](https://onlinelibrary.wiley.com/doi/10.1002/spe.2984) 51 (8), 2021.

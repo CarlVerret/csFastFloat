@@ -36,11 +36,12 @@ namespace TestcsFastFloat.Tests.Basic
     [InlineData("infinity", double.PositiveInfinity)]
     [InlineData("+infinity", double.PositiveInfinity)]
     [InlineData("-infinity", double.NegativeInfinity)]
-    unsafe public void DoubleParser_HandleInvalidInput_works(string input, double res)
+    unsafe public void DoubleParser_HandleInvalidInput_works(string input, double sut)
     {
       fixed (char* p = input)
       {
-        Assert.Equal(res, FastDoubleParser.HandleInvalidInput(p, p + input.Length, out int _));
+        Assert.True(FastDoubleParser.TryHandleInvalidInput(p, p + input.Length, out int _, out double result));
+        Assert.Equal(sut, result);
       }
     }
 
@@ -50,6 +51,51 @@ namespace TestcsFastFloat.Tests.Basic
       Assert.Equal(-0, FastDoubleParser.ParseDouble("-0"));
     
     }
+
+
+    [Fact]
+    private void Issue_74()
+    {
+      // Consumed=0 vs raising Exceptions
+      // Try parse should retrun false with consumed and result =0
+      Assert.False(FastDoubleParser.TryParseDouble("", out int nbChar, out double result));
+      Assert.Equal(0, nbChar);
+      Assert.Equal(0, result);
+
+      // as ParseDouble should throw with an empty input string
+      Assert.Throws<System.ArgumentException>(() => FastDoubleParser.ParseDouble(string.Empty));
+
+
+    }
+
+    [Fact]
+    unsafe public void ParseDouble_Throws_When_NULL() => Assert.Throws<System.ArgumentNullException>(() => FastDoubleParser.ParseDouble((string)null));
+
+    [Fact]
+    unsafe public void ParseDouble_Throws_When_Empty() => Assert.Throws<System.ArgumentException>(() => FastDoubleParser.ParseDouble(string.Empty));
+
+    [Theory]
+    [InlineData("some alpha")]
+    [InlineData("-")]
+    [InlineData("1ee10")]
+    unsafe public void ParseDouble_Throws_When_Invalid(string sut) => Assert.Throws<System.ArgumentException>(() => FastDoubleParser.ParseDouble(sut));
+
+
+    [Theory]
+    [InlineData("some alpha")]
+    [InlineData("")]
+    [InlineData(null)]
+    [InlineData("-")]
+    [InlineData("1ee10")]
+    public void TryParse_NeverThrows(string sut)
+    {
+
+      Assert.False(FastDoubleParser.TryParseDouble(sut, out _));
+
+
+    }
+
+
 
 
     [SkippableFact]
@@ -292,10 +338,10 @@ namespace TestcsFastFloat.Tests.Basic
 
 
     [Fact]
-    public void ParseDouble_CharConsummed_Throws_OnlyAlpha()
+    public void ParseDouble_CharConsumed_Throws_OnlyAlpha()
     {
-      int nbCarConsummed;
-      Assert.Throws<System.ArgumentException>(() => FastDoubleParser.ParseDouble("some alpha", out nbCarConsummed));
+      int nbCarConsumed;
+      Assert.Throws<System.ArgumentException>(() => FastDoubleParser.ParseDouble("some alpha", out nbCarConsumed));
     }
 
 
@@ -303,7 +349,7 @@ namespace TestcsFastFloat.Tests.Basic
 
 
     [SkippableFact]
-    public void ParseDouble_CharConsummed_Works_Scenarios()
+    public void ParseDouble_CharConsumed_Works_Scenarios()
     {
       Skip.If(base.NoDiffToolDetected(), "No diff tool detected");
 
@@ -356,11 +402,11 @@ namespace TestcsFastFloat.Tests.Basic
         sb.AppendLine($"Scenario : {kv.Key} ");
         sb.AppendLine($"Value   : {kv.Value} ");
 
-        int nbCarConsummed = 0;
+        int nbCarConsumed = 0;
 
-        var res = FastDoubleParser.ParseDouble(kv.Value, out nbCarConsummed);
+        var res = FastDoubleParser.ParseDouble(kv.Value, out nbCarConsumed);
 
-        sb.AppendLine($"Result : {res.ToString(CultureInfo.InvariantCulture)} :  Consummed :  { nbCarConsummed }");
+        sb.AppendLine($"Result : {res.ToString(CultureInfo.InvariantCulture)} :  Consumed :  { nbCarConsumed }");
         sb.AppendLine();
       }
 
@@ -374,7 +420,7 @@ namespace TestcsFastFloat.Tests.Basic
 
     [Trait("Category", "Smoke Test")]
     [SkippableFact]
-    public void ParseDouble_charConsummed_WholeString()
+    public void ParseDouble_charConsumed_WholeString()
     {
       Skip.If(base.NoDiffToolDetected(), "No diff tool detected");
 
@@ -385,10 +431,10 @@ namespace TestcsFastFloat.Tests.Basic
       
       while (pos < sut.Length)
       {
-        int nbCarConsummed;
-        var res = FastDoubleParser.ParseDouble(sut.AsSpan().Slice((int)pos), out nbCarConsummed);
-        sb.AppendLine($"Sut :{sut.Substring((int)pos)}  Result : {res.ToString(CultureInfo.InvariantCulture)} :  Consummed :  { nbCarConsummed }");
-        pos += nbCarConsummed;
+        int nbCarConsumed;
+        var res = FastDoubleParser.ParseDouble(sut.AsSpan().Slice((int)pos), out nbCarConsumed);
+        sb.AppendLine($"Sut :{sut.Substring((int)pos)}  Result : {res.ToString(CultureInfo.InvariantCulture)} :  Consumed :  { nbCarConsumed }");
+        pos += nbCarConsumed;
       
       }
 
