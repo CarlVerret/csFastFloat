@@ -2,9 +2,9 @@
 
 [assembly: InternalsVisibleTo("TestcsFastFloat")]
 
-namespace csFastFloat.Constants
+namespace csFastFloat
 {
-  internal static class FloatBinaryConstants
+  public sealed class FloatBinaryConstants
   {
     public const int mantissa_explicit_bits= 23;
 

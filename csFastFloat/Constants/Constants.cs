@@ -3,10 +3,9 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace csFastFloat.Constants
+namespace csFastFloat
 {
-  internal static class CalculationConstants
-
+  internal static class Constants
   {
     internal const uint max_digits = 768;
     internal const uint max_digit_without_overflow = 19;

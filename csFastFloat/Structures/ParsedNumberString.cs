@@ -2,7 +2,7 @@
 
 namespace csFastFloat.Structures
 {
-  internal unsafe struct ParsedNumberString
+  public unsafe struct ParsedNumberString
   {
     internal long exponent;
     internal ulong mantissa;

@@ -1,6 +1,4 @@
-﻿using csFastFloat.Constants;
-using csFastFloat.Structures;
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -9,8 +7,19 @@ using System.Runtime.InteropServices;
 
 namespace csFastFloat
 {
+  public struct value128
+  {
+    public ulong low;
+    public ulong high;
 
-  internal static class Utils
+    public value128(ulong h, ulong l) : this()
+    {
+      high = h;
+      low = l;
+    }
+  }
+
+  public static class Utils
   {
 #if !HAS_BITOPERATIONS
     private static ReadOnlySpan<byte> Log2DeBruijn => new byte[]
@@ -79,17 +88,17 @@ namespace csFastFloat
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static value128 compute_product_approximation(int bitPrecision, long q, ulong w)
     {
-      int index = 2 * (int)(q - CalculationConstants.smallest_power_of_five);
+      int index = 2 * (int)(q - Constants.smallest_power_of_five);
       // For small values of q, e.g., q in [0,27], the answer is always exact because
       // The line value128 firstproduct = full_multiplication(w, power_of_five_128[index]);
       // gives the exact answer.
-      value128 firstproduct = FullMultiplication(w, CalculationConstants.get_power_of_five_128(index));
+      value128 firstproduct = FullMultiplication(w, Constants.get_power_of_five_128(index));
       //static_assert((bit_precision >= 0) && (bit_precision <= 64), " precision should  be in (0,64]");
       ulong precision_mask = (bitPrecision < 64) ? ((ulong)(0xFFFFFFFFFFFFFFFF) >> bitPrecision) : (ulong)(0xFFFFFFFFFFFFFFFF);
       if ((firstproduct.high & precision_mask) == precision_mask)
       { // could further guard with  (lower + w < lower)
         // regarding the second product, we only need secondproduct.high, but our expectation is that the compiler will optimize this extra work away if needed.
-        value128 secondproduct = FullMultiplication(w, CalculationConstants.get_power_of_five_128(index + 1));
+        value128 secondproduct = FullMultiplication(w, Constants.get_power_of_five_128(index + 1));
         firstproduct.low += secondproduct.high;
         if (secondproduct.high > firstproduct.low)
         {

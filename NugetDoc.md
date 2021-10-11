@@ -39,7 +39,7 @@ Since v2.0, net standard 2.0 is supported.
 
 # Usage
 
-Two functions are available: `FastDoubleParser.ParseDouble` and `FastFloatParser.ParseFloat`.  Since v3.0, TryParse pattern is supported for each function.
+Two functions are available: `FastDoubleParser.ParseDouble` and `FastFloatParser.ParseFloat`.
 
 `String`, `char *`  and `ReadOnlySpan<char>` are supported inputs.
 
