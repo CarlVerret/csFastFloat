@@ -174,7 +174,7 @@ namespace csFastFloat.Benchmark
     }
 
 
-    [Params(@"data/canada.txt")] //, @"data/mesh.txt", @"data/synthetic.txt")]
+    [Params(@"data/canada.txt", @"data/mesh.txt", @"data/synthetic.txt")]
     public string FileName;
 
     [GlobalSetup]

@@ -20,34 +20,34 @@ AMD EPYC 7262, 1 CPU, 16 logical and 8 physical cores
 
 Job=.NET Core 5.0  Runtime=.NET Core 5.0
 
-|                              Method |           FileName |        Mean |     Error |    StdDev |         Min | Ratio | MFloat/s |     MB/s |
-|------------------------------------ |------------------- |------------:|----------:|----------:|------------:|------:|---------:|---------:|
-|                          Utf8Parser |    data/canada.txt | 29,366.8 us | 149.60 us | 132.62 us | 29,163.2 us |  0.82 |     3.81 |    71.60 |
-|             FastFloat.ParseDouble() |    data/canada.txt |  4,925.2 us |  31.07 us |  29.07 us |  4,885.2 us |  0.14 |    22.75 |   427.42 |
-|          FastFloat.TryParseDouble() |    data/canada.txt |  4,884.3 us |   5.75 us |   4.49 us |  4,878.3 us |  0.14 |    22.78 |   428.02 |
-|    'FastFloat.ParseDouble() - UTF8' |    data/canada.txt |  4,507.4 us |  11.95 us |  11.18 us |  4,495.8 us |  0.13 |    24.72 |   464.44 |
-| 'FastFloat.TryParseDouble() - UTF8' |    data/canada.txt |  4,849.9 us |  10.73 us |   9.51 us |  4,836.0 us |  0.14 |    22.98 |   431.76 |
-|          'ParseNumberString() only' |    data/canada.txt |  2,244.4 us |   1.17 us |   1.04 us |  2,243.0 us |  0.06 |    49.54 |   930.89 |
-|           'ParseNumberString UTF-8' |    data/canada.txt |  2,345.0 us |  27.19 us |  24.10 us |  2,323.2 us |  0.07 |    47.83 |   898.77 |
-|                      Double.Parse() |    data/canada.txt | 35,670.7 us | 297.33 us | 278.12 us | 35,162.8 us |  1.00 |     3.16 |    59.38 |
-|                                     |                    |             |           |           |             |       |          |          |
-|                          Utf8Parser |      data/mesh.txt |  3,956.1 us |  29.18 us |  25.87 us |  3,918.5 us |  0.58 |    18.63 |   158.22 |
-|             FastFloat.ParseDouble() |      data/mesh.txt |  1,846.0 us |   9.26 us |   8.67 us |  1,822.6 us |  0.27 |    40.06 |   340.18 |
-|          FastFloat.TryParseDouble() |      data/mesh.txt |  1,933.1 us |   0.29 us |   0.22 us |  1,932.9 us |  0.28 |    37.78 |   320.77 |
-|    'FastFloat.ParseDouble() - UTF8' |      data/mesh.txt |  1,547.8 us |   4.27 us |   3.33 us |  1,541.0 us |  0.23 |    47.39 |   402.35 |
-| 'FastFloat.TryParseDouble() - UTF8' |      data/mesh.txt |  1,881.9 us |   0.36 us |   0.30 us |  1,881.3 us |  0.28 |    38.81 |   329.56 |
-|          'ParseNumberString() only' |      data/mesh.txt |  1,179.5 us |   0.57 us |   0.50 us |  1,178.6 us |  0.17 |    61.95 |   526.03 |
-|           'ParseNumberString UTF-8' |      data/mesh.txt |    920.8 us |   3.00 us |   2.81 us |    918.0 us |  0.13 |    79.54 |   675.35 |
-|                      Double.Parse() |      data/mesh.txt |  6,821.5 us |  56.06 us |  52.44 us |  6,737.3 us |  1.00 |    10.84 |    92.02 |
-|                                     |                    |             |           |           |             |       |          |          |
-|                          Utf8Parser | data/synthetic.txt | 37,208.8 us | 111.09 us |  86.73 us | 37,079.2 us |  0.77 |     4.05 |    76.11 |
-|             FastFloat.ParseDouble() | data/synthetic.txt |  5,217.9 us |   3.10 us |   2.75 us |  5,213.5 us |  0.11 |    28.77 |   541.29 |
-|          FastFloat.TryParseDouble() | data/synthetic.txt |  5,267.5 us |  11.07 us |  10.35 us |  5,258.2 us |  0.11 |    28.53 |   536.68 |
-|    'FastFloat.ParseDouble() - UTF8' | data/synthetic.txt |  5,461.4 us |   3.45 us |   2.88 us |  5,453.7 us |  0.11 |    27.50 |   517.44 |
-| 'FastFloat.TryParseDouble() - UTF8' | data/synthetic.txt |  5,108.3 us |   6.62 us |   5.53 us |  5,100.7 us |  0.11 |    29.41 |   553.25 |
-|          'ParseNumberString() only' | data/synthetic.txt |  2,543.6 us |   1.87 us |   1.75 us |  2,540.8 us |  0.05 |    59.04 |  1110.68 |
-|           'ParseNumberString UTF-8' | data/synthetic.txt |  2,899.8 us |   4.77 us |   3.98 us |  2,896.0 us |  0.06 |    51.80 |   974.46 |
-|                      Double.Parse() | data/synthetic.txt | 48,119.0 us | 404.24 us | 378.13 us | 47,748.5 us |  1.00 |     3.14 |    59.10 |
+|                              Method |           FileName |         Min | Ratio | MFloat/s |     MB/s |
+|------------------------------------ |------------------- |------------:|------:|---------:|---------:|
+|                      Double.Parse() |    data/canada.txt | 35,162.8 us |  1.00 |     3.16 |    59.38 |
+|             FastFloat.ParseDouble() |    data/canada.txt |  4,885.2 us |  0.14 |    22.75 |   427.42 |
+|          FastFloat.TryParseDouble() |    data/canada.txt |  4,878.3 us |  0.14 |    22.78 |   428.02 |
+|                          Utf8Parser |    data/canada.txt | 29,163.2 us |  0.82 |     3.81 |    71.60 |
+|      FastFloat.ParseDouble() - UTF8 |    data/canada.txt |  4,495.8 us |  0.13 |    24.72 |   464.44 |
+|   FastFloat.TryParseDouble() - UTF8 |    data/canada.txt |  4,836.0 us |  0.14 |    22.98 |   431.76 |
+|            ParseNumberString() only |    data/canada.txt |  2,243.0 us |  0.06 |    49.54 |   930.89 |
+|             ParseNumberString UTF-8 |    data/canada.txt |  2,323.2 us |  0.07 |    47.83 |   898.77 |
+|                                     |                    |             |       |          |          |
+|                      Double.Parse() |      data/mesh.txt |  6,737.3 us |  1.00 |    10.84 |    92.02 |
+|             FastFloat.ParseDouble() |      data/mesh.txt |  1,822.6 us |  0.27 |    40.06 |   340.18 |
+|          FastFloat.TryParseDouble() |      data/mesh.txt |  1,932.9 us |  0.28 |    37.78 |   320.77 |
+|                          Utf8Parser |      data/mesh.txt |  3,918.5 us |  0.58 |    18.63 |   158.22 |
+|      FastFloat.ParseDouble() - UTF8 |      data/mesh.txt |  1,541.0 us |  0.23 |    47.39 |   402.35 |
+|   FastFloat.TryParseDouble() - UTF8 |      data/mesh.txt |  1,881.3 us |  0.28 |    38.81 |   329.56 |
+|            ParseNumberString() only |      data/mesh.txt |  1,178.6 us |  0.17 |    61.95 |   526.03 |
+|             ParseNumberString UTF-8 |      data/mesh.txt |    918.0 us |  0.13 |    79.54 |   675.35 |
+|                                     |                    |             |       |          |          |
+|                      Double.Parse() | data/synthetic.txt | 47,748.5 us |  1.00 |     3.14 |    59.10 |
+|             FastFloat.ParseDouble() | data/synthetic.txt |  5,213.5 us |  0.11 |    28.77 |   541.29 |
+|          FastFloat.TryParseDouble() | data/synthetic.txt |  5,258.2 us |  0.11 |    28.53 |   536.68 |
+|                          Utf8Parser | data/synthetic.txt | 37,079.2 us |  0.77 |     4.05 |    76.11 |
+|      FastFloat.ParseDouble() - UTF8 | data/synthetic.txt |  5,453.7 us |  0.11 |    27.50 |   517.44 |
+|   FastFloat.TryParseDouble() - UTF8 | data/synthetic.txt |  5,100.7 us |  0.11 |    29.41 |   553.25 |
+|            ParseNumberString() only | data/synthetic.txt |  2,540.8 us |  0.05 |    59.04 |  1110.68 |
+|             ParseNumberString UTF-8 | data/synthetic.txt |  2,896.0 us |  0.06 |    51.80 |   974.46 |
 
 ```
 
