@@ -316,6 +316,7 @@ namespace csFastFloat
       } 
 
 
+[MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static unsafe bool TryParseNumber(char* first, char* last, out int characters_consumed, out double result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
     {
       var leading_spaces = 0;

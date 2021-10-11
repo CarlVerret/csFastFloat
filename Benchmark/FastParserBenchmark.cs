@@ -18,7 +18,7 @@ namespace csFastFloat.Benchmark
 {
 
   //[MemoryDiagnoser]
-  [SimpleJob(RuntimeMoniker.NetCoreApp50)]
+  [SimpleJob(RuntimeMoniker.Net50)]
 
 [Config(typeof(Config))]
 public class FFBencmark
@@ -30,7 +30,7 @@ public class FFBencmark
   {
     public Config()
     {
-       AddDiagnoser(new InliningDiagnoser(logFailuresOnly: true, allowedNamespaces: new[] { "csFastFloat" }));
+      // AddDiagnoser(new InliningDiagnoser(logFailuresOnly: true, allowedNamespaces: new[] { "csFastFloat" }));
       AddColumn(StatisticColumn.Min);
       AddColumn(new MFloatPerSecColumn());
       AddColumn(new VolumePerSecColumn());
