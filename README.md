@@ -120,13 +120,16 @@ Two functions are available: `FastDoubleParser.ParseDouble` and `FastFloatParser
 using csFastFloat;
 
 
-double x;
-float y;
+double d;
+float f;
 double answer = 0;
 foreach (string l in lines)
 {
-        x = FastDoubleParser.ParseDouble(l);
-        y = FastFloatParser.ParseFloat(l);
+        d = FastDoubleParser.ParseDouble(l);
+        FastDoubleParser.TryParseDouble(l, out double d2);
+        f = FastFloatParser.ParseFloat(l);
+        FastFloatParser.TryParseFloat(l, out double f2);
+        
 }
 ```
 
