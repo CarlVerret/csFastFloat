@@ -12,14 +12,13 @@ using System.Globalization;
 
 using BenchmarkDotNet.Reports;
 using BenchmarkDotNet.Diagnostics.Windows.Configs;
-
+using BenchmarkDotNet.Diagnostics.Windows;
 
 namespace csFastFloat.Benchmark
 {
 
   //[MemoryDiagnoser]
   [SimpleJob(RuntimeMoniker.NetCoreApp50)]
-  [InliningDiagnoser(logFailuresOnly: true, allowedNamespaces: new[] { "csFastFloat" })]
 
 [Config(typeof(Config))]
 public class FFBencmark
@@ -31,6 +30,7 @@ public class FFBencmark
   {
     public Config()
     {
+       AddDiagnoser(new InliningDiagnoser(logFailuresOnly: true, allowedNamespaces: new[] { "csFastFloat" }));
       AddColumn(StatisticColumn.Min);
       AddColumn(new MFloatPerSecColumn());
       AddColumn(new VolumePerSecColumn());
