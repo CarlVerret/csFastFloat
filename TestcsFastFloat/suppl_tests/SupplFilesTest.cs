@@ -42,6 +42,54 @@ namespace TestcsFastFloat.Tests.ff_suppl_tests
       }
     }
 
+
+
+    [Trait("Category", "Files Test")]
+    [Fact()]
+    private void BasicFiles()
+    {
+      string pathValidation = "basic_files";
+
+      if (!Directory.Exists(pathValidation))
+      {
+        // Important: do not assume that path separator is \.
+        pathValidation = "TestcsFastFloat" + Path.PathSeparator + pathValidation;
+        if (!Directory.Exists(pathValidation))
+        {
+          Console.WriteLine("I looked for the data_files directory, and could not find it.");
+          throw new ArgumentException("Invalid search path");
+        }
+      }
+
+      foreach (var fileName in Directory.GetFiles(pathValidation, "*.txt"))
+      {
+        Console.WriteLine(fileName);
+        try
+        {
+          VerifyBasicFile(fileName);
+        }
+        catch (Exception ex)
+        {
+          Console.WriteLine(ex.ToString());
+        }
+      }
+    }
+
+    private static void VerifyBasicFile(string fileName)
+    {
+
+      var lines = System.IO.File.ReadAllLines(fileName);
+
+      foreach (var l in lines)
+      {
+        //double res = FastDoubleParser.ParseDouble(l);
+        if (FastDoubleParser.TryParseDouble(l, out double res))
+          Assert.Equal(res, double.Parse(l));
+        else
+          throw new Exception($"Can't parse {l}");
+      }
+
+    }
     /// <summary>
     /// Check every line of the file which are required to be the following format
     /// 0000 00000000 0000000000000000 0e3

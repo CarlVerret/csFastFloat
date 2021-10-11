@@ -53,8 +53,13 @@ namespace BenchmarkHandCoded
       double answer = 0;
       foreach (string l in lines)
       {
-         FastDoubleParser.TryParseDouble(l, out x);
-        answer = answer > x ? answer : x;
+        if (FastDoubleParser.TryParseDouble(l, out x))
+        {
+          answer = answer > x ? answer : x;
+        }
+        else {
+          throw new Exception($"can't parse {l}");
+        }
       }
 
       return answer;

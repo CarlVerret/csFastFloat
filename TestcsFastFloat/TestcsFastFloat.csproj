@@ -16,7 +16,7 @@
   </PropertyGroup>
 
 
-  <PropertyGroup >
+  <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
@@ -88,6 +88,15 @@
       <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
       <ParentExtension>$(ProjectExt.Replace('proj', ''))</ParentExtension>
       <DependentUpon>BasicTests.cs</DependentUpon>
+    </None>
+    <None Update="basic_files\canada.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="basic_files\mesh.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="basic_files\synthetic.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="data_files\freetype-2-7.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
