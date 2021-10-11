@@ -15,7 +15,7 @@ namespace csFastFloat
     private static void ThrowArgumentException() => throw new ArgumentException();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public  static double exact_power_of_ten(long power)
+    internal  static double exact_power_of_ten(long power)
     {
 #if NET5_0
       Debug.Assert(power < Constants.powers_of_ten_double.Length);
@@ -27,7 +27,7 @@ namespace csFastFloat
 
     }
 
-    public static double ToFloat(bool negative, AdjustedMantissa am)
+    internal static double ToFloat(bool negative, AdjustedMantissa am)
     {
       ulong word = am.mantissa;
       word |= (ulong)(uint)(am.power2) << DoubleBinaryConstants.mantissa_explicit_bits;
@@ -36,7 +36,7 @@ namespace csFastFloat
       return BitConverter.Int64BitsToDouble((long)word);
     }
 
-    public  static double FastPath(ParsedNumberString pns)
+    internal  static double FastPath(ParsedNumberString pns)
     {
       double value = (double)pns.mantissa;
       if (pns.exponent < 0)
@@ -136,7 +136,7 @@ namespace csFastFloat
       return ToFloat(pns.negative, am);
     }
 
-    unsafe static internal double ParseNumber (byte* first, byte* last, out int characters_consumed, NumberStyles expectedFormat = NumberStyles.Float, byte decimal_separator = (byte)'.')
+    internal unsafe static  double ParseNumber (byte* first, byte* last, out int characters_consumed, NumberStyles expectedFormat = NumberStyles.Float, byte decimal_separator = (byte)'.')
     {
       while ((first != last) && Utils.is_space(*first))
       {
