@@ -79,6 +79,23 @@ public class FFBencmark
     return max;
   }
 
+  [Benchmark(Description = "FastFloat.TryParseDouble()")]
+  public unsafe double FastParser_Try()
+  {
+    double max = double.MinValue;
+
+    foreach (string l in _lines)
+    {
+     
+      FastDoubleParser.TryParseDouble(l, out double d);
+      max = d > max ? d : max;
+
+   
+      
+    }
+    return max;
+  }
+
 
 
 
@@ -107,7 +124,7 @@ public class FFBencmark
 
 
 
-// SKIP  [Benchmark(Baseline = true, Description = "Double.Parse()")]
+ [Benchmark(Baseline = true, Description = "Double.Parse()")]
   public double Double_std()
   {
    double max = double.MinValue;
