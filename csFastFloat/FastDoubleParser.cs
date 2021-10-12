@@ -190,7 +190,7 @@ namespace csFastFloat
       return ToFloat(pns.negative, am);
     }
 
-[MethodImpl(MethodImplOptions.AggressiveInlining)]
+   [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal unsafe static  double ParseNumber (byte* first, byte* last, out int characters_consumed, NumberStyles expectedFormat = NumberStyles.Float, byte decimal_separator = (byte)'.')
     {
       while ((first != last) && Utils.is_space(*first))
