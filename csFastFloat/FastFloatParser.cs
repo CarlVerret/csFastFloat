@@ -358,9 +358,8 @@ namespace csFastFloat
       if (!pns.valid)
       {
 
-        var success = FastDoubleParser.TryHandleInvalidInput(first, last, out characters_consumed, out double temp) ;
-        result = (float)temp;
-        return success;
+        result = (float)FastDoubleParser.HandleInvalidInput(first, last, out characters_consumed) ;
+        return true;
       }
       characters_consumed = pns.characters_consumed;
 

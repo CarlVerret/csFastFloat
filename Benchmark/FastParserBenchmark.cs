@@ -34,7 +34,7 @@ public class FFBencmark
     }
   }
 
-  [Benchmark(Description = "Utf8Parser")]
+ // SKIP [Benchmark(Description = "Utf8Parser")]
   public double Utf8Parser()
   {
     double max = double.MinValue;
@@ -49,7 +49,7 @@ public class FFBencmark
     return max;
   }
 
-  [Benchmark(Description = "FastFloat.ParseDouble() - UTF8")]
+ // SKIP [Benchmark(Description = "FastFloat.ParseDouble() - UTF8")]
   public double FastParserUtf8_()
   {
     double max = double.MinValue;
@@ -63,14 +63,18 @@ public class FFBencmark
   }
 
   [Benchmark(Description = "FastFloat.ParseDouble()")]
-  public double FastParser_()
+  public unsafe double FastParser_()
   {
     double max = double.MinValue;
 
     foreach (string l in _lines)
     {
+     
       double d = FastDoubleParser.ParseDouble(l);
       max = d > max ? d : max;
+
+   
+      
     }
     return max;
   }
@@ -79,7 +83,7 @@ public class FFBencmark
 
 
 
-  [Benchmark(Description = "ParseNumberString() only")]
+ // SKIP [Benchmark(Description = "ParseNumberString() only")]
   public double FastParser_PNS()
   {
    double max = double.MinValue;
@@ -103,7 +107,7 @@ public class FFBencmark
 
 
 
-  [Benchmark(Baseline = true, Description = "Double.Parse()")]
+// SKIP  [Benchmark(Baseline = true, Description = "Double.Parse()")]
   public double Double_std()
   {
    double max = double.MinValue;
@@ -117,7 +121,7 @@ public class FFBencmark
   }
 
 
-   [Params(@"data/canada.txt", @"data/mesh.txt", @"data/synthetic.txt")]
+   [Params(@"data/canada.txt", @"data/mesh.txt")] // SKIP , @"data/synthetic.txt")]
    public string FileName;
 
   [GlobalSetup]
