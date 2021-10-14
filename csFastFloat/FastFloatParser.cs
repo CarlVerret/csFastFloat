@@ -76,8 +76,13 @@ namespace csFastFloat
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>bool : true is sucessfuly parsed</returns>
     public static unsafe bool TryParseFloat(string s, out float result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
-     => TryParseFloat(s, out _, out result, styles, decimal_separator);
-  
+    {
+      fixed (char* pStart = s)
+      {
+        return TryParseNumber(pStart, pStart + (uint)s.Length, out int _, out result, styles, decimal_separator);
+      }
+
+    }
     /// <summary>
     /// Try parsing a float from a UTF-16 encoded string in the given number style, counting number of consumed caracters
     /// </summary>
@@ -88,8 +93,13 @@ namespace csFastFloat
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>bool : true is sucessfuly parsed</returns>
     public static unsafe bool TryParseFloat(string s, out int characters_consumed, out float result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
-      => TryParseFloat(s.AsSpan(), out characters_consumed, out result, styles, decimal_separator);
+    {
+      fixed (char* pStart = s)
+      {
+        return TryParseNumber(pStart, pStart + (uint)s.Length, out characters_consumed, out result, styles, decimal_separator);
+      }
 
+    }
     /// <summary>
     /// Try parsing a float from a UTF-16 encoded readonly span of chars in the given number style
     /// </summary>
@@ -99,7 +109,13 @@ namespace csFastFloat
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>bool : true is sucessfuly parsed</returns>
     public static unsafe bool TryParseFloat(ReadOnlySpan<char> s, out float result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
-      => TryParseFloat(s, out int _, out result, styles, decimal_separator);
+    {
+      fixed (char* pStart = s)
+      {
+        return TryParseNumber(pStart, pStart + (uint)s.Length, out int _, out result, styles, decimal_separator);
+      }
+
+    }
 
     /// <summary>
     /// Try parsing a float from a UTF-16 encoded readonly span of chars in the given number style, counting number of consumed caracters
@@ -114,8 +130,9 @@ namespace csFastFloat
     {
       fixed (char* pStart = s)
       {
-        return TryParseFloat(pStart, pStart + (uint)s.Length, out characters_consumed, out result, styles, decimal_separator);
+        return TryParseNumber(pStart, pStart + (uint)s.Length, out characters_consumed, out result, styles, decimal_separator);
       }
+
     }
 
     /// <summary>
@@ -128,7 +145,7 @@ namespace csFastFloat
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>bool : true is sucessfuly parsed</returns>
     public static unsafe bool TryParseFloat(char* first, char* last, out float result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
-      => TryParseFloat(first, last, out int _, out result, styles, decimal_separator);
+    => TryParseNumber(first, last, out int _, out result, styles, decimal_separator);
 
     /// <summary>
     /// Try parsing a float from a UTF-16 encoded input in the given number style, counting number of consumed caracters

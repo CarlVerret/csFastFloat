@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using csFastFloat.Structures;
 using System.Globalization;
 using csFastFloat.Constants;
+using System.Diagnostics.CodeAnalysis;
 
 namespace csFastFloat
 {
@@ -18,6 +19,7 @@ namespace csFastFloat
   /// </summary>
   public static class FastDoubleParser
   {
+    [DoesNotReturn]
     private static void ThrowArgumentException() => throw new ArgumentException();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -176,8 +178,8 @@ namespace csFastFloat
     /// <returns>bool : true is sucessfuly parsed</returns>
     public static unsafe bool TryParseDouble(char* first, char* last, out int characters_consumed, out double result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
       {
-        result = ParseNumber(first, last, out characters_consumed,  styles, decimal_separator);
-        return true;
+        if( TryParseNumber(first, last, out result, out characters_consumed,  styles, decimal_separator));
+          return true;
       }
 
     /// <summary>
@@ -220,16 +222,8 @@ namespace csFastFloat
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>parsed double value </returns>
     public static unsafe double ParseDouble(string s, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
-     {
-        if (s == null)
-        ThrowArgumentNull();
-        static void ThrowArgumentNull() => throw new ArgumentNullException(nameof(s));
+    => ParseDouble(s, out int _, styles, decimal_separator);
 
-      fixed (char* pStart = s)
-      {
-         return ParseDouble(pStart, pStart + (uint)s.Length, styles, decimal_separator);
-      }
-     }
     /// <summary>
     /// Parses double from a UTF-16 encoded string in the given number style counting number of characters consumed
     /// </summary>
@@ -246,7 +240,9 @@ namespace csFastFloat
 
       fixed (char* pStart = s)
       {
-        return ParseDouble(pStart, pStart + (uint)s.Length, out characters_consumed, styles, decimal_separator);
+        if(!TryParseNumber(pStart, pStart + (uint)s.Length, out double value, out characters_consumed, styles, decimal_separator))
+          ThrowArgumentException();
+          return value;
       }
     }
 
@@ -271,9 +267,15 @@ namespace csFastFloat
     /// <returns>parsed double value </returns>
     public static unsafe double ParseDouble(ReadOnlySpan<char> s, out int characters_consumed, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
     {
+        if (s == null)
+        ThrowArgumentNull();
+      static void ThrowArgumentNull() => throw new ArgumentNullException(nameof(s));
+
       fixed (char* pStart = s)
       {
-        return ParseDouble(pStart, pStart + (uint)s.Length, out characters_consumed, styles, decimal_separator);
+        if(!TryParseNumber(pStart, pStart + (uint)s.Length, out double value, out characters_consumed, styles, decimal_separator))
+          ThrowArgumentException();
+          return value;
       }
     }
 
@@ -326,8 +328,12 @@ namespace csFastFloat
     /// <returns>parsed double value </returns>
     public static unsafe double ParseDouble(char* first, char* last, out int characters_consumed, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
     {
-      return ParseNumber(first, last, out characters_consumed,  styles, decimal_separator);
-        
+     
+     
+        if(!TryParseNumber(first, last, out double value, out characters_consumed, styles, decimal_separator))
+          ThrowArgumentException();
+          return value;
+     
       // if (TryParseDouble(first, last, out characters_consumed, out double result, styles, decimal_separator))
       // {
       //    return result;
@@ -368,9 +374,12 @@ namespace csFastFloat
     /// <returns>double : parsed value</returns>
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    unsafe static internal double ParseNumber(char* first, char* last, out int characters_consumed, NumberStyles expectedFormat = NumberStyles.Float, char decimal_separator = '.')
+    unsafe static internal bool TryParseNumber(char* first, char* last, out double value, out int characters_consumed, NumberStyles expectedFormat = NumberStyles.Float, char decimal_separator = '.')
     {
       var leading_spaces = 0;
+      characters_consumed =0;
+      value  =0;
+
       while ((first != last) && Utils.is_ascii_space(*first))
       {
         first++;
@@ -387,7 +396,8 @@ namespace csFastFloat
        //  FastDoubleParser.TryHandleInvalidInput(first, last, out characters_consumed, out double x);
        //  return x;
 
-        return FastDoubleParser.HandleInvalidInput(first, last, out characters_consumed);
+        value = FastDoubleParser.HandleInvalidInput(first, last, out characters_consumed);
+        return true;
 
       }
       characters_consumed = pns.characters_consumed + leading_spaces;
@@ -395,7 +405,8 @@ namespace csFastFloat
       // Next is Clinger's fast path.
       if (DoubleBinaryConstants.min_exponent_fast_path <= pns.exponent && pns.exponent <= DoubleBinaryConstants.max_exponent_fast_path && pns.mantissa <= DoubleBinaryConstants.max_mantissa_fast_path && !pns.too_many_digits)
       {
-        return FastPath(pns);
+        value = FastPath(pns);
+        return true;
       }
 
       AdjustedMantissa am = ComputeFloat(pns.exponent, pns.mantissa);
@@ -409,7 +420,8 @@ namespace csFastFloat
       // If we called compute_float<binary_format<T>>(pns.exponent, pns.mantissa) and we have an invalid power (am.power2 < 0),
       // then we need to go the long way around again. This is very uncommon.
       if (am.power2 < 0) { am = ParseLongMantissa(first, last, decimal_separator); }
-      return ToFloat(pns.negative, am);
+      value = ToFloat(pns.negative, am);
+      return true;
     }
     /// <summary>
     /// Try to parse the input (UTF-8) and compute the double value
