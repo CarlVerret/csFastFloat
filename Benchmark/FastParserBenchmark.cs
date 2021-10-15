@@ -87,10 +87,8 @@ public class FFBencmark
     foreach (string l in _lines)
     {
      
-      FastDoubleParser.TryParseDouble(l, out double d);
-      max = d > max ? d : max;
-
-   
+      if( FastDoubleParser.TryParseDouble(l, out double d))
+        max = d > max ? d : max;
       
     }
     return max;
@@ -124,7 +122,7 @@ public class FFBencmark
 
 
 
- [Benchmark(Baseline = true, Description = "Double.Parse()")]
+// [Benchmark(Baseline = true, Description = "Double.Parse()")]
   public double Double_std()
   {
    double max = double.MinValue;
@@ -138,7 +136,7 @@ public class FFBencmark
   }
 
 
-   [Params(@"data/canada.txt", @"data/mesh.txt")] // SKIP , @"data/synthetic.txt")]
+   [Params(@"data/canada.txt")] // SKIP, @"data/mesh.txt")] , @"data/synthetic.txt")]
    public string FileName;
 
   [GlobalSetup]

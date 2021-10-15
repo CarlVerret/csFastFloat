@@ -360,23 +360,22 @@ namespace csFastFloat
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>bool:  true indicates a succesful parsing</returns>
     internal static unsafe bool TryParseNumber(char* first, char* last, out int characters_consumed, out float result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
-    {
+    { 
+        result = 0;
+        characters_consumed = 0;
+
       while ((first != last) && Utils.is_ascii_space(*first))
       {
         first++;
       }
       if (first == last)
       {
-        result = 0;
-        characters_consumed = 0;
         return false;
       }
       ParsedNumberString pns = ParsedNumberString.ParseNumberString(first, last, styles);
       if (!pns.valid)
       {
-
-        result = (float)FastDoubleParser.HandleInvalidInput(first, last, out characters_consumed) ;
-        return true;
+       return false;
       }
       characters_consumed = pns.characters_consumed;
 
