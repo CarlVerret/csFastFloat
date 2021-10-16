@@ -203,7 +203,7 @@ namespace BenchmarkHandCoded
       print_separator();
       double volumeMB = volume / (1024.0 * 1024.0);
     
-      Console.WriteLine($"canada.txt - Volume : {volumeMB}");
+      Console.WriteLine("canada.txt - Volume : {0:N2} MB",volumeMB);
       process_test(lines, _linesUtf8, (double)volume);
 
     
@@ -217,7 +217,8 @@ namespace BenchmarkHandCoded
       volumeMB = volume / (1024.0 * 1024.0);
       
       print_separator();
-      Console.WriteLine($"mesh.txt - Volume : {volumeMB}");
+      Console.WriteLine("mesh.txt - Volume : {0:N2} MB",volumeMB);
+
       process_test(lines, _linesUtf8, (double)volume);
 
      
@@ -232,7 +233,7 @@ namespace BenchmarkHandCoded
       volumeMB = volume / (1024.0 * 1024.0);
     
       print_separator();
-      Console.WriteLine($"Synthetic.txt - Volume : {volumeMB}");
+     Console.WriteLine("synthetic.txt - Volume : {0:N2} MB",volumeMB);
 
       process_test(lines, _linesUtf8, (double)volume);
 
