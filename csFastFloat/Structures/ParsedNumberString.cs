@@ -1,5 +1,5 @@
 ﻿using System.Globalization;
-
+using System.Runtime.CompilerServices;
 namespace csFastFloat.Structures
 {
   internal unsafe struct ParsedNumberString
