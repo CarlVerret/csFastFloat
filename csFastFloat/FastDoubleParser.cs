@@ -23,7 +23,7 @@ namespace csFastFloat
     private static void ThrowArgumentException() => throw new ArgumentException();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static double exact_power_of_ten(long power)
+    internal static double Exact_power_of_ten(long power)
     {
 #if NET5_0
       Debug.Assert(power < CalculationConstants.powers_of_ten_double.Length);
@@ -59,11 +59,11 @@ namespace csFastFloat
       double value = (double)pns.mantissa;
       if (pns.exponent < 0)
       {
-        value /= exact_power_of_ten(-pns.exponent);
+        value /= Exact_power_of_ten(-pns.exponent);
       }
       else
       {
-        value *= exact_power_of_ten(pns.exponent);
+        value *= Exact_power_of_ten(pns.exponent);
       }
       if (pns.negative) { value = -value; }
       return value;
