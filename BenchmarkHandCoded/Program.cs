@@ -8,8 +8,43 @@ namespace BenchmarkHandCoded
   internal class Program
   {
     public delegate double ParsingFunc(string[] values);
+    public delegate double ParsingFuncUTF8(byte[][] values);
 
     static internal Tuple<double, double> time_it_ns<T>(string[] lines, ParsingFunc sut, long repeat)
+    {
+      double average = 0;
+      double min_value = double.MaxValue;
+
+      //  warmup
+      for (int i = 0; i != 100; i++)
+      {
+        
+        sut(lines);
+      }
+
+
+      Stopwatch sw = new Stopwatch();
+
+      for (int i = 0; i != repeat; i++)
+      {
+        // ...; 
+
+        sw.Restart();
+        sut(lines);
+
+        sw.Stop();
+        var dif = sw.ElapsedMilliseconds * 1000000;
+
+        average += dif;
+
+
+        min_value = min_value < dif ? min_value : dif;
+      }
+
+      average /= repeat;
+      return new Tuple<double, double>(min_value, average);
+    }
+   static internal Tuple<double, double> time_it_ns_ut8<T>(byte[][] lines, ParsingFuncUTF8 sut, long repeat)
     {
       double average = 0;
       double min_value = double.MaxValue;
@@ -80,6 +115,38 @@ namespace BenchmarkHandCoded
       return max;
     }
 
+    private static double find_max_fast_float_utf8(byte[][] lines)
+    {
+      double x;
+      double answer = 0;
+      foreach (var l in lines)
+      {
+        x = FastDoubleParser.ParseDouble(l);
+        answer = answer > x ? answer : x;
+      }
+     
+      return answer;
+    }
+
+   private static double find_max_fast_float_try_utf8(byte[][] lines)
+    {
+      double x;
+      double max = double.MinValue;
+
+      foreach (var l in lines)
+      {
+        if(FastDoubleParser.TryParseDouble(l, out x))
+        {
+          max = max > x ? max : x;
+        }
+        else{
+          Console.WriteLine("bug");
+
+        }
+      }
+     
+      return max;
+    }
 
 
 
@@ -108,6 +175,7 @@ namespace BenchmarkHandCoded
     {
       string fileName = @"data/canada.txt";
       var lines = GetLinesFromFile(fileName);
+      var _linesUtf8 = Array.ConvertAll(lines, System.Text.Encoding.UTF8.GetBytes);
       int volume = 0;
       foreach (string l in lines)
       {
@@ -120,7 +188,7 @@ namespace BenchmarkHandCoded
       double volumeMB = volume / (1024.0 * 1024.0);
       Console.WriteLine($"Volume : {volumeMB}");
 
-      process_test(lines, (double)volume);
+      process_test(lines, _linesUtf8, (double)volume);
 
 
       Console.WriteLine("");
@@ -130,6 +198,7 @@ namespace BenchmarkHandCoded
       Console.WriteLine("--------------------------");
  
        lines = GetLinesFromFile(@"data/mesh.txt");
+       _linesUtf8 = Array.ConvertAll(lines, System.Text.Encoding.UTF8.GetBytes);
        volume = 0;
       foreach (string l in lines)
       {
@@ -138,7 +207,7 @@ namespace BenchmarkHandCoded
        volumeMB = volume / (1024.0 * 1024.0);
       Console.WriteLine($"Volume : {volumeMB}");
 
-      process_test(lines, (double)volume);
+      process_test(lines,_linesUtf8, (double)volume);
 
 
       Console.WriteLine("");
@@ -148,6 +217,8 @@ namespace BenchmarkHandCoded
       Console.WriteLine("--------------------------");
  
        lines = GetLinesFromFile(@"data/synthetic.txt");
+       _linesUtf8 = Array.ConvertAll(lines, System.Text.Encoding.UTF8.GetBytes);
+
        volume = 0;
       foreach (string l in lines)
       {
@@ -156,17 +227,23 @@ namespace BenchmarkHandCoded
        volumeMB = volume / (1024.0 * 1024.0);
       Console.WriteLine($"Volume : {volumeMB}");
 
-      process_test(lines, (double)volume);
+      process_test(lines,_linesUtf8, (double)volume);
 
 
     }
 
-    private static void process_test(string[] lines, double volume)
+    private static void process_test(string[] lines, byte[][] linesUTF8, double volume)
     {
 
       pretty_print(volume, (uint)lines.Length, "Double.Parse", time_it_ns<double>(lines, find_max_double_parse, 100));
       pretty_print(volume, (uint)lines.Length, "FastParser.ParseDouble", time_it_ns<double>(lines, find_max_fast_float, 100));
       pretty_print(volume, (uint)lines.Length, "FastParser.TryParseDouble", time_it_ns<double>(lines, find_max_fast_float_try, 100));
+
+      pretty_print(volume, (uint)lines.Length, "FastParser.ParseDouble UT8", time_it_ns_ut8<double>(linesUTF8, find_max_fast_float_utf8, 100));
+      pretty_print(volume, (uint)lines.Length, "FastParser.TryParseDouble UT8", time_it_ns_ut8<double>(linesUTF8, find_max_fast_float_try_utf8, 100));
+
+
     }
+
   }
 }
