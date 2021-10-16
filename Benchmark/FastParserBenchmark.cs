@@ -34,20 +34,7 @@ public class FFBencmark
     }
   }
 
- // SKIP [Benchmark(Description = "Utf8Parser")]
-  public double Utf8Parser()
-  {
-    double max = double.MinValue;
 
-    foreach (byte[] l in _linesUtf8)
-    {
-      if (!System.Buffers.Text.Utf8Parser.TryParse(l, out double d, out int consumed) || consumed != l.Length)
-        throw new InvalidOperationException();
-
-      max = d > max ? d : max;
-    }
-    return max;
-  }
 
   [Benchmark(Description = "FastFloat.ParseDouble() - UTF8")]
   public double FastParserUtf8_()
