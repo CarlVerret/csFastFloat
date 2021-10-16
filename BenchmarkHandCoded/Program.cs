@@ -84,25 +84,27 @@ namespace BenchmarkHandCoded
 
     private static double find_max_fast_float(string[] lines)
     {
-      double x;
-      double answer = 0;
+    
+      double max = double.MinValue;
+      
       foreach (string l in lines)
       {
-        x = FastDoubleParser.ParseDouble(l);
-        answer = answer > x ? answer : x;
+         double x = FastDoubleParser.ParseDouble(l);
+         max = max > x ? max : x;
       }
      
-      return answer;
+      return max;
     }
 
    private static double find_max_fast_float_try(string[] lines)
     {
-      double x;
+      
       double max = double.MinValue;
 
       foreach (string l in lines)
       {
-        if(FastDoubleParser.TryParseDouble(l, out x))
+        
+        if(FastDoubleParser.TryParseDouble(l, out double x))
         {
           max = max > x ? max : x;
         }
@@ -117,25 +119,25 @@ namespace BenchmarkHandCoded
 
     private static double find_max_fast_float_utf8(byte[][] lines)
     {
-      double x;
-      double answer = 0;
+      
+      double max = double.MinValue;
       foreach (var l in lines)
       {
-        x = FastDoubleParser.ParseDouble(l);
-        answer = answer > x ? answer : x;
+        double  x = FastDoubleParser.ParseDouble(l);
+         max = max > x ? max : x;
       }
      
-      return answer;
+      return max;
     }
 
    private static double find_max_fast_float_try_utf8(byte[][] lines)
     {
-      double x;
+    
       double max = double.MinValue;
 
       foreach (var l in lines)
       {
-        if(FastDoubleParser.TryParseDouble(l, out x))
+        if(FastDoubleParser.TryParseDouble(l, out double x))
         {
           max = max > x ? max : x;
         }
@@ -152,15 +154,14 @@ namespace BenchmarkHandCoded
 
     private static double find_max_double_parse(string[] lines)
     {
-      double x;
-      double answer = 0;
+      double max = double.MinValue;
       foreach (string l in lines)
       {
-        x = double.Parse(l, CultureInfo.InvariantCulture);
-        answer = answer > x ? answer : x;
+        double x = double.Parse(l, CultureInfo.InvariantCulture);
+         max = max > x ? max : x;
       }
 
-      return answer;
+      return max;
     }
 
     static private void pretty_print(double volume, uint number_of_floats, string name, Tuple<double, double> result)
