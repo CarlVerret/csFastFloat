@@ -16,9 +16,9 @@ namespace BenchmarkHandCoded
       double min_value = double.MaxValue;
 
       //  warmup
-      for (int i = 0; i != 100; i++)
+      for (int i = 0; i != 250; i++)
       {
-        
+
         sut(lines);
       }
 
@@ -34,9 +34,11 @@ namespace BenchmarkHandCoded
 
         sw.Stop();
 
-        var tmp = sw.ElapsedTicks;
-      
-        var dif = tmp ;
+
+        // NOTE : Elapsed.TotalMilliseconds (double) returns the total number of whole and fractional milliseconds elapsed since inception
+        //        Elapsed.Milliseconds (int) returns the number of whole milliseconds in the current second => this is absolutely not what we need !
+
+        var dif = sw.Elapsed.TotalMilliseconds * 1000000;
 
         average += dif;
 
@@ -47,15 +49,15 @@ namespace BenchmarkHandCoded
       average /= repeat;
       return new Tuple<double, double>(min_value, average);
     }
-   static internal Tuple<double, double> time_it_ns_ut8<T>(byte[][] lines, ParsingFuncUTF8 sut, long repeat)
+    static internal Tuple<double, double> time_it_ns_ut8<T>(byte[][] lines, ParsingFuncUTF8 sut, long repeat)
     {
       double average = 0;
       double min_value = double.MaxValue;
 
       //  warmup
-      for (int i = 0; i != 100; i++)
+      for (int i = 0; i != 250; i++)
       {
-        
+
         sut(lines);
       }
 
@@ -70,11 +72,12 @@ namespace BenchmarkHandCoded
         sut(lines);
 
         sw.Stop();
-    
 
-        var tmp = sw.ElapsedTicks;
+        // NOTE : Elapsed.TotalMilliseconds (double) returns the total number of whole and fractional milliseconds elapsed since inception
+        //        Elapsed.Milliseconds (int) returns the number of whole milliseconds in the current second => this is absolutely not what we need !
 
-        var dif = tmp;
+
+        var dif = sw.Elapsed.TotalMilliseconds * 1000000;
 
         average += dif;
 
@@ -91,69 +94,71 @@ namespace BenchmarkHandCoded
 
     private static double find_max_fast_float(string[] lines)
     {
-    
+
       double max = double.MinValue;
-      
+
       foreach (string l in lines)
       {
-         double x = FastDoubleParser.ParseDouble(l);
-         max = max > x ? max : x;
+        double x = FastDoubleParser.ParseDouble(l);
+        max = max > x ? max : x;
       }
-     
+
       return max;
     }
 
-   private static double find_max_fast_float_try(string[] lines)
+    private static double find_max_fast_float_try(string[] lines)
     {
-      
+
       double max = double.MinValue;
 
       foreach (string l in lines)
       {
-        
-        if(FastDoubleParser.TryParseDouble(l, out double x))
+
+        if (FastDoubleParser.TryParseDouble(l, out double x))
         {
           max = max > x ? max : x;
         }
-        else{
+        else
+        {
           Console.WriteLine("bug");
 
         }
       }
-     
+
       return max;
     }
 
     private static double find_max_fast_float_utf8(byte[][] lines)
     {
-      
+
       double max = double.MinValue;
       foreach (var l in lines)
       {
-        double  x = FastDoubleParser.ParseDouble(l);
-         max = max > x ? max : x;
+        double x = FastDoubleParser.ParseDouble(l);
+        max = max > x ? max : x;
       }
-     
+
       return max;
     }
 
-   private static double find_max_fast_float_try_utf8(byte[][] lines)
+    private static double find_max_fast_float_try_utf8(byte[][] lines)
     {
-    
+
       double max = double.MinValue;
 
       foreach (var l in lines)
       {
-        if(FastDoubleParser.TryParseDouble(l, out double x))
+        if (FastDoubleParser.TryParseDouble(l, out double x))
         {
           max = max > x ? max : x;
         }
-        else{
+        else
+        {
           Console.WriteLine("bug");
 
         }
       }
-     
+
       return max;
     }
 
@@ -165,7 +170,7 @@ namespace BenchmarkHandCoded
       foreach (string l in lines)
       {
         double x = double.Parse(l, CultureInfo.InvariantCulture);
-         max = max > x ? max : x;
+        max = max > x ? max : x;
       }
 
       return max;
@@ -173,10 +178,10 @@ namespace BenchmarkHandCoded
 
     static private void pretty_print(double volume, uint number_of_floats, string name, Tuple<double, double> result)
     {
-      //double volumeMB = volume / (1024.0 * 1024.0);
-      //Console.Write("{0,-40}: {1,8:f2} MB/s (+/- {2:f1} %) ", name, volumeMB * 1000000000 / result.Item1, (result.Item2 - result.Item1) * 100.0 / result.Item2);
-      Console.WriteLine("{0,-40}: {1,8:f2} Ticks/float (+/- {2:f1} %) ", name,  result.Item1/ number_of_floats, (result.Item2 - result.Item1) * 100.0 / result.Item2);
-      //Console.Write(" {0,8:f2} ns/f \n", (double)result.Item1 / number_of_floats);
+      double volumeMB = volume / (1024.0 * 1024.0);
+      Console.Write("{0,-40}: {1,8:f2} MB/s (+/- {2:f1} %) ", name, volumeMB * 1000000000 / result.Item1, (result.Item2 - result.Item1) * 100.0 / result.Item2);
+      Console.Write("{0,8:f2} Mfloat/s  ", number_of_floats * 1000 / result.Item1);
+      Console.Write(" {0,8:f2} ns/f \n", (double)result.Item1 / number_of_floats);
     }
 
     private static void Main(string[] args)
