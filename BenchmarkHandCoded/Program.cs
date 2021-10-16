@@ -226,7 +226,7 @@ namespace BenchmarkHandCoded
       Console.WriteLine("");
       Console.WriteLine("");
 
-      Console.WriteLine("Sythetic.txt");
+      Console.WriteLine("Synthetic.txt");
       Console.WriteLine("--------------------------");
 
       lines = GetLinesFromFile(@"data/synthetic.txt");
