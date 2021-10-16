@@ -82,10 +82,10 @@ namespace csFastFloat
       => TryParseDouble(s.AsSpan(), out _, out result, styles, decimal_separator);
 
     /// <summary>
-    /// Try parsing a double from a UTF-16 encoded string in the given number style, counting number of consumed caracters
+    /// Try parsing a double from a UTF-16 encoded string in the given number style, counting number of consumed characters
     /// </summary>
     /// <param name="s">input string</param>
-    /// <param name="characters_consumed">number of consumed caracters while parsing </param>
+    /// <param name="characters_consumed">number of consumed characters while parsing </param>
     /// <param name="result">output double value</param>
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
@@ -117,10 +117,10 @@ namespace csFastFloat
     }
 
     /// <summary>
-    /// Try parsing a double from a UTF-16 encoded span of chars in the given number style, counting number of consumed caracters
+    /// Try parsing a double from a UTF-16 encoded span of chars in the given number style, counting number of consumed characters
     /// </summary>
     /// <param name="s">input as a readonly span</param>
-    /// <param name="characters_consumed">number of consumed caracters while parsing </param>
+    /// <param name="characters_consumed">number of consumed characters while parsing </param>
     /// <param name="result">output double value</param>
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
@@ -157,11 +157,11 @@ namespace csFastFloat
 
 
     /// <summary>
-    /// Try parsing a double from a UTF-16 encoded input in the given number style, counting number of consumed caracters
+    /// Try parsing a double from a UTF-16 encoded input in the given number style, counting number of consumed characters
     /// </summary>
     /// <param name="first">char pointer to the begining of the string</param>
     /// <param name="last">char pointer to the end of the string</param>
-    /// <param name="characters_consumed">number of consumed caracters while parsing </param>
+    /// <param name="characters_consumed">number of consumed characters while parsing </param>
     /// <param name="result">output double value</param>
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
@@ -194,10 +194,10 @@ namespace csFastFloat
       }
     }
     /// <summary>
-    /// Try parsing a double from a UTF-8 encoded span of bytes in the given number style, counting number of consumed caracters
+    /// Try parsing a double from a UTF-8 encoded span of bytes in the given number style, counting number of consumed characters
     /// </summary>
     /// <param name="s">input string as Readonly span</param>
-    /// <param name="characters_consumed">number of consumed caracters while parsing </param>
+    /// <param name="characters_consumed">number of consumed characters while parsing </param>
     /// <param name="result">output double value</param>
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
@@ -233,11 +233,11 @@ namespace csFastFloat
     }
 
     /// <summary>
-    /// Try parsing a double from a UTF-8 encoded input in the given number style, counting number of consumed caracters
+    /// Try parsing a double from a UTF-8 encoded input in the given number style, counting number of consumed characters
     /// </summary>
     /// <param name="first">byte pointer to the begining of the string</param>
     /// <param name="last">byte pointer to the end of the string</param>
-    /// <param name="characters_consumed">number of consumed caracters while parsing </param>
+    /// <param name="characters_consumed">number of consumed characters while parsing </param>
     /// <param name="result">output double value</param>
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
