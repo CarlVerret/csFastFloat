@@ -60,7 +60,26 @@ namespace BenchmarkHandCoded
       return answer;
     }
 
-  
+   private static double find_max_fast_float_try(string[] lines)
+    {
+      double x;
+      double max = double.MinValue;
+
+      foreach (string l in lines)
+      {
+        if(FastDoubleParser.TryParseDouble(l, out x))
+        {
+          max = max > x ? max : x;
+        }
+        else{
+          Console.WriteLine("bug");
+
+        }
+      }
+     
+      return max;
+    }
+
 
 
 
@@ -122,7 +141,22 @@ namespace BenchmarkHandCoded
       process_test(lines, (double)volume);
 
 
+      Console.WriteLine("");
+      Console.WriteLine("");
+ 
+      Console.WriteLine("Sythetic.txt");
+      Console.WriteLine("--------------------------");
+ 
+       lines = GetLinesFromFile(@"data/synthetic.txt");
+       volume = 0;
+      foreach (string l in lines)
+      {
+        volume += l.Length;
+      }
+       volumeMB = volume / (1024.0 * 1024.0);
+      Console.WriteLine($"Volume : {volumeMB}");
 
+      process_test(lines, (double)volume);
 
 
     }
@@ -132,7 +166,7 @@ namespace BenchmarkHandCoded
 
       pretty_print(volume, (uint)lines.Length, "Double.Parse", time_it_ns<double>(lines, find_max_double_parse, 100));
       pretty_print(volume, (uint)lines.Length, "FastParser.ParseDouble", time_it_ns<double>(lines, find_max_fast_float, 100));
-       
+      pretty_print(volume, (uint)lines.Length, "FastParser.TryParseDouble", time_it_ns<double>(lines, find_max_fast_float_try, 100));
     }
   }
 }
