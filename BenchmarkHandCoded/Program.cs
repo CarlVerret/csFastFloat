@@ -33,7 +33,10 @@ namespace BenchmarkHandCoded
         sut(lines);
 
         sw.Stop();
-        var dif = sw.ElapsedMilliseconds * 1000000;
+
+        var tmp = sw.ElapsedTicks;
+      
+        var dif = tmp ;
 
         average += dif;
 
@@ -67,7 +70,11 @@ namespace BenchmarkHandCoded
         sut(lines);
 
         sw.Stop();
-        var dif = sw.ElapsedMilliseconds * 1000000;
+    
+
+        var tmp = sw.ElapsedTicks;
+
+        var dif = tmp;
 
         average += dif;
 
@@ -166,10 +173,10 @@ namespace BenchmarkHandCoded
 
     static private void pretty_print(double volume, uint number_of_floats, string name, Tuple<double, double> result)
     {
-      double volumeMB = volume / (1024.0 * 1024.0);
-      Console.Write("{0,-40}: {1,8:f2} MB/s (+/- {2:f1} %) ", name, volumeMB * 1000000000 / result.Item1, (result.Item2 - result.Item1) * 100.0 / result.Item2);
-      Console.Write("{0,8:f2} Mfloat/s  ", number_of_floats * 1000 / result.Item1);
-      Console.Write(" {0,8:f2} ns/f \n", (double)result.Item1 / number_of_floats);
+      //double volumeMB = volume / (1024.0 * 1024.0);
+      //Console.Write("{0,-40}: {1,8:f2} MB/s (+/- {2:f1} %) ", name, volumeMB * 1000000000 / result.Item1, (result.Item2 - result.Item1) * 100.0 / result.Item2);
+      Console.WriteLine("{0,-40}: {1,8:f2} Ticks/float (+/- {2:f1} %) ", name,  result.Item1/ number_of_floats, (result.Item2 - result.Item1) * 100.0 / result.Item2);
+      //Console.Write(" {0,8:f2} ns/f \n", (double)result.Item1 / number_of_floats);
     }
 
     private static void Main(string[] args)
@@ -194,41 +201,41 @@ namespace BenchmarkHandCoded
 
       Console.WriteLine("");
       Console.WriteLine("");
- 
+
       Console.WriteLine("Mesh.txt");
       Console.WriteLine("--------------------------");
- 
-       lines = GetLinesFromFile(@"data/mesh.txt");
-       _linesUtf8 = Array.ConvertAll(lines, System.Text.Encoding.UTF8.GetBytes);
-       volume = 0;
+
+      lines = GetLinesFromFile(@"data/mesh.txt");
+      _linesUtf8 = Array.ConvertAll(lines, System.Text.Encoding.UTF8.GetBytes);
+      volume = 0;
       foreach (string l in lines)
       {
         volume += l.Length;
       }
-       volumeMB = volume / (1024.0 * 1024.0);
+      volumeMB = volume / (1024.0 * 1024.0);
       Console.WriteLine($"Volume : {volumeMB}");
 
-      process_test(lines,_linesUtf8, (double)volume);
+      process_test(lines, _linesUtf8, (double)volume);
 
 
       Console.WriteLine("");
       Console.WriteLine("");
- 
+
       Console.WriteLine("Sythetic.txt");
       Console.WriteLine("--------------------------");
- 
-       lines = GetLinesFromFile(@"data/synthetic.txt");
-       _linesUtf8 = Array.ConvertAll(lines, System.Text.Encoding.UTF8.GetBytes);
 
-       volume = 0;
+      lines = GetLinesFromFile(@"data/synthetic.txt");
+      _linesUtf8 = Array.ConvertAll(lines, System.Text.Encoding.UTF8.GetBytes);
+
+      volume = 0;
       foreach (string l in lines)
       {
         volume += l.Length;
       }
-       volumeMB = volume / (1024.0 * 1024.0);
+      volumeMB = volume / (1024.0 * 1024.0);
       Console.WriteLine($"Volume : {volumeMB}");
 
-      process_test(lines,_linesUtf8, (double)volume);
+      process_test(lines, _linesUtf8, (double)volume);
 
 
     }
