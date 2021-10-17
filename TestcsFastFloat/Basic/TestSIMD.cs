@@ -14,7 +14,7 @@ namespace TestcsFastFloat.Basic.SIMD
   {
 
 
-#if NET5_0 
+#if NET5_0
 
 
     [Fact]
@@ -58,7 +58,7 @@ namespace TestcsFastFloat.Basic.SIMD
         string sut = new string(i.ToString()[0], 8);
         unsafe
         {
-          
+
 
           fixed (char* pos = sut)
           {
@@ -79,40 +79,25 @@ namespace TestcsFastFloat.Basic.SIMD
 
 
     [Fact]
-    public void eval_and_parse_eight_digits_simd_works()
+    public unsafe void eval_and_parse_eight_digits_simd_works()
     {
 
-   
+
       for (int i = 1; i <= 9; i++)
       {
 
-
-        string sut =  new string(i.ToString()[0], 8);
-        unsafe
+        string sut = new string(i.ToString()[0], 8);
+        fixed (char* start = sut)
         {
-          fixed (char* start = sut)
-          {
-            char* pos = start;
-
-
-            Assert.True(Utils.eval_parse_eight_digits_simd(pos , pos+ sut.Length, out uint res));
-            //Assert.Equal(8, pos- start);
-            Assert.Equal(double.Parse(sut), res);
-          }
-
-     
-
-
+          char* pos = start;
+          Assert.True(Utils.eval_parse_eight_digits_simd(pos, pos + sut.Length, out uint res));
+          Assert.Equal(double.Parse(sut), res);
         }
-
       }
-
-
-
     }
 
     [Fact]
-    public void eval_and_parse_eight_digits_simd_works_rnd()
+    public unsafe void eval_and_parse_eight_digits_simd_works_rnd()
     {
 
       Random RandNum = new Random();
@@ -121,32 +106,18 @@ namespace TestcsFastFloat.Basic.SIMD
       {
 
         int RandomNumber = RandNum.Next(10000000, 99999999);
-
         string sut = RandomNumber.ToString();
-        unsafe
+
+        fixed (char* start = sut)
         {
-          fixed (char* start = sut)
-          {
-            char* pos = start;
-
-            Assert.True(Utils.eval_parse_eight_digits_simd(pos, pos + sut.Length,  out uint res));
-          //  Assert.Equal(8, pos - start);
-            Assert.Equal(double.Parse(sut), res);
-          }
-
-
-
-
+          char* pos = start;
+          Assert.True(Utils.eval_parse_eight_digits_simd(pos, pos + sut.Length, out uint res));
+          Assert.Equal(double.Parse(sut), res);
         }
 
       }
-
-
-
     }
-        
+
 #endif
   }
-
-
 }
