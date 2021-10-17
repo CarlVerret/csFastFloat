@@ -14,7 +14,8 @@ namespace TestcsFastFloat.Basic.SIMD
   {
 
 
-#if HAS_INTRINSICS
+#if NET5_0 
+
 
     [Fact]
     public void parse_eight_digits_simd_works_rnd()
@@ -30,10 +31,9 @@ namespace TestcsFastFloat.Basic.SIMD
         string sut = RandomNumber.ToString();
         unsafe
         {
-          fixed (char* start = sut)
+          fixed (char* pos = sut)
           {
-            Assert.True(Utils.is_made_of_eight_digits_fast_simd(start));
-            uint res = Utils.parse_eight_digits_simd(start);
+            Assert.True(Utils.eval_parse_eight_digits_simd(pos, pos + sut.Length, out uint res));
             Assert.Equal(double.Parse(sut), res);
           }
         }
@@ -58,17 +58,12 @@ namespace TestcsFastFloat.Basic.SIMD
         string sut = new string(i.ToString()[0], 8);
         unsafe
         {
-          fixed (char* start = sut)
-          {
-            Assert.True(Utils.is_made_of_eight_digits_fast_simd(start));
-            uint res = Utils.parse_eight_digits_simd(start);
-            Assert.Equal(double.Parse(sut), res);
-          }
+          
 
-          fixed (char* start = sut)
+          fixed (char* pos = sut)
           {
-            Assert.True(Utils.is_made_of_eight_digits_fast_simd(start));
-            uint res = Utils.parse_eight_digits_simd(start);
+            Assert.True(Utils.eval_parse_eight_digits_simd(pos, pos + sut.Length, out uint res));
+
             Assert.Equal(double.Parse(sut), res);
           }
 
@@ -99,7 +94,6 @@ namespace TestcsFastFloat.Basic.SIMD
           {
             char* pos = start;
 
-            Assert.True(Utils.is_made_of_eight_digits_fast_simd(start));
 
             Assert.True(Utils.eval_parse_eight_digits_simd(pos , pos+ sut.Length, out uint res));
             //Assert.Equal(8, pos- start);
