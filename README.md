@@ -7,7 +7,7 @@ C# port of Daniel Lemire's [fast_float](https://github.com/fastfloat/fast_float)
 
 # Benchmarks
 
-We use the realistic files  in /data. The mesh.txt data file contains numbers that are easier to parse whereas the canada.txt data file is representative of a more challenging scenario. We compare  the `Double.Parse()` function from the runtime library with our `FastFloat.ParseDouble()` function. The `ParseNumberString() only` function parses the string itself without any float computation: it might represent an upper bound on the possible performance.
+We use the realistic files  in /data. The mesh.txt data file contains numbers that are easier to parse whereas the canada.txt data file is representative of a more challenging scenario.  Synthetic.txt contains 150 000 random floats. We compare  the `Double.Parse()` function from the runtime library with our `FastFloat.ParseDouble()` function. The `ParseNumberString() only` function parses the string itself without any float computation: it might represent an upper bound on the possible performance.
 
 
 ``` ini
@@ -20,15 +20,19 @@ AMD EPYC 7262, 1 CPU, 16 logical and 8 physical cores
 
 Job=.NET Core 5.0  Runtime=.NET Core 5.0
 
-|                     Method |        FileName |      Mean |     Error |    StdDev |       Min | Ratio | MFloat/s |     MB/s |
-|--------------------------- |---------------- |----------:|----------:|----------:|----------:|------:|---------:|---------:|
-|    FastFloat.ParseDouble() | data/canada.txt |  5.140 ms | 0.0280 ms | 0.0262 ms |  5.105 ms |  0.14 |    21.77 |   408.99 |
-| 'ParseNumberString() only' | data/canada.txt |  2.540 ms | 0.0053 ms | 0.0047 ms |  2.531 ms |  0.07 |    43.90 |   824.87 |
-|             Double.Parse() | data/canada.txt | 37.147 ms | 0.3284 ms | 0.3071 ms | 36.443 ms |  1.00 |     3.05 |    57.29 |
-|                            |                 |           |           |           |           |       |          |          |
-|    FastFloat.ParseDouble() |   data/mesh.txt |  2.083 ms | 0.0029 ms | 0.0024 ms |  2.080 ms |  0.29 |    35.10 |   298.07 |
-| 'ParseNumberString() only' |   data/mesh.txt |  1.298 ms | 0.0034 ms | 0.0032 ms |  1.294 ms |  0.18 |    56.45 |   479.30 |
-|             Double.Parse() |   data/mesh.txt |  7.086 ms | 0.0911 ms | 0.0852 ms |  6.931 ms |  1.00 |    10.54 |    89.45 |
+|                     Method |           FileName |      Mean |     Error |    StdDev |       Min | Ratio | MFloat/s |     MB/s |
+|--------------------------- |------------------- |----------:|----------:|----------:|----------:|------:|---------:|---------:|
+|             Double.Parse() |    data/canada.txt | 36.968 ms | 0.2310 ms | 0.2161 ms | 36.631 ms |  1.00 |     3.03 |    57.00 |
+| FastFloat.TryParseDouble() |    data/canada.txt |  5.017 ms | 0.0137 ms | 0.0128 ms |  4.998 ms |  0.14 |    22.23 |   417.76 |
+| 'ParseNumberString() only' |    data/canada.txt |  2.766 ms | 0.0064 ms | 0.0057 ms |  2.760 ms |  0.07 |    40.27 |   756.61 |
+|                            |                    |           |           |           |           |       |          |          |
+|             Double.Parse() |      data/mesh.txt |  6.933 ms | 0.0442 ms | 0.0413 ms |  6.865 ms |  1.00 |    10.64 |    90.31 |
+| FastFloat.TryParseDouble() |      data/mesh.txt |  1.930 ms | 0.0019 ms | 0.0018 ms |  1.926 ms |  0.28 |    37.92 |   321.98 |
+| 'ParseNumberString() only' |      data/mesh.txt |  1.283 ms | 0.0016 ms | 0.0015 ms |  1.280 ms |  0.19 |    57.04 |   484.33 |
+|                            |                    |           |           |           |           |       |          |          |
+|             Double.Parse() | data/synthetic.txt | 49.348 ms | 0.5064 ms | 0.4737 ms | 48.472 ms |  1.00 |     3.09 |    58.22 |
+| FastFloat.TryParseDouble() | data/synthetic.txt |  6.295 ms | 0.0045 ms | 0.0035 ms |  6.290 ms |  0.13 |    23.85 |   448.64 |
+| 'ParseNumberString() only' | data/synthetic.txt |  4.102 ms | 0.0112 ms | 0.0099 ms |  4.088 ms |  0.08 |    36.70 |   690.37 |
 
 ```
 
@@ -78,7 +82,7 @@ Job=.NET Core 5.0  Runtime=.NET Core 5.0
 
 # Requirements
 
-.NET Core 3.1 or better. Under .NET 5 framework, the library takes advantage of the new Math.BigMul() function.
+.NET Core 3.1 or newer. Under .NET 5 framework, the library takes advantage of the new Math.BigMul() function.
 
 # Compile and testing
 
@@ -109,10 +113,13 @@ using csFastFloat;
 
 double x;
 float y;
+double z;
 double answer = 0;
 foreach (string l in lines)
 {
         x = FastDoubleParser.ParseDouble(l);
+        FastDoubleParser.TryParseDouble(l, out z);
+        
         y = FastFloatParser.ParseFloat(l);
 }
 ```
