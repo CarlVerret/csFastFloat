@@ -268,15 +268,14 @@ namespace csFastFloat
       value = 0;
 
       Vector128<short> raw = Sse41.LoadDquVector128((short*)start);
-      Vector128<short> ascii0 = Vector128.Create((short)47);
-      Vector128<short> after_ascii9 = Vector128.Create((short)58);
+      Vector128<short> ascii0 = Vector128.Create((short)(48 + short.MinValue));
+      Vector128<short> after_ascii9 = Vector128.Create((short)(short.MinValue + 10));
+      Vector128<short> a = Sse41.Subtract(raw, ascii0);
+      Vector128<short> b = Sse41.CompareLessThan( after_ascii9, a);
 
-      var a = Sse41.CompareGreaterThan(raw, ascii0);
-      var b = Sse41.CompareLessThan(raw, after_ascii9);
-      var c = Sse41.Subtract(a, b);
-
-      if (!Sse41.TestZ(c, c))
+      if (!Sse41.TestZ(b, b))
         return false;
+
 
       // Credit : @aepot
       // https://stackoverflow.com/questions/66371621/hardware-simd-parsing-in-c-sharp-performance-improvement/66430672
@@ -298,7 +297,35 @@ namespace csFastFloat
     }
 
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    unsafe internal static bool eval_parse_eight_digits_simd2(char* start, char* end, out uint value)
+    {
 
+      value = 0;
+      Vector128<short> raw = Sse41.LoadDquVector128((short*)start);
+      Vector128<short> ascii0 = Vector128.Create((short)(48 + short.MinValue));
+      Vector128<short> after_ascii9 = Vector128.Create((short)(short.MinValue + 10));
+      Vector128<short> a = Sse41.Subtract(raw, ascii0);
+      Vector128<short> b = Sse41.CompareLessThan( after_ascii9, a);
+
+      if (!Sse41.TestZ(b, b))
+        return false;
+
+      Vector128<byte> mul1 = Vector128.Create(0x14C814C8, 0x010A0A64, 0, 0).AsByte();
+      Vector128<short> mul2 = Vector128.Create(0x00FA61A8, 0x0001000A, 0, 0).AsInt16();
+
+      Vector128<byte> vb = Sse2.PackUnsignedSaturate(raw, raw);
+      vb = Sse2.SubtractSaturate(vb, Vector128.Create((byte)'0'));
+
+      Vector128<int> v = Sse2.MultiplyAddAdjacent(Ssse3.MultiplyAddAdjacent(mul1, vb.AsSByte()), mul2);
+      v = Sse2.Add(Sse2.Add(v, v), Sse2.Shuffle(v, 1));
+      value = (uint)v.GetElement(0);
+
+      return true;
+
+    }
+
+  
 #endif
 
   }

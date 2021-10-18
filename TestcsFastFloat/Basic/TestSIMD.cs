@@ -118,6 +118,28 @@ namespace TestcsFastFloat.Basic.SIMD
       }
     }
 
+    [Fact]
+    public unsafe void eval_and_parse_eight_digits_simd2_works_rnd()
+    {
+
+      Random RandNum = new Random();
+
+      for (int i = 0; i != 850000; i++)
+      {
+
+        int RandomNumber = RandNum.Next(10000000, 99999999);
+        string sut = RandomNumber.ToString();
+
+        fixed (char* start = sut)
+        {
+          char* pos = start;
+          Assert.True(Utils.eval_parse_eight_digits_simd2(pos, pos + sut.Length, out uint res));
+          Assert.Equal(double.Parse(sut), res);
+        }
+
+      }
+    }
+
 #endif
   }
 }

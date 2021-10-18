@@ -12,85 +12,161 @@ using System.Globalization;
 
 
 using BenchmarkDotNet.Reports;
+using System.Collections.Generic;
 
 namespace csFastFloat.Benchmark
 {
 
   //[MemoryDiagnoser]
   [SimpleJob(RuntimeMoniker.NetCoreApp50)]
-  [Config(typeof(Config))]
-  public class FFBencmark
+[Config(typeof(Config))]
+public class FFBencmark
+{
+  private string[] _lines;
+  private byte[][] _linesUtf8;
+
+  private class Config : ManualConfig
   {
-    private string[] _lines;
-    private byte[][] _linesUtf8;
-
-    private class Config : ManualConfig
+    public Config()
     {
-      public Config()
-      {
-        AddColumn(StatisticColumn.Min);
-        AddColumn(new MFloatPerSecColumn());
-        AddColumn(new VolumePerSecColumn());
-      }
+      AddColumn(StatisticColumn.Min);
+      AddColumn(new MFloatPerSecColumn());
+      AddColumn(new VolumePerSecColumn());
     }
+  }
 
+  [Benchmark(Description = "Utf8Parser")]
+  public double Utf8Parser()
+  {
+    double max = double.MinValue;
 
-
-    [Benchmark(Description = "FastFloat.ParseDouble() - UTF8")]
-    public double FastParserUtf8_()
+    foreach (byte[] l in _linesUtf8)
     {
-      double max = double.MinValue;
+      if (!System.Buffers.Text.Utf8Parser.TryParse(l, out double d, out int consumed) || consumed != l.Length)
+        throw new InvalidOperationException();
 
-      foreach (byte[] l in _linesUtf8)
-      {
-        double d = FastDoubleParser.ParseDouble(l);
-        max = d > max ? d : max;
-      }
-      return max;
+      max = d > max ? d : max;
     }
+    return max;
+  }
 
-    [Benchmark(Description = "FastFloat.TryParseDouble() - UTF8")]
-    public double FastTryParserUtf8_()
+  [Benchmark(Description = "FastFloat.ParseDouble() - UTF8")]
+  public double FastParserUtf8_()
+  {
+    double max = double.MinValue;
+
+    foreach (byte[] l in _linesUtf8)
     {
-      double max = double.MinValue;
+      double d = FastDoubleParser.ParseDouble(l);
+      max = d > max ? d : max;
+    }
+    return max;
+  }
 
-      foreach (byte[] l in _linesUtf8)
+  [Benchmark(Description = "FastFloat.ParseDouble()")]
+  public double FastParser_()
+  {
+    double max = double.MinValue;
+
+    foreach (string l in _lines)
+    {
+      double d = FastDoubleParser.ParseDouble(l);
+      max = d > max ? d : max;
+    }
+    return max;
+  }
+
+
+
+
+
+  [Benchmark(Description = "ParseNumberString() only")]
+  public double FastParser_PNS()
+  {
+   double max = double.MinValue;
+
+   foreach (string l in _lines)
+   {
+     unsafe { 
+      
+     fixed (char* p = l)
+     {
+       var pni = ParsedNumberString.ParseNumberString(p, p + l.Length);
+       max = pni.exponent > max ? pni.exponent: max;
+     }
+      
+      
+      
+     }
+   }
+   return max;
+  }
+
+
+
+  [Benchmark(Baseline = true, Description = "Double.Parse()")]
+  public double Double_std()
+  {
+   double max = double.MinValue;
+   foreach (string l in _lines)
+   {
+     double d = double.Parse(l, CultureInfo.InvariantCulture);
+
+     max = d > max ? d : max;
+   }
+   return max;
+  }
+
+
+   [Params(@"data/canada.txt", @"data/mesh.txt", @"data/synthetic.txt")]
+   public string FileName;
+
+  [GlobalSetup]
+  public void Setup()
+  {
+    Console.WriteLine("reading data");
+    _lines = System.IO.File.ReadAllLines(FileName);
+    _linesUtf8 = Array.ConvertAll(_lines, System.Text.Encoding.UTF8.GetBytes);
+  }
+}
+
+
+
+
+
+
+
+  public class SIMDBenchMark
+  {
+
+    private List<string> _lines = new List<string>();
+
+
+    [Benchmark(Baseline = true, Description = "EvalParse_1")]
+    public unsafe uint EvalParse_1()
+    {
+      uint max = uint.MinValue;
+      foreach (string l in _lines)
       {
-        if (FastDoubleParser.TryParseDouble(l, out double d))
-        {
+        fixed (char* p = l)
+        { 
+          Utils.eval_parse_eight_digits_simd(p, p +l.Length, out uint d);
           max = d > max ? d : max;
         }
-      }
-      return max;
-    }
-
-    [Benchmark(Description = "FastFloat.ParseDouble()")]
-    public unsafe double FastParser_()
-    {
-      double max = double.MinValue;
-
-      foreach (string l in _lines)
-      {
-
-        double d = FastDoubleParser.ParseDouble(l);
-        max = d > max ? d : max;
-
-
 
       }
       return max;
     }
 
-    [Benchmark(Description = "FastFloat.TryParseDouble()")]
-    public unsafe double FastParser_Try()
+    [Benchmark( Description = "EvalParse_2")]
+    public unsafe uint EvalParse_2()
     {
-      double max = double.MinValue;
-
+      uint max = uint.MinValue;
       foreach (string l in _lines)
       {
-
-        if (FastDoubleParser.TryParseDouble(l, out double d))
+        fixed (char* p = l)
         {
+          Utils.eval_parse_eight_digits_simd2(p, p + l.Length, out uint d);
           max = d > max ? d : max;
         }
 
@@ -98,71 +174,34 @@ namespace csFastFloat.Benchmark
       return max;
     }
 
-
-
-
-
-    // SKIP [Benchmark(Description = "ParseNumberString() only")]
-    public double FastParser_PNS()
-    {
-      double max = double.MinValue;
-
-      foreach (string l in _lines)
-      {
-        unsafe
-        {
-
-          fixed (char* p = l)
-          {
-            var pni = ParsedNumberString.ParseNumberString(p, p + l.Length);
-            max = pni.exponent > max ? pni.exponent : max;
-          }
-
-
-
-        }
-      }
-      return max;
-    }
-
-
-
-    // [Benchmark(Baseline = true, Description = "Double.Parse()")]
-    public double Double_std()
-    {
-      double max = double.MinValue;
-      foreach (string l in _lines)
-      {
-        double d = double.Parse(l, CultureInfo.InvariantCulture);
-
-        max = d > max ? d : max;
-      }
-      return max;
-    }
-
-
-    [Params(@"data/canada.txt", @"data/mesh.txt", @"data/synthetic.txt")]
-    public string FileName;
 
     [GlobalSetup]
     public void Setup()
     {
-      Console.WriteLine("reading data");
-      _lines = System.IO.File.ReadAllLines(FileName);
-      _linesUtf8 = Array.ConvertAll(_lines, System.Text.Encoding.UTF8.GetBytes);
+
+      Random RandNum = new Random();
+
+      for (int i = 0; i != 850000; i++)
+      {
+
+        int RandomNumber = RandNum.Next(10000000, 99999999);
+        _lines.Add(RandomNumber.ToString());
+
+      }
+
+
     }
+
   }
 
-
-
-  public class Program
+public class Program
+{
+  public static void Main(string[] args)
   {
-    public static void Main(string[] args)
-    {
 
-      var config = DefaultConfig.Instance.WithSummaryStyle(SummaryStyle.Default.WithMaxParameterColumnWidth(100));
-      BenchmarkRunner.Run<FFBencmark>(config);
+    	var config = DefaultConfig.Instance.WithSummaryStyle( SummaryStyle.Default.WithMaxParameterColumnWidth(100));
+			var summary = BenchmarkRunner.Run<SIMDBenchMark>(config);
 
-    }
   }
+}
 }
