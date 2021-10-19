@@ -271,6 +271,14 @@ namespace csFastFloat
     internal static unsafe bool TryParseEightConsecutiveDigits_SIMD(char* start, out uint value)
     {
 
+      // escape if SIMD functions aren't available.
+      if (!Sse41.IsSupported)
+      {
+        value = 0;
+        return false;
+      }
+
+
       value = 0;
       Vector128<short> raw = Sse41.LoadDquVector128((short*)start);
       Vector128<short> ascii0 = Vector128.Create((short)(48 + short.MinValue));

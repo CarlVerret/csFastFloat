@@ -80,8 +80,6 @@ namespace TestcsFastFloat.Basic.SIMD
     public void parse_eight_digits_simd_works()
     {
 
-      Random RandNum = new Random();
-
       for (int i = 0; i <= 9; i++)
       {
 
