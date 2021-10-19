@@ -3,10 +3,17 @@ using csFastFloat.Structures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using System.Text;
 using System.Threading.Tasks;
 using TestcsFastFloat.Tests;
 using Xunit;
+
+#if NET5_0
+using System.Runtime.Intrinsics.X86;
+#endif
+
+
 
 namespace TestcsFastFloat.Basic.SIMD
 {
@@ -35,13 +42,14 @@ namespace TestcsFastFloat.Basic.SIMD
     [InlineData(false, "1234 567")]
     [Theory]
 #pragma warning disable xUnit1026 // Theory methods should use all of their parameters
-    public unsafe void EvalAndParseEightDigits_SIMD_works_Scenarios(bool shouldPass, string sut )
+    public unsafe void EvalAndParseEightDigits_SIMD_works_Scenarios(bool shouldPass, string sut)
 #pragma warning restore xUnit1026 // Theory methods should use all of their parameters
     {
-          fixed (char* pos = sut)
-          {
-            Assert.Equal(shouldPass, Utils.TryParseEightConsecutiveDigits_SIMD(pos, out uint res));
-          }
+      Skip.If(!Sse41.IsSupported, "No SIMD support");
+      fixed (char* pos = sut)
+      {
+        Assert.Equal(shouldPass, Utils.TryParseEightConsecutiveDigits_SIMD(pos, out uint res));
+      }
 
     }
 
@@ -51,6 +59,10 @@ namespace TestcsFastFloat.Basic.SIMD
     [Fact]
     public void EvalAndParseEightDigits_SIMD_works_RandomInput()
     {
+
+      Skip.If(!Sse41.IsSupported, "No SIMD support");
+
+
 
       Random RandNum = new Random();
 
@@ -79,6 +91,7 @@ namespace TestcsFastFloat.Basic.SIMD
     [Fact]
     public void parse_eight_digits_simd_works()
     {
+      Skip.If(!Sse41.IsSupported, "No SIMD support");
 
       for (int i = 0; i <= 9; i++)
       {
@@ -107,29 +120,9 @@ namespace TestcsFastFloat.Basic.SIMD
 
 
 
-   
 
-    [Fact]
-    public unsafe void EvalAndParseEightDigits_SIMD2()
-    {
 
-      Random RandNum = new Random();
-
-      for (int i = 0; i != 850000; i++)
-      {
-
-        int RandomNumber = RandNum.Next(10000000, 99999999);
-        string sut = RandomNumber.ToString();
-
-        fixed (char* start = sut)
-        {
-          char* pos = start;
-          Assert.True(Utils.TryParseEightConsecutiveDigits_SIMD(pos, out uint res));
-          Assert.Equal(double.Parse(sut), res);
-        }
-
-      }
-    }
+ 
 
 #endif
   }
