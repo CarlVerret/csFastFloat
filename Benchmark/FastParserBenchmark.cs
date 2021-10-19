@@ -20,7 +20,7 @@ namespace csFastFloat.Benchmark
   //[MemoryDiagnoser]
   [SimpleJob(RuntimeMoniker.NetCoreApp50)]
 [Config(typeof(Config))]
-public class FFBencmark
+public class FFBenchmark
 {
   private string[] _lines;
   private byte[][] _linesUtf8;
@@ -143,7 +143,7 @@ public class Program
   {
 
     	var config = DefaultConfig.Instance.WithSummaryStyle( SummaryStyle.Default.WithMaxParameterColumnWidth(100));
-			BenchmarkRunner.Run<FFBencmark>(config);
+			BenchmarkRunner.Run<FFBenchmark>(config);
 
   }
 }
