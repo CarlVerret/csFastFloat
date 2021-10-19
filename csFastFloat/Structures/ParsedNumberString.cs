@@ -14,7 +14,7 @@ namespace csFastFloat.Structures
 
     // UTF-16 inputs involving SIMD within  eval_parse_eight_digits_simd when HAS_INTRINSICS
 
-    unsafe static internal ParsedNumberString ParseNumberString(char* p, char* pend, NumberStyles expectedFormat = NumberStyles.Float, char decimal_separator = '.')
+    internal static unsafe ParsedNumberString ParseNumberString(char* p, char* pend, NumberStyles expectedFormat = NumberStyles.Float, char decimal_separator = '.')
     {
       ParsedNumberString answer = new ParsedNumberString();
 
@@ -56,7 +56,7 @@ namespace csFastFloat.Structures
 
 #if HAS_INTRINSICS
 
-        while ((p + 8 <= pend) && Utils.eval_parse_eight_digits_simd(p, p + 8, out uint tmp))
+        while ((p + 8 <= pend) && Utils.TryParseEightConsecutiveDigits_SIMD(p, out uint tmp))
         {
           i = i * 100000000 + tmp;
           p += 8;
@@ -182,7 +182,7 @@ namespace csFastFloat.Structures
     }
 
     // UTF-8 / ASCII inputs.
-    unsafe static internal ParsedNumberString ParseNumberString(byte* p, byte* pend, NumberStyles expectedFormat = NumberStyles.Float, byte decimal_separator = (byte)'.')
+    internal static unsafe ParsedNumberString ParseNumberString(byte* p, byte* pend, NumberStyles expectedFormat = NumberStyles.Float, byte decimal_separator = (byte)'.')
     {
       ParsedNumberString answer = new ParsedNumberString();
 

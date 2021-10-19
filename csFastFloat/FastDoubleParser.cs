@@ -445,11 +445,8 @@ namespace csFastFloat
     /// <param name="characters_consumed">number of characters consumed while parsing</param>
     /// <param name="expectedFormat">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
+    /// <param name="value">out : reference to double variable to hold parsed value</param>
     /// <returns>double : parsed value</returns>
-
-
-
-
 
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -471,14 +468,7 @@ namespace csFastFloat
       ParsedNumberString pns = ParsedNumberString.ParseNumberString(first, last, expectedFormat);
       if (!pns.valid)
       {
-
-        //  FastDoubleParser.TryHandleInvalidInput(first, last, out characters_consumed, out double x);
-        //  return x;
         return false;
-        /// Here's one of my problems
-        // value = FastDoubleParser.HandleInvalidInput(first, last, out characters_consumed);
-        // return true;
-
       }
       characters_consumed = pns.characters_consumed + leading_spaces;
 
@@ -511,6 +501,7 @@ namespace csFastFloat
     /// <param name="characters_consumed">number of characters consumed while parsing</param>
     /// <param name="expectedFormat">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
+    /// <param name="value">out : reference to double variable to hold parsed value</param>
     /// <returns>double : parsed value</returns>
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

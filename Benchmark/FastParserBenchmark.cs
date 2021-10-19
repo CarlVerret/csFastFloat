@@ -136,63 +136,6 @@ public class FFBencmark
 
 
 
-  public class SIMDBenchMark
-  {
-
-    private List<string> _lines = new List<string>();
-
-
-    [Benchmark(Baseline = true, Description = "EvalParse_1")]
-    public unsafe uint EvalParse_1()
-    {
-      uint max = uint.MinValue;
-      foreach (string l in _lines)
-      {
-        fixed (char* p = l)
-        { 
-          Utils.eval_parse_eight_digits_simd(p, p +l.Length, out uint d);
-          max = d > max ? d : max;
-        }
-
-      }
-      return max;
-    }
-
-    [Benchmark( Description = "EvalParse_2")]
-    public unsafe uint EvalParse_2()
-    {
-      uint max = uint.MinValue;
-      foreach (string l in _lines)
-      {
-        fixed (char* p = l)
-        {
-          Utils.eval_parse_eight_digits_simd2(p, p + l.Length, out uint d);
-          max = d > max ? d : max;
-        }
-
-      }
-      return max;
-    }
-
-
-    [GlobalSetup]
-    public void Setup()
-    {
-
-      Random RandNum = new Random();
-
-      for (int i = 0; i != 850000; i++)
-      {
-
-        int RandomNumber = RandNum.Next(10000000, 99999999);
-        _lines.Add(RandomNumber.ToString());
-
-      }
-
-
-    }
-
-  }
 
 public class Program
 {
@@ -200,7 +143,7 @@ public class Program
   {
 
     	var config = DefaultConfig.Instance.WithSummaryStyle( SummaryStyle.Default.WithMaxParameterColumnWidth(100));
-			var summary = BenchmarkRunner.Run<SIMDBenchMark>(config);
+			BenchmarkRunner.Run<FFBencmark>(config);
 
   }
 }
