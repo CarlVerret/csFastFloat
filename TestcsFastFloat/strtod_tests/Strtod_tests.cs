@@ -14,8 +14,8 @@ namespace TestcsFastFloat.suppl_tests
 
   public class Strtod_tests : BaseTestClass
   {
-#if NET30_OR_GREATER
-    
+#if NET5_0
+
     /// <summary>
     /// strtod test cases
     /// https://github.com/ahrvoje/numerics/blob/master/strtod/strtod_tests.toml
