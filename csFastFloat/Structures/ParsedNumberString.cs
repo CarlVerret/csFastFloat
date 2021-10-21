@@ -56,7 +56,7 @@ namespace csFastFloat.Structures
 
 #if HAS_INTRINSICS
 
-        while ((p + 8 <= pend) && Utils.TryParseEightConsecutiveDigits_SIMD(p, out uint tmp))
+        while ((p <= pend - 8) && Utils.TryParseEightConsecutiveDigits_SIMD(p, out uint tmp))
         {
           i = i * 100000000 + tmp;
           p += 8;
