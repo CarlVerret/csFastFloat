@@ -56,7 +56,7 @@ namespace TestcsFastFloat.Basic.SIMD
 
 
 
-    [Fact]
+    [SkippableFact]
     public void EvalAndParseEightDigits_SIMD_works_RandomInput()
     {
 
@@ -88,7 +88,8 @@ namespace TestcsFastFloat.Basic.SIMD
     }
 
 
-    [Fact]
+
+    [SkippableFact]
     public void parse_eight_digits_simd_works()
     {
       Skip.If(!Sse41.IsSupported, "No SIMD support");

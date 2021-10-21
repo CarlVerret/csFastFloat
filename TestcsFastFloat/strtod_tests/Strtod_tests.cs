@@ -20,7 +20,7 @@ namespace TestcsFastFloat.suppl_tests
     /// strtod test cases
     /// https://github.com/ahrvoje/numerics/blob/master/strtod/strtod_tests.toml
     /// </summary>
-    [Fact]
+    [SkippableFact]
     void strtod_tests_file()
     {
       Skip.If(true, "run locally only");
