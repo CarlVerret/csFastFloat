@@ -23,6 +23,7 @@ namespace TestcsFastFloat.suppl_tests
     [Fact]
     void strtod_tests_file()
     {
+      Skip.If(true, "run locally only");
       Skip.If(base.NoDiffToolDetected(), "No diff tool detected");
 
       StringBuilder sb = new StringBuilder();
