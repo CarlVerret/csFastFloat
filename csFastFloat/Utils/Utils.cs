@@ -16,7 +16,7 @@ using System.Runtime.Intrinsics.X86;
 namespace csFastFloat
 {
 
-  internal static class Utils
+  internal static unsafe class Utils
   {
 #if !HAS_BITOPERATIONS
     private static ReadOnlySpan<byte> Log2DeBruijn => new byte[]
@@ -41,14 +41,14 @@ namespace csFastFloat
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static unsafe uint parse_eight_digits_unrolled(byte* chars)
+    internal static  uint parse_eight_digits_unrolled(byte* chars)
     {
       ulong val = Unsafe.ReadUnaligned<ulong>(chars);
       return parse_eight_digits_unrolled(val);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static unsafe bool is_made_of_eight_digits_fast(ulong val)
+    internal static  bool is_made_of_eight_digits_fast(ulong val)
     {
       // We only enable paths depending on this function on little endian
       // platforms (it happens to be effectively nearly everywhere).
@@ -58,7 +58,7 @@ namespace csFastFloat
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static unsafe bool is_made_of_eight_digits_fast(byte* chars)
+    internal static  bool is_made_of_eight_digits_fast(byte* chars)
     {
       ulong val = Unsafe.ReadUnaligned<ulong>(chars);
       return is_made_of_eight_digits_fast(val);
@@ -120,7 +120,7 @@ namespace csFastFloat
 
 #else
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static unsafe value128 FullMultiplication(ulong value1, ulong value2)
+    internal static  value128 FullMultiplication(ulong value1, ulong value2)
     {
 #if HAS_INTRINSICS
       if(System.Runtime.Intrinsics.X86.Bmi2.X64.IsSupported)
@@ -181,7 +181,7 @@ namespace csFastFloat
     }
 
     [ExcludeFromCodeCoverage]
-    internal static unsafe bool strncasecmp(char* input1, string input2, int length)
+    internal static  bool strncasecmp(char* input1, string input2, int length)
     {
       fixed (char* p2 = input2)
       {
@@ -189,7 +189,7 @@ namespace csFastFloat
       }
     }
 
-    internal static unsafe bool strncasecmp(char* input1, char* input2, int length)
+    internal static  bool strncasecmp(char* input1, char* input2, int length)
     {
       int running_diff = 0;
 
@@ -199,7 +199,7 @@ namespace csFastFloat
       }
       return (running_diff == 0) || (running_diff == 32);
     }
-    internal static unsafe bool strncasecmp(byte* input1, ReadOnlySpan<byte> input2, int length)
+    internal static  bool strncasecmp(byte* input1, ReadOnlySpan<byte> input2, int length)
     {
       int running_diff = 0;
 
@@ -248,7 +248,7 @@ namespace csFastFloat
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static unsafe float Int32BitsToSingle(int value)
+    public static  float Int32BitsToSingle(int value)
 #if HAS_BITOPERATIONS
       => BitConverter.Int32BitsToSingle(value);
 #else
@@ -268,7 +268,7 @@ namespace csFastFloat
     /// <param name="value">out : parsed value</param>
     /// <returns>bool : succes of operation : true meaning the sequence contains at least 8 consecutive digits</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static unsafe bool TryParseEightConsecutiveDigits_SIMD(char* start, out uint value)
+    internal static  bool TryParseEightConsecutiveDigits_SIMD(char* start, out uint value)
     {
 
       // escape if SIMD functions aren't available.
