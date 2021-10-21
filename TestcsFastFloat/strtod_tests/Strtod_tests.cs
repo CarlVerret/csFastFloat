@@ -11,9 +11,11 @@ using Xunit;
 namespace TestcsFastFloat.suppl_tests
 {
 
+
   public class Strtod_tests : BaseTestClass
   {
-
+#if NET30_OR_GREATER
+    
     /// <summary>
     /// strtod test cases
     /// https://github.com/ahrvoje/numerics/blob/master/strtod/strtod_tests.toml
@@ -84,6 +86,9 @@ namespace TestcsFastFloat.suppl_tests
 
       ApprovalTests.Approvals.Verify(sb.ToString());
     }
-
+#endif
   }
+
+
 }
+
