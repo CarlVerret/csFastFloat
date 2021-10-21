@@ -27,64 +27,72 @@ namespace TestcsFastFloat.suppl_tests
 
       StringBuilder sb = new StringBuilder();
 
-      var fs = System.IO.File.OpenText(@"strtod_tests\\strtod.txt");
-      int counter = 0;
-      while (!fs.EndOfStream)
+      foreach (var fileName in Directory.GetFiles("strtod_tests", " *.txt"))
       {
-        string curntLine = fs.ReadLine();
+        Console.WriteLine(fileName);
+        var fs = System.IO.File.OpenText(fileName);
+        int counter = 0;
+        while (!fs.EndOfStream)
+        {
+          string curntLine = fs.ReadLine();
 
 
-        if (curntLine.StartsWith("[[")) {
-          sb.AppendLine("");
-          sb.AppendLine("");
-          sb.AppendLine(curntLine);
+          if (curntLine.StartsWith("[["))
+          {
+            sb.AppendLine("");
+            sb.AppendLine("");
+            sb.AppendLine(curntLine);
 
 
 
-        }
+          }
 
 
 
 
-        if (curntLine.StartsWith("UID") || curntLine.StartsWith("int"))
+          if (curntLine.StartsWith("UID") || curntLine.StartsWith("int"))
           {
             sb.AppendLine(curntLine);
 
           }
 
-        if (curntLine.StartsWith("str ="))
-        {
-
-          sb.AppendLine(curntLine);
-          var sut = curntLine.Split('=')[1].Replace("\"", "").Trim();
-
-
-          if (!double.TryParse(sut, out double _db_val))
+          if (curntLine.StartsWith("str ="))
           {
-            sb.AppendLine("d   = *** can't parse *** ");
-          }
-          else
-          {
-            sb.AppendLine($"d   = {_db_val}");
-          }
 
-          if (!FastDoubleParser.TryParseDouble(sut, out double _ff_val))
-          {
-            sb.AppendLine("ff   = *** can't parse *** ");
-          }
-          else
-          {
-            sb.AppendLine($"ff  = {_ff_val}");
-          }
+            sb.AppendLine(curntLine);
+            var sut = curntLine.Split('=')[1].Replace("\"", "").Trim();
 
 
+            if (!double.TryParse(sut, out double _db_val))
+            {
+              sb.AppendLine("d   = *** can't parse *** ");
+            }
+            else
+            {
+              sb.AppendLine($"d   = {_db_val}");
+            }
+
+            if (!FastDoubleParser.TryParseDouble(sut, out double _ff_val))
+            {
+              sb.AppendLine("ff   = *** can't parse *** ");
+            }
+            else
+            {
+              sb.AppendLine($"ff  = {_ff_val}");
+            }
+
+
+          }
+
+          counter++;
         }
+        fs.Close();
 
-        counter++;
+        ApprovalTests.Approvals.Verify(sb.ToString());
+
       }
-      fs.Close();
 
-      ApprovalTests.Approvals.Verify(sb.ToString());
+     
     }
 #endif
   }
