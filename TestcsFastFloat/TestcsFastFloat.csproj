@@ -86,7 +86,7 @@
     <None Update="data_files\*.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="strtod_tests\Strtod.txt">
+    <None Update="strtod_tests\strtod_cases.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

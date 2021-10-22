@@ -23,12 +23,11 @@ namespace TestcsFastFloat.suppl_tests
     [SkippableFact]
     void strtod_tests_file()
     {
-      Skip.If(true, "run locally only");
       Skip.If(base.NoDiffToolDetected(), "No diff tool detected");
 
       StringBuilder sb = new StringBuilder();
 
-      foreach (var fileName in Directory.GetFiles("strtod_tests", " *.txt"))
+      foreach (var fileName in Directory.GetFiles("strtod_tests", "*.txt"))
       {
         Console.WriteLine(fileName);
         var fs = System.IO.File.OpenText(fileName);
