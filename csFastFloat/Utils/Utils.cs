@@ -295,9 +295,12 @@ namespace csFastFloat
       // https://stackoverflow.com/questions/66371621/hardware-simd-parsing-in-c-sharp-performance-improvement/66430672
       Vector128<byte> mul1 = Vector128.Create(0x14C814C8, 0x010A0A64, 0, 0).AsByte();
       Vector128<short> mul2 = Vector128.Create(0x00FA61A8, 0x0001000A, 0, 0).AsInt16();
+      
+      
+      var vb = Sse41.Shuffle( a.AsByte(), Vector128.Create(0, 2, 4, 6, 8, 10, 12, 14, 0, 2, 4, 6, 8, 10, 12, 14).AsByte());
 
-      Vector128<byte> vb = Sse2.PackUnsignedSaturate(raw, raw);
-      vb = Sse2.SubtractSaturate(vb, Vector128.Create((byte)'0'));
+      //Vector128<byte> vb = Sse2.PackUnsignedSaturate(raw, raw);
+      //vb = Sse2.SubtractSaturate(vb, Vector128.Create((byte)'0'));
 
       Vector128<int> v = Sse2.MultiplyAddAdjacent(Ssse3.MultiplyAddAdjacent(mul1, vb.AsSByte()), mul2);
       v = Sse2.Add(Sse2.Add(v, v), Sse2.Shuffle(v, 1));
