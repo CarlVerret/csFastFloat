@@ -5,12 +5,18 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
+
+#if HAS_INTRINSICS
+using System.Runtime.Intrinsics;
+using System.Runtime.Intrinsics.X86;
+#endif
+
 [assembly: InternalsVisibleTo("TestcsFastFloat")]
 
 namespace csFastFloat
 {
 
-  internal static class Utils
+  internal static unsafe class Utils
   {
 #if !HAS_BITOPERATIONS
     private static ReadOnlySpan<byte> Log2DeBruijn => new byte[]
@@ -35,14 +41,14 @@ namespace csFastFloat
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    unsafe internal static uint parse_eight_digits_unrolled(byte* chars)
+    internal static  uint parse_eight_digits_unrolled(byte* chars)
     {
       ulong val = Unsafe.ReadUnaligned<ulong>(chars);
       return parse_eight_digits_unrolled(val);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    unsafe internal static bool is_made_of_eight_digits_fast(ulong val)
+    internal static  bool is_made_of_eight_digits_fast(ulong val)
     {
       // We only enable paths depending on this function on little endian
       // platforms (it happens to be effectively nearly everywhere).
@@ -52,7 +58,7 @@ namespace csFastFloat
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    unsafe internal static bool is_made_of_eight_digits_fast(byte* chars)
+    internal static  bool is_made_of_eight_digits_fast(byte* chars)
     {
       ulong val = Unsafe.ReadUnaligned<ulong>(chars);
       return is_made_of_eight_digits_fast(val);
@@ -101,9 +107,7 @@ namespace csFastFloat
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static int power(int q)
-    {
-      return (((152170 + 65536) * q) >> 16) + 63;
-    }
+        => (((152170 + 65536) * q) >> 16) + 63;
 
 #if NET5_0
 
@@ -116,7 +120,7 @@ namespace csFastFloat
 
 #else
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static unsafe value128 FullMultiplication(ulong value1, ulong value2)
+    internal static  value128 FullMultiplication(ulong value1, ulong value2)
     {
 #if HAS_INTRINSICS
       if(System.Runtime.Intrinsics.X86.Bmi2.X64.IsSupported)
@@ -177,7 +181,7 @@ namespace csFastFloat
     }
 
     [ExcludeFromCodeCoverage]
-    internal unsafe static bool strncasecmp(char* input1, string input2, int length)
+    internal static  bool strncasecmp(char* input1, string input2, int length)
     {
       fixed (char* p2 = input2)
       {
@@ -185,23 +189,23 @@ namespace csFastFloat
       }
     }
 
-    internal unsafe static bool strncasecmp(char* input1, char* input2, int length)
+    internal static  bool strncasecmp(char* input1, char* input2, int length)
     {
       int running_diff = 0;
 
       for (int i = 0; i < length; i++)
       {
-        running_diff = running_diff | (input1[i] ^ input2[i]);
+        running_diff |= (input1[i] ^ input2[i]);
       }
       return (running_diff == 0) || (running_diff == 32);
     }
-    internal unsafe static bool strncasecmp(byte* input1, ReadOnlySpan<byte> input2, int length)
+    internal static  bool strncasecmp(byte* input1, ReadOnlySpan<byte> input2, int length)
     {
       int running_diff = 0;
 
       for (int i = 0; i < length; i++)
       {
-        running_diff = running_diff | (input1[i] ^ input2[i]);
+        running_diff |= (input1[i] ^ input2[i]);
       }
       return (running_diff == 0) || (running_diff == 32);
     }
@@ -217,7 +221,9 @@ namespace csFastFloat
       uint hi = (uint)(value >> 32);
  
       if (hi == 0)
+      {
         return 32 + Log2SoftwareFallback((uint)value);
+      }
  
       return Log2SoftwareFallback(hi);
       
@@ -225,7 +231,9 @@ namespace csFastFloat
       static int Log2SoftwareFallback(uint value)
       {
         if (value == 0)
+        {
           return 32;
+        }
         
         int n = 1;
         if (value >> 16 == 0) { n += 16; value <<= 16; }
@@ -240,14 +248,66 @@ namespace csFastFloat
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static unsafe float Int32BitsToSingle(int value)
-    {
+    public static  float Int32BitsToSingle(int value)
 #if HAS_BITOPERATIONS
-      return BitConverter.Int32BitsToSingle(value);
+      => BitConverter.Int32BitsToSingle(value);
 #else
-      return *((float*)&value);
+      => *((float*)&value);
 #endif
+
+
+
+
+
+#if HAS_INTRINSICS
+
+    /// <summary>
+    /// Detect eight consecutive digits and parse them a an unsigned int using SIMD instructions
+    /// </summary>
+    /// <param name="start">pointer to the sequence of char to evaluate</param>
+    /// <param name="value">out : parsed value</param>
+    /// <returns>bool : succes of operation : true meaning the sequence contains at least 8 consecutive digits</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static  bool TryParseEightConsecutiveDigits_SIMD(char* start, out uint value)
+    {
+
+      // escape if SIMD functions aren't available.
+      if (!Sse41.IsSupported)
+      {
+        value = 0;
+        return false;
+      }
+
+
+      value = 0;
+      Vector128<short> raw = Sse41.LoadDquVector128((short*)start);
+      Vector128<short> ascii0 = Vector128.Create((short)(48 + short.MinValue));
+      Vector128<short> after_ascii9 = Vector128.Create((short)(short.MinValue + 9));
+      Vector128<short> a = Sse41.Subtract(raw, ascii0);
+      Vector128<short> b = Sse41.CompareLessThan( after_ascii9, a);
+
+      if (!Sse41.TestZ(b, b))
+      {
+        return false;
+      }
+
+      // @Credit  AQRIT
+      // https://stackoverflow.com/questions/66371621/hardware-simd-parsing-in-c-sharp-performance-improvement/66430672
+      Vector128<byte> mul1 = Vector128.Create(0x14C814C8, 0x010A0A64, 0, 0).AsByte();
+      Vector128<short> mul2 = Vector128.Create(0x00FA61A8, 0x0001000A, 0, 0).AsInt16();
+
+      //  extract the low bytes of each 16-bit word
+      var vb = Sse41.Shuffle( a.AsByte(), Vector128.Create(0, 2, 4, 6, 8, 10, 12, 14, 0, 2, 4, 6, 8, 10, 12, 14).AsByte());
+      Vector128<int> v = Sse2.MultiplyAddAdjacent(Ssse3.MultiplyAddAdjacent(mul1, vb.AsSByte()), mul2);
+      v = Sse2.Add(Sse2.Add(v, v), Sse2.Shuffle(v, 1));
+      value = (uint)v.GetElement(0);
+
+      return true;
+
     }
+
+  
+#endif
 
   }
 }

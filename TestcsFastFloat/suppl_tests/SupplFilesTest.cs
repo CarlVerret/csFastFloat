@@ -15,6 +15,8 @@ namespace TestcsFastFloat.Tests.ff_suppl_tests
     [Fact()]
     private void AllFiles()
     {
+
+    
       string pathValidation = "data_files";
 
       if (!Directory.Exists(pathValidation))

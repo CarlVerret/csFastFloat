@@ -115,17 +115,6 @@ namespace TestcsFastFloat.Tests.Basic
       }
     }
 
-    [Fact(Skip = "Inconclusive")]
-    private void Issue19()
-    {
-      string sut = @"3.14e";
-
-      for (int i = 0; i != 16; i++)
-      {
-        double d = FastDoubleParser.ParseDouble(sut.Substring(0, sut.Length - i));
-        Assert.Equal(Math.PI, d);
-      }
-    }
 
     [Fact]
     private void ScientificFails_when_InconsistentInput()
