@@ -42,7 +42,7 @@ In this repo [FastFloatTestBench](https://github.com/CarlVerret/FastFloatTestBen
 
 # Requirements
 
-.NET Core 3.1 or newer. Under .NET 5 framework, the library takes advantage of the new Math.BigMul() function.
+.NET Standard 2.0 or newer. Under .NET 5 framework, the library takes advantage of the new Math.BigMul() and Sse4.1 (SIMD) functions.
 
 # Compile and testing
 
