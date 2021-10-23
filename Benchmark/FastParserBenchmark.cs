@@ -50,27 +50,27 @@ public class FFBenchmark
     return max;
   }
 
-  [Benchmark(Description = "FastFloat.ParseDouble() - UTF8")]
+  [Benchmark(Description = "FastFloat.TryParseDouble() - UTF8")]
   public double FastParserUtf8_()
   {
     double max = double.MinValue;
 
     foreach (byte[] l in _linesUtf8)
     {
-      double d = FastDoubleParser.ParseDouble(l);
+      FastDoubleParser.TryParseDouble(l, out double d);
       max = d > max ? d : max;
     }
     return max;
   }
 
-  [Benchmark(Description = "FastFloat.ParseDouble()")]
+  [Benchmark(Description = "FastFloat.TryParseDouble()")]
   public double FastParser_()
   {
     double max = double.MinValue;
 
     foreach (string l in _lines)
     {
-      double d = FastDoubleParser.ParseDouble(l);
+      FastDoubleParser.TryParseDouble(l, out double d);
       max = d > max ? d : max;
     }
     return max;
