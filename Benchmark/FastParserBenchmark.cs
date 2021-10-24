@@ -35,7 +35,7 @@ public class FFBenchmark
     }
   }
 
-  [Benchmark(Description = "Utf8Parser")]
+  //[Benchmark(Description = "Utf8Parser")]
   public double Utf8Parser()
   {
     double max = double.MinValue;
@@ -50,7 +50,7 @@ public class FFBenchmark
     return max;
   }
 
-  [Benchmark(Description = "FastFloat.TryParseDouble() - UTF8")]
+//  [Benchmark(Description = "FastFloat.TryParseDouble() - UTF8")]
   public double FastParserUtf8_()
   {
     double max = double.MinValue;
@@ -63,7 +63,7 @@ public class FFBenchmark
     return max;
   }
 
-  [Benchmark(Description = "FastFloat.TryParseDouble()")]
+  //[Benchmark(Description = "FastFloat.TryParseDouble()")]
   public double FastParser_()
   {
     double max = double.MinValue;
@@ -102,9 +102,30 @@ public class FFBenchmark
    return max;
   }
 
+  [Benchmark(Description = "ParseNumberString() UTF8")]
+  public double FastParser_PNS_utf8()
+  {
+   double max = double.MinValue;
+
+   foreach (var l in _linesUtf8)
+   {
+     unsafe { 
+      
+     fixed (byte* p = l)
+     {
+       var pni = ParsedNumberString.ParseNumberString(p, p + l.Length);
+       max = pni.exponent > max ? pni.exponent: max;
+     }
+      
+      
+      
+     }
+   }
+   return max;
+  }
 
 
-  [Benchmark(Baseline = true, Description = "Double.Parse()")]
+//  [Benchmark(Baseline = true, Description = "Double.Parse()")]
   public double Double_std()
   {
    double max = double.MinValue;
