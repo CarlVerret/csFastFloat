@@ -47,21 +47,17 @@ namespace csFastFloat
       return parse_eight_digits_unrolled(val);
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static  bool is_made_of_eight_digits_fast(ulong val)
-    {
-      // We only enable paths depending on this function on little endian
-      // platforms (it happens to be effectively nearly everywhere).
-      return BitConverter.IsLittleEndian && (((val & 0xF0F0F0F0F0F0F0F0) |
-               (((val + 0x0606060606060606) & 0xF0F0F0F0F0F0F0F0) >> 4)) ==
-              0x3333333333333333);
-    }
+    
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static  bool is_made_of_eight_digits_fast(byte* chars)
     {
       ulong val = Unsafe.ReadUnaligned<ulong>(chars);
-      return is_made_of_eight_digits_fast(val);
+      // We only enable paths depending on this function on little endian
+      // platforms (it happens to be effectively nearly everywhere).
+      // ref : https://lemire.me/blog/tag/swar/
+      return BitConverter.IsLittleEndian && ((val & (val + 0x0606060606060606) & 0xF0F0F0F0F0F0F0F0) == 0x3030303030303030);
+
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
