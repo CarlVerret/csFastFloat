@@ -121,6 +121,32 @@ namespace TestcsFastFloat.Tests.Basic
     {
       Assert.Throws<System.ArgumentException>(() => FastDoubleParser.ParseDouble("3.14", NumberStyles.AllowExponent));
     }
+    [Fact]
+    unsafe private void Multiples_decimal_separators_works()
+    {
+      Assert.Equal(FastDoubleParser.ParseDouble("3.14", decimal_separator: '.'), FastDoubleParser.ParseDouble("3,14", decimal_separator: ','));
+      Assert.Equal(FastFloatParser.ParseFloat("3.14", decimal_separator: '.'), FastFloatParser.ParseFloat("3,14", decimal_separator: ','));
+
+
+      var p1 = System.Text.Encoding.UTF8.GetBytes("3.14");
+      var p2 = System.Text.Encoding.UTF8.GetBytes("3,14");
+
+      {
+
+        Assert.Equal(FastDoubleParser.ParseDouble(p1, decimal_separator: (byte)'.'), FastDoubleParser.ParseDouble(p2, decimal_separator: (byte)','));
+        Assert.Equal(FastFloatParser.ParseFloat(p1, decimal_separator: (byte)'.'), FastFloatParser.ParseFloat(p2, decimal_separator: (byte)','));
+
+
+
+      }
+
+
+
+
+
+    }
+
+
 
     [Fact]
     private void ScientificWorks_when_ConsistentInput()

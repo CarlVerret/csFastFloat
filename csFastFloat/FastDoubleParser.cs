@@ -465,7 +465,7 @@ namespace csFastFloat
       {
         return false;
       }
-      ParsedNumberString pns = ParsedNumberString.ParseNumberString(first, last, expectedFormat);
+      ParsedNumberString pns = ParsedNumberString.ParseNumberString(first, last, expectedFormat, decimal_separator);
       if (!pns.valid)
       {
         return false;
@@ -519,7 +519,7 @@ namespace csFastFloat
       {
         return false;
       }
-      ParsedNumberString pns = ParsedNumberString.ParseNumberString(first, last, expectedFormat);
+      ParsedNumberString pns = ParsedNumberString.ParseNumberString(first, last, expectedFormat,decimal_separator );
       if (!pns.valid)
       {
         return false;
