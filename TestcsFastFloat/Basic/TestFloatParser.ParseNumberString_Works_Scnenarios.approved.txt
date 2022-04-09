@@ -26,6 +26,10 @@ Scenario : int neg
 Valeur   : -1 
 Resultat : 0 1 True True
 
+Scenario : starting decimal sep 
+Valeur   : .1 
+Resultat : -1 1 False True
+
 Scenario : autreint  
 Valeur   : 123124 
 Resultat : 0 123124 False True

@@ -458,7 +458,7 @@ namespace csFastFloat
         characters_consumed = 0;
         return false;
       }
-      ParsedNumberString pns = ParsedNumberString.ParseNumberString(first, last, styles, decimal_separator);
+      ParsedNumberString pns = ParsedNumberString.ParseNumberString2(first, last, styles, decimal_separator);
       if (!pns.valid)
       {
         return false;

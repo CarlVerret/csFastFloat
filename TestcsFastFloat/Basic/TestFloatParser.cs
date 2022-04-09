@@ -113,6 +113,9 @@ namespace TestcsFastFloat.Tests.Basic
       sut.Add("int", "1");
       sut.Add("int neg", "-1");
 
+      sut.Add("starting decimal sep", ".1");
+
+
       sut.Add("autreint ", "123124");
       sut.Add("autreint neg", "-123124");
 
@@ -137,25 +140,20 @@ namespace TestcsFastFloat.Tests.Basic
         fixed (char* p = kv.Value)
         {
           char* pend = p + kv.Value.Length;
-          var res = ParsedNumberString.ParseNumberString(p, pend);
+          var res = ParsedNumberString.ParseNumberString2(p, pend);
 
           sb.AppendLine($"Resultat : {res.exponent} {res.mantissa} {res.negative} {res.valid}");
+
           sb.AppendLine();
+
         }
       }
 
-      // We do not want to fail the tests when the user has not
-      // configured a diff tool.
-      try
-      {
-        VerifyData(sb.ToString());
-      }
-      catch(System.Exception ex)
-      {
-        Console.WriteLine(ex.Message);
-      }
+     
+      VerifyData(sb.ToString());
+     
     }
-
+  
     [Fact]
     unsafe public void PaseFloat_Throws_When_NULL() => Assert.Throws<System.ArgumentNullException>(() => FastFloatParser.ParseFloat((string) null));
 
@@ -223,16 +221,9 @@ namespace TestcsFastFloat.Tests.Basic
         }
       }
 
-      // We do not want to fail the tests when the user has not
-      // configured a diff tool.
-      try
-      {
+     
         VerifyData(sb.ToString());
-      }
-      catch(System.Exception ex)
-      {
-        Console.WriteLine(ex.Message);
-      }
+     
     }
 
     private static float[] testing_power_of_ten_float =  {

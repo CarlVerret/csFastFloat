@@ -1,20 +1,25 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.Runtime.CompilerServices;
+using static csFastFloat.Utils;
+
 namespace csFastFloat.Structures
 {
   internal unsafe struct ParsedNumberString
   {
     internal long exponent;
     internal ulong mantissa;
-  
+
     internal int characters_consumed;
     internal bool negative;
     internal bool valid;
     internal bool too_many_digits;
 
+
+
     // UTF-16 inputs involving SIMD within  eval_parse_eight_digits_simd when HAS_INTRINSICS
 
-    internal static  ParsedNumberString ParseNumberString(char* p, char* pend, NumberStyles expectedFormat = NumberStyles.Float, char decimal_separator = '.')
+    internal static ParsedNumberString ParseNumberString(char* p, char* pend, NumberStyles expectedFormat = NumberStyles.Float, char decimal_separator = '.')
     {
       ParsedNumberString answer = new ParsedNumberString();
 
@@ -80,6 +85,10 @@ namespace csFastFloat.Structures
       {
         return answer;
       }
+
+
+
+
       long exp_number = 0;            // explicit exponential part
       if (expectedFormat.HasFlag(NumberStyles.AllowExponent) && (p != pend) && (('e' == *p) || ('E' == *p)))
       {
@@ -126,7 +135,7 @@ namespace csFastFloat.Structures
         if ((expectedFormat.HasFlag(NumberStyles.AllowExponent)) && !(expectedFormat.HasFlag(NumberStyles.AllowDecimalPoint))) { return answer; }
       }
       answer.valid = true;
-      answer.characters_consumed = (int) (p - pstart);
+      answer.characters_consumed = (int)(p - pstart);
 
       // If we frequently had to deal with long strings of digits,
       // we could extend our code by using a 128-bit integer instead
@@ -180,8 +189,204 @@ namespace csFastFloat.Structures
       return answer;
     }
 
+    internal static ParsedNumberString ParseNumberString2(char* p, char* pend, NumberStyles expectedFormat = NumberStyles.Float, char decimal_separator = '.')
+    {
+      ParsedNumberString answer = new ParsedNumberString();
+
+      answer.valid = false;
+      answer.too_many_digits = false;
+      char* pstart = p;
+      answer.negative = (*p == '-');
+      if ((*p == '-') || (*p == '+'))
+      {
+        ++p;
+        if (p == pend)
+        {
+          return answer;
+        }
+        if (!Utils.is_integer(*p, out uint _) && (*p != decimal_separator))
+        { // a  sign must be followed by an integer or the dot
+          return answer;
+        }
+      }
+      char* start_digits = p;
+
+      ulong i = 0; // an unsigned int avoids signed overflows (which are bad)
+
+
+      bool decimal_sep_encountered = false;
+      char* end_of_integer_part = p;
+
+      long exponent = 0;
+
+      while ((p <= pend - 8) && Utils.ParseStringWithSIMD(p, pend, out SIMDParseResult spr, decimal_sep_encountered ? null : decimal_separator, false))
+      {
+        i = i * (ulong)Constants.CalculationConstants.powers_of_ten_double[spr.digit_count] + spr.parsed_value;
+        p += spr.characters_consumed;
+        if (spr.decimal_separator_encountered)
+        {
+          decimal_sep_encountered = true;
+          end_of_integer_part = spr.decimal_separator_position;
+        }
+        else
+        {
+          if(!decimal_sep_encountered)
+            end_of_integer_part = p;
+        }
+        
+      }
+           
+      
+      while ((p != pend) && (Utils.is_integer(*p, out uint cMinus0) || (*p == decimal_separator)))
+      {
+
+        if (*p == decimal_separator)
+        {
+
+          if (decimal_sep_encountered)
+          {
+            return answer;
+          }
+          else
+          {
+            decimal_sep_encountered = true;
+            end_of_integer_part = p;
+            ++p;
+          }
+
+        }
+        else
+        {
+
+          byte digit = (byte)cMinus0;
+          ++p;
+          i = i * 10 + digit; // in rare cases, this will overflow, but that's ok
+
+        }
+
+        if (!decimal_sep_encountered)
+          end_of_integer_part++;
+
+      }
+    
+      long digit_count = (long)(end_of_integer_part - start_digits);
+
+      exponent = decimal_sep_encountered ? end_of_integer_part + 1 - p : 0;
+      digit_count -= exponent;
+
+
+      // we must have encountered at least one integer!
+      if (digit_count == 0)
+      {
+        return answer;
+      }
+
+      long exp_number = 0;            // explicit exponential part
+      if (expectedFormat.HasFlag(NumberStyles.AllowExponent) && (p != pend) && (('e' == *p) || ('E' == *p)))
+      {
+        char* location_of_e = p;
+        ++p;
+        bool neg_exp = false;
+        if ((p != pend) && ('-' == *p))
+        {
+          neg_exp = true;
+          ++p;
+        }
+        else if ((p != pend) && ('+' == *p))
+        {
+          ++p;
+        }
+        if ((p == pend) || !Utils.is_integer(*p, out uint _))
+        {
+          if (expectedFormat != NumberStyles.AllowDecimalPoint) // ce n'est pas ça !
+          {
+            // We are in error.
+            return answer;
+          }
+          // Otherwise, we will be ignoring the 'e'.
+          p = location_of_e;
+        }
+        else
+        {
+          while ((p != pend) && Utils.is_integer(*p, out uint cMinus0))
+          {
+            byte digit = (byte)cMinus0;
+            if (exp_number < 0x10000)
+            {
+              exp_number = 10 * exp_number + digit;
+            }
+            ++p;
+          }
+          if (neg_exp) { exp_number = -exp_number; }
+          exponent += exp_number;
+        }
+      }
+      else
+      {
+        // If it scientific and not fixed, we have to bail out.
+        if ((expectedFormat.HasFlag(NumberStyles.AllowExponent)) && !(expectedFormat.HasFlag(NumberStyles.AllowDecimalPoint))) { return answer; }
+      }
+      answer.valid = true;
+      answer.characters_consumed = (int)(p - pstart);
+
+      // If we frequently had to deal with long strings of digits,
+      // we could extend our code by using a 128-bit integer instead
+      // of a 64-bit integer. However, this is uncommon.
+      //
+      // We can deal with up to 19 digits.
+      if (digit_count > 19)
+      { // this is uncommon
+        // It is possible that the integer had an overflow.
+        // We have to handle the case where we have 0.0000somenumber.
+        // We need to be mindful of the case where we only have zeroes...
+        // E.g., 0.000000000...000.
+        char* start = start_digits;
+        while ((start != pend) && (*start == '0' || *start == decimal_separator))
+        {
+          if (*start == '0') { digit_count--; }
+          start++;
+        }
+        if (digit_count > 19)
+        {
+          answer.too_many_digits = true;
+          // Let us start again, this time, avoiding overflows.
+          i = 0;
+          p = start_digits;
+          const ulong minimal_nineteen_digit_integer = 1000000000000000000;
+          while ((i < minimal_nineteen_digit_integer) && (p != pend) && Utils.is_integer(*p, out uint cMinus0))
+          {
+            i = i * 10 + (ulong)cMinus0;
+            ++p;
+          }
+          if (i >= minimal_nineteen_digit_integer)
+          { // We have a big integers
+            exponent = end_of_integer_part - p + exp_number;
+          }
+          else
+          { // We have a value with a fractional component.
+            p++; // skip the '.'
+            char* first_after_period = p;
+            while ((i < minimal_nineteen_digit_integer) && (p != pend) && Utils.is_integer(*p, out uint cMinus0))
+            {
+              i = i * 10 + (ulong)cMinus0;
+              ++p;
+            }
+            exponent = first_after_period - p + exp_number;
+          }
+          // We have now corrected both exponent and i, to a truncated value
+        }
+      }
+      answer.exponent = exponent;
+      answer.mantissa = i;
+      return answer;
+    }
+
+
+
+
+
     // UTF-8 / ASCII inputs.
-    internal static  ParsedNumberString ParseNumberString(byte* p, byte* pend, NumberStyles expectedFormat = NumberStyles.Float, byte decimal_separator = (byte)'.')
+    internal static ParsedNumberString ParseNumberString(byte* p, byte* pend, NumberStyles expectedFormat = NumberStyles.Float, byte decimal_separator = (byte)'.')
     {
       ParsedNumberString answer = new ParsedNumberString();
 
@@ -222,7 +427,8 @@ namespace csFastFloat.Structures
         {
           i = i * 100000000 + Utils.parse_eight_digits_unrolled(p);
           p += 8;
-          if ((p + 8 <= pend) && Utils.is_made_of_eight_digits_fast(p)) {
+          if ((p + 8 <= pend) && Utils.is_made_of_eight_digits_fast(p))
+          {
             i = i * 100000000 + Utils.parse_eight_digits_unrolled(p);
             p += 8;
           }
@@ -285,7 +491,7 @@ namespace csFastFloat.Structures
         if (expectedFormat.HasFlag(NumberStyles.AllowExponent) && !expectedFormat.HasFlag(NumberStyles.AllowDecimalPoint)) { return answer; }
       }
       answer.valid = true;
-      answer.characters_consumed = (int) (p - pstart);
+      answer.characters_consumed = (int)(p - pstart);
 
       // If we frequently had to deal with long strings of digits,
       // we could extend our code by using a 128-bit integer instead
