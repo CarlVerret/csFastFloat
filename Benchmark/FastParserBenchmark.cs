@@ -13,6 +13,7 @@ using System.Globalization;
 
 using BenchmarkDotNet.Reports;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace csFastFloat.Benchmark
 {
@@ -89,10 +90,13 @@ public class FFBenchmark
    {
      unsafe { 
       
-     fixed (char* p = l)
+     fixed (char* p = l )
      {
-       var pni = ParsedNumberString.ParseNumberString(p, p + l.Length);
-       max = pni.exponent > max ? pni.exponent: max;
+        var pni = ParsedNumberString.ParseNumberString(p, p + l.Length);
+        if (pni.valid)
+        { 
+          max = pni.mantissa > max ? pni.mantissa : max;
+        }
      }
       
       
@@ -114,7 +118,10 @@ public class FFBenchmark
           fixed (char* p = l)
           {
             var pni = ParsedNumberString.ParseNumberString2(p, p + l.Length);
-            max = pni.exponent > max ? pni.exponent : max;
+            if (pni.valid)
+            {
+              max = pni.mantissa > max ? pni.mantissa : max;
+            }
           }
 
 
@@ -139,7 +146,7 @@ public class FFBenchmark
     //}
 
 
-    [Params(@"data/canada.txt", @"data/mesh.txt", @"data/synthetic.txt")]
+    [Params(@"data/canada.txt")] //, @"data/mesh.txt", @"data/synthetic.txt")]
    public string FileName;
 
   [GlobalSetup]

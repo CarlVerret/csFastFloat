@@ -266,6 +266,7 @@ namespace csFastFloat
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static bool TryParseEightConsecutiveDigits_SIMD(char* start, out uint value)
     {
+      value = 0;
 
       // escape if SIMD functions aren't available.
       if (!Sse41.IsSupported)
@@ -275,8 +276,25 @@ namespace csFastFloat
       }
 
 
+
+
       value = 0;
       Vector128<short> raw = Sse41.LoadDquVector128((short*)start);
+      int dsp = -1;
+
+      var bytemask = Sse2.CompareEqual(raw.AsByte(), Vector128.Create((byte)'.')).AsByte();
+      var mask = Sse41.MoveMask(bytemask);
+      if (mask != 0)
+      {
+        if (!((mask & (mask - 1)) == 0))
+        {
+          return false;
+        }
+        var tzc = System.Numerics.BitOperations.TrailingZeroCount(mask);
+        dsp = tzc / 2;
+      }
+
+
       Vector128<short> ascii0 = Vector128.Create((short)(48 + short.MinValue));
       Vector128<short> after_ascii9 = Vector128.Create((short)(short.MinValue + 9));
       Vector128<short> a = Sse41.Subtract(raw, ascii0);
@@ -293,7 +311,7 @@ namespace csFastFloat
       Vector128<short> mul2 = Vector128.Create(0x00FA61A8, 0x0001000A, 0, 0).AsInt16();
 
       //  extract the low bytes of each 16-bit word
-      var vb = Sse41.Shuffle(a.AsByte(), Vector128.Create(0, 2, 4, 6, 8, 10, 12, 14, 0, 2, 4, 6, 8, 10, 12, 14).AsByte());
+      var vb = Sse41.Shuffle(a.AsByte(), Vector128.Create(shufflevectors_values[dsp+1]).AsByte());
       Vector128<int> v = Sse2.MultiplyAddAdjacent(Ssse3.MultiplyAddAdjacent(mul1, vb.AsSByte()), mul2);
       v = Sse2.Add(Sse2.Add(v, v), Sse2.Shuffle(v, 1));
       value = (uint)v.GetElement(0);
@@ -302,29 +320,50 @@ namespace csFastFloat
 
     }
 
+  
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    static T monVecteur<T>(T [] myArray,  int deplacement)
+    {
+      ref T tableRef =
+         ref MemoryMarshal.GetArrayDataReference(myArray);
+      return Unsafe.Add(ref tableRef, (IntPtr)(uint)deplacement);
+    }
+
 
     internal unsafe struct SIMDParseResult
     {
       internal bool valid;
       internal ulong parsed_value;
-      internal int characters_consumed;
+      //internal int characters_consumed;
       internal bool decimal_separator_encountered;
       internal char* decimal_separator_position;
-      internal bool exponent_encountered;
+    //  internal bool exponent_encountered;
       internal int digit_count;
     }
 
+    internal readonly static ulong[] shufflevectors_values =
+        {
+        1012195045828461056, // 0 no move
+        1012195045828461311, // dsp =1 
+        1012195045828460799, // dsp = 2... 
+        1012195045828329727,
+        1012195045794775295,
+        1012195037204840703,
+        1012192838181585151,
+        1011629888228163839,
+        867514700152307967
+        };
 
-      [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static bool ParseStringWithSIMD(char* start, char* end, out SIMDParseResult pns,   char? separator, bool allowExponent)
+
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static bool ParseStringWithSIMD_actual(char* start, char* end, out SIMDParseResult pns,   char? separator, bool allowExponent)
     {
 
-      pns = new SIMDParseResult() { valid = false, parsed_value = 0, characters_consumed = 0, decimal_separator_encountered = false, exponent_encountered = false };
+      pns = new SIMDParseResult() { valid = false, parsed_value = 0,  decimal_separator_encountered = false };
 
-
-      pns.characters_consumed = 0;
-
-      if (start == end)
+      if (start == end || end-start < 8)
       {
         pns.valid = false;
         return false;
@@ -332,80 +371,76 @@ namespace csFastFloat
 
 
 
-        var mask = 0;
+        var dsp = -1;
         var raw = Sse41.LoadDquVector128((byte*)start);
         
         if (separator.HasValue)
         {
           var bytemask = Sse2.CompareEqual(raw, Vector128.Create((byte)separator)).AsByte();
-          mask = Sse41.MoveMask(bytemask);
-        }
+          var  mask = Sse41.MoveMask(bytemask);
+          if(!((mask & (mask - 1)) == 0))
+          {
+            pns.valid = false;
+            return false;
+          }
+          var tzc = System.Numerics.BitOperations.TrailingZeroCount(mask);
+          dsp = (mask == 0 ? -1 : tzc / 2);
+
+      }
 
         int text_lenght = (Math.Min(8, (int)(end - start)));
 
-        pns.characters_consumed += text_lenght;
+        //pns.characters_consumed += text_lenght;
+      
 
-        (Vector128<byte>? ShuffleVector, int dsp) = mask switch
-        {
-          (0) => (Vector128.Create(0, 2, 4, 6, 8, 10, 12, 14, 0, 2, 4, 6, 8, 10, 12, 14).AsByte(), -1),
-          (1) => (Vector128.Create(-1, 2, 4, 6, 8, 10, 12, 14, -1, 2, 4, 6, 8, 10, 12, 14).AsByte(), 0),
-          (4) => (Vector128.Create(-1, 0, 4, 6, 8, 10, 12, 14, -1, 0, 4, 6, 8, 10, 12, 14).AsByte(), 1),
-          (16) => (Vector128.Create(-1, 0, 2, 6, 8, 10, 12, 14, -1, 0, 2, 6, 8, 10, 12, 14).AsByte(), 2),
-          (64) => (Vector128.Create(-1, 0, 2, 4, 8, 10, 12, 14, -1, 0, 2, 4, 8, 10, 12, 14).AsByte(), 3),
-          (256) => (Vector128.Create(-1, 0, 2, 4, 6, 10, 12, 14, -1, 0, 2, 4, 6, 10, 12, 14).AsByte(),4),
-          (1024) => (Vector128.Create(-1, 0, 2, 4, 6, 8, 12, 14, -1, 0, 2, 4, 6, 8, 12, 14).AsByte(), 5),
-          (4096) => (Vector128.Create(-1, 0, 2, 4, 6, 8, 10, 14, -1, 0, 2, 4, 6, 8, 10, 14).AsByte(), 6),
-          (16384) => (Vector128.Create(-1, 0, 2, 4, 6, 8, 10, 12, -1, 0, 2, 4, 6, 8, 10, 12).AsByte(), 7),
-          (_) => (default(Vector128<byte>), -2)
-        };
-
-        
-
-        // test for e / E
-        // if encountered, shrink parsed string and adjust cursor_position and consumed_characters
-        if(allowExponent)
-        {
-          var bytemask = Sse2.CompareEqual(raw, Vector128.Create((byte)'e')).AsByte();
-          var exp_mask = Sse41.MoveMask(bytemask);
-          if(exp_mask == 0)
-          {
-            bytemask = Sse2.CompareEqual(raw, Vector128.Create((byte)'E')).AsByte();
-            exp_mask = Sse41.MoveMask(bytemask);
-          }
-          if (exp_mask > 0)
-          { 
-            pns.exponent_encountered = true;
-            var shrink_pos = exp_mask switch
-            {
-              (1) => 0,
-              (4) => 1,
-              (16) => 2,
-              (64) => 3,
-              (256) => 4,
-              (1024) => 5,
-              (4096) => 6,
-              (16384) => 7,
-              _ => -1
-            };
-
-            if (shrink_pos == -1)
-            {
-              pns.valid = false;
-              return false;
-
-            }
-
-            pns.characters_consumed -= text_lenght;
-            pns.characters_consumed += shrink_pos;
-
-            text_lenght = shrink_pos;
-  
-            
-          }
-        }
+      Vector128<byte> ShuffleVector = Vector128.Create(shufflevectors_values[dsp+1]).AsByte();
 
 
-        if (dsp ==-2)
+      // test for e / E
+      // if encountered, shrink parsed string and adjust cursor_position and consumed_characters
+      //if (allowExponent)
+      //{
+      //  var bytemask = Sse2.CompareEqual(raw, Vector128.Create((byte)'e')).AsByte();
+      //  var exp_mask = Sse41.MoveMask(bytemask);
+      //  if (exp_mask == 0)
+      //  {
+      //    bytemask = Sse2.CompareEqual(raw, Vector128.Create((byte)'E')).AsByte();
+      //    exp_mask = Sse41.MoveMask(bytemask);
+      //  }
+      //  if (exp_mask > 0)
+      //  {
+      //    //pns.exponent_encountered = true;
+      //    var shrink_pos = exp_mask switch
+      //    {
+      //      (1) => 0,
+      //      (4) => 1,
+      //      (16) => 2,
+      //      (64) => 3,
+      //      (256) => 4,
+      //      (1024) => 5,
+      //      (4096) => 6,
+      //      (16384) => 7,
+      //      _ => -1
+      //    };
+
+      //    if (shrink_pos == -1)
+      //    {
+      //      pns.valid = false;
+      //      return false;
+
+      //    }
+
+      //    //pns.characters_consumed -= text_lenght;
+      //    //pns.characters_consumed += shrink_pos;
+
+      //    text_lenght = shrink_pos;
+
+
+      //  }
+      //}
+
+
+      if (dsp ==-2)
         {
           pns.valid = false;
           return false;
@@ -416,9 +451,9 @@ namespace csFastFloat
         var a = Sse2.SubtractSaturate(raw, Vector128.Create((byte)'0'));
         Vector128<byte> after_ascii9 = Vector128.Create((byte)(byte.MinValue + 9));
 
-        var vb = Sse41.Shuffle(a.AsByte(), ShuffleVector.Value);
-        Vector128<long> shift_amount = Sse2.ConvertScalarToVector128Int32(8 - text_lenght << 3).AsInt64();
-        vb = Sse2.ShiftLeftLogical(vb.AsInt64(), shift_amount).AsByte();
+        var vb = Sse41.Shuffle(a.AsByte(), ShuffleVector);
+        //Vector128<long> shift_amount = Sse2.ConvertScalarToVector128Int32(8 - text_lenght << 3).AsInt64();
+        //vb = Sse2.ShiftLeftLogical(vb.AsInt64(), shift_amount).AsByte();
         Vector128<sbyte> b = Sse41.CompareLessThan(after_ascii9.AsSByte(), vb.AsSByte());
 
         if (!Sse41.TestZ(b, b))
@@ -454,9 +489,76 @@ namespace csFastFloat
 
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static bool ParseStringWithSIMD(char* start, out SIMDParseResult pns, char? separator, bool allowExponent)
+    {
+
+      pns = new SIMDParseResult() { valid = false, parsed_value = 0,  decimal_separator_encountered = false };
 
 
- 
+
+
+
+      Vector128<short> raw = Sse41.LoadDquVector128((short*)start);
+      int dsp = -1;
+
+
+      var bytemask = Sse2.CompareEqual(raw.AsByte(), Vector128.Create((byte)'.')).AsByte();
+      var mask = Sse41.MoveMask(bytemask);
+      if (mask != 0)
+      {
+        if (!((mask & (mask - 1)) == 0))
+        {
+          return false;
+        }
+        var tzc = System.Numerics.BitOperations.TrailingZeroCount(mask);
+        dsp = tzc / 2;
+      }
+      int text_lenght = 8;//(Math.Min(8, (int)(end - start)));
+
+      Vector128<short> ascii0 = Vector128.Create((short)(48 + short.MinValue));
+      Vector128<short> after_ascii9 = Vector128.Create((short)(short.MinValue + 9));
+      Vector128<short> a = Sse41.Subtract(raw, ascii0);
+      Vector128<short> b = Sse41.CompareLessThan(after_ascii9, a);
+
+      var c=  Sse41.Shuffle(b.AsByte(), Vector128.Create(shufflevectors_values[dsp + 1]).AsByte());
+
+
+      if (!Sse41.TestZ(c, c))
+      {
+        return false;
+      }
+
+      //// @Credit  AQRIT
+      //// https://stackoverflow.com/questions/66371621/hardware-simd-parsing-in-c-sharp-performance-improvement/66430672
+      Vector128<byte> mul1 = Vector128.Create(0x14C814C8, 0x010A0A64, 0, 0).AsByte();
+      Vector128<short> mul2 = Vector128.Create(0x00FA61A8, 0x0001000A, 0, 0).AsInt16();
+
+      ////  extract the low bytes of each 16-bit word
+      var vb = Sse41.Shuffle(a.AsByte(), Vector128.Create(shufflevectors_values[dsp + 1]).AsByte());
+      Vector128<int> v = Sse2.MultiplyAddAdjacent(Ssse3.MultiplyAddAdjacent(mul1, vb.AsSByte()), mul2);
+      v = Sse2.Add(Sse2.Add(v, v), Sse2.Shuffle(v, 1));
+
+      if (dsp >= 0)
+      {
+        pns.decimal_separator_position = start + dsp;
+        pns.decimal_separator_encountered = true;
+        text_lenght--;
+      }
+
+      pns.digit_count += text_lenght;
+
+
+
+      pns.parsed_value = (uint)v.GetElement(0);
+      pns.valid = true;
+
+      return true;
+
+    }
+
+
+
 #endif
 
   }

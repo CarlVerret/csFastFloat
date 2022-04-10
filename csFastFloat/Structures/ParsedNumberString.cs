@@ -217,61 +217,60 @@ namespace csFastFloat.Structures
       bool decimal_sep_encountered = false;
       char* end_of_integer_part = p;
 
-      long exponent = 0;
 
-      while ((p <= pend - 8) && Utils.ParseStringWithSIMD(p, pend, out SIMDParseResult spr, decimal_sep_encountered ? null : decimal_separator, false))
+      while ((p <= pend - 8) && Utils.ParseStringWithSIMD(p, out SIMDParseResult spr, decimal_sep_encountered ? decimal_separator :null, false))
       {
-        i = i * (ulong)Constants.CalculationConstants.powers_of_ten_double[spr.digit_count] + spr.parsed_value;
-        p += spr.characters_consumed;
+       
         if (spr.decimal_separator_encountered)
         {
+          i = i * (ulong)10000000 + spr.parsed_value;
+
           decimal_sep_encountered = true;
           end_of_integer_part = spr.decimal_separator_position;
         }
-        else
+        else 
         {
-          if(!decimal_sep_encountered)
-            end_of_integer_part = p;
+          i = i * (ulong)100000000 + spr.parsed_value;
+
         }
-        
+        p += 8;
       }
-           
-      
-      while ((p != pend) && (Utils.is_integer(*p, out uint cMinus0) || (*p == decimal_separator)))
+      if (!decimal_sep_encountered)
       {
-
-        if (*p == decimal_separator)
+        while (Utils.is_integer(*p, out uint cMinus0) && !decimal_sep_encountered)
         {
-
-          if (decimal_sep_encountered)
-          {
-            return answer;
-          }
-          else
-          {
-            decimal_sep_encountered = true;
-            end_of_integer_part = p;
-            ++p;
-          }
-
-        }
-        else
-        {
-
           byte digit = (byte)cMinus0;
           ++p;
           i = i * 10 + digit; // in rare cases, this will overflow, but that's ok
 
         }
+        end_of_integer_part = p;
+      }
 
-        if (!decimal_sep_encountered)
-          end_of_integer_part++;
+
+      
+
+      if (*p == decimal_separator && !decimal_sep_encountered)
+      {
+        decimal_sep_encountered = true;
+        end_of_integer_part = p;
+        ++p;
+      }
+
+      while (Utils.is_integer(*p, out uint cMinus0))
+      {
+        byte digit = (byte)cMinus0;
+        ++p;
+        i = i * 10 + digit; // in rare cases, this will overflow, but that's ok
 
       }
-    
+
+      if (!decimal_sep_encountered)
+        end_of_integer_part = p;
+
       long digit_count = (long)(end_of_integer_part - start_digits);
 
-      exponent = decimal_sep_encountered ? end_of_integer_part + 1 - p : 0;
+      long exponent =  exponent = decimal_sep_encountered ? end_of_integer_part + 1 - p : 0;
       digit_count -= exponent;
 
 
@@ -544,6 +543,11 @@ namespace csFastFloat.Structures
       answer.mantissa = i;
       return answer;
     }
+
+
+
+
+
 
 
 
