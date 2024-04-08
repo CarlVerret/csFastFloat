@@ -73,15 +73,13 @@ namespace csFastFloat.Structures
         digit_count -= exponent;
       }
 
-
-
       // we must have encountered at least one integer!
       if (digit_count == 0)
       {
         return answer;
       }
       long exp_number = 0;            // explicit exponential part
-      if (expectedFormat.HasFlag(NumberStyles.AllowExponent) && (p != pend) && (('e' == *p) || ('E' == *p)))
+      if (expectedFormat.IsSet(NumberStyles.AllowExponent) && (p != pend) && (('e' == *p) || ('E' == *p)))
       {
         char* location_of_e = p;
         ++p;
@@ -123,7 +121,7 @@ namespace csFastFloat.Structures
       else
       {
         // If it scientific and not fixed, we have to bail out.
-        if ((expectedFormat.HasFlag(NumberStyles.AllowExponent)) && !(expectedFormat.HasFlag(NumberStyles.AllowDecimalPoint))) { return answer; }
+        if ((expectedFormat.IsSet(NumberStyles.AllowExponent)) && !(expectedFormat.IsSet(NumberStyles.AllowDecimalPoint))) { return answer; }
       }
       answer.valid = true;
       answer.characters_consumed = (int) (p - pstart);
@@ -241,7 +239,7 @@ namespace csFastFloat.Structures
         return answer;
       }
       long exp_number = 0;            // explicit exponential part
-      if (expectedFormat.HasFlag(NumberStyles.AllowExponent) && (p != pend) && (('e' == *p) || ('E' == *p)))
+      if (expectedFormat.IsSet(NumberStyles.AllowExponent) && (p != pend) && (('e' == *p) || ('E' == *p)))
       {
         byte* location_of_e = p;
         ++p;
@@ -257,7 +255,7 @@ namespace csFastFloat.Structures
         }
         if ((p == pend) || !Utils.is_integer(*p, out uint _))
         {
-          if (!expectedFormat.HasFlag(NumberStyles.AllowDecimalPoint))
+          if (!expectedFormat.IsSet(NumberStyles.AllowDecimalPoint))
           {
             // We are in error.
             return answer;
@@ -282,7 +280,7 @@ namespace csFastFloat.Structures
       else
       {
         // If it scientific and not fixed, we have to bail out.
-        if (expectedFormat.HasFlag(NumberStyles.AllowExponent) && !expectedFormat.HasFlag(NumberStyles.AllowDecimalPoint)) { return answer; }
+        if (expectedFormat.IsSet(NumberStyles.AllowExponent) && !expectedFormat.IsSet(NumberStyles.AllowDecimalPoint)) { return answer; }
       }
       answer.valid = true;
       answer.characters_consumed = (int) (p - pstart);
@@ -338,10 +336,5 @@ namespace csFastFloat.Structures
       answer.mantissa = i;
       return answer;
     }
-
-
-
-
-
   };
 }
