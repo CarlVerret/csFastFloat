@@ -105,7 +105,7 @@ namespace csFastFloat
     internal static int power(int q)
         => (((152170 + 65536) * q) >> 16) + 63;
 
-#if NET5_0
+#if NET5_0_OR_GREATER
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static value128 FullMultiplication(ulong value1, ulong value2)

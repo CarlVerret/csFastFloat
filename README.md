@@ -42,18 +42,18 @@ In this repo [FastFloatTestBench](https://github.com/CarlVerret/FastFloatTestBen
 
 # Requirements
 
-.NET Standard 2.0 or newer. Under .NET 5 framework, the library takes advantage of the new Math.BigMul() and Sse4.1 (SIMD) functions.
+.NET Standard 2.0 or newer. Under .NET 8 framework, the library takes advantage of the new Math.BigMul() and Sse4.1 (SIMD) functions.
 
 # Compile and testing
 
 As this library targets multiple framework, you can specify the target framework version with -f parameter :
 
 ``` command line
-dotnet build -c Release -f net5.0
-dotnet test -f net5.0
+dotnet build -c Release -f net8.0
+dotnet test -f net8.0
 
 ```
-If you omit the target framework and you don't have both .net 5.0 and dotnetcore 3.1 SDKs installed you may experience an error when building or running tests.
+If you omit the target framework and you don't have both .net 8.0 and dotnetcore 3.1 SDKs installed you may experience an error when building or running tests.
 
 The set of unit tests in /TestcsFastFloat project combines unit tests from many libraries.  It includes tests used by the Go Team.
 Additional info on Nigel Tao's work can be found [here](https://nigeltao.github.io/blog/2020/eisel-lemire.html#testing).  It also include strtod test file that can be found [here](https://github.com/ahrvoje/numerics/blob/master/strtod/strtod_tests.toml).

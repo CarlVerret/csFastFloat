@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using TestcsFastFloat.Tests;
 using Xunit;
 
-#if NET5_0
+#if NET5_0_OR_GREATER
 using System.Runtime.Intrinsics.X86;
 #endif
 
@@ -21,7 +21,7 @@ namespace TestcsFastFloat.Basic.SIMD
   {
 
 
-#if NET5_0
+#if NET5_0_OR_GREATER
 
 
 
