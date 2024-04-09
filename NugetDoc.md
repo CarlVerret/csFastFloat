@@ -34,7 +34,7 @@ Job=.NET Core 5.0  Runtime=.NET Core 5.0
 
 # Requirements
 
-.NET Core 3.1 or better. Under .NET 8 framework, the library takes advantage of the new Math.BigMul() function.
+.NET Core 3.1 or better. Under .NET 5 framework or newer, the library takes advantage of the new Math.BigMul() function.
 Since v2.0, net standard 2.0 is supported. 
 
 # Usage

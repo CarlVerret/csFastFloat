@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 <PropertyGroup>
-    <TargetFrameworks>net8.0;netcoreapp3.1;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net8.0;net5.0;netcoreapp3.1;netstandard2.0</TargetFrameworks>
     <Authors>Carl Verret</Authors>
     <Description>C# port of Daniel Lemire's fast_float fully ported from C++ to C#. It is up to 9 times faster than the standard library in some cases while providing exact results.</Description>
     <Copyright>csFastFloat is licensed under the MIT license</Copyright>
