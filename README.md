@@ -3,7 +3,9 @@
 
 C# port of Daniel Lemire's [fast_float](https://github.com/fastfloat/fast_float) fully ported from C++ to C#.  With older .NET frameworks (5.0 and older) it is up to 9 times faster than the standard library in some cases while providing exact results.
 
-# Note : An important portion of our work had been merged to .NET Runtime within version 7.0 of the .NET Framework.
+# Note 
+
+An important portion of our work had been merged to .NET Runtime within version 7.0 of the .NET Framework.
 
 
 
