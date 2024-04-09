@@ -1,7 +1,9 @@
 # csFastFloat : a fast and accurate float parser
 [![.NET](https://github.com/CarlVerret/csFastFloat/actions/workflows/dotnet.yml/badge.svg)](https://github.com/CarlVerret/csFastFloat/actions/workflows/dotnet.yml)
 
-C# port of Daniel Lemire's [fast_float](https://github.com/fastfloat/fast_float)  fully ported from C++ to C#. It is up to 9 times faster than the standard library in some cases while providing exact results.
+C# port of Daniel Lemire's [fast_float](https://github.com/fastfloat/fast_float) fully ported from C++ to C#.  With older .NET frameworks (5.0 and older) it is up to 9 times faster than the standard library in some cases while providing exact results.
+
+# Note : An important portion of our work had been merged to .NET Runtime within version 7.0 of the .NET Framework.
 
 
 
@@ -101,7 +103,7 @@ by the number pattern.
 
 
 # Credit
-This library is the main project in my master's degree under the direction of Professor [Daniel Lemire](https://github.com/lemire) at TELUQ University.
+This library was the main project in my master's degree in 2021 under the direction of Professor [Daniel Lemire](https://github.com/lemire) at TELUQ University.
 A special thanks to [Egor Bogatov](https://github.com/EgorBo) and all contributors for their really meaningful contribution.
 
 # Reference
