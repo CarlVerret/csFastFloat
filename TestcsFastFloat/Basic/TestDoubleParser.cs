@@ -1,271 +1,295 @@
-using csFastFloat;
-using csFastFloat.Structures;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using csFastFloat;
+using csFastFloat.Structures;
 using Xunit;
 
 namespace TestcsFastFloat.Tests.Basic
 {
 #pragma warning disable xUnit1026
 
-  public class TestDoubleParser : BaseTestClass
-  {
-    [InlineData("a", "A", 1, true)]
-    [InlineData("a", "a", 1, true)]
-    [InlineData("a", "b", 1, false)]
-    [Theory]
-    unsafe public void Test1(string a, string b, int len, bool res)
+    public class TestDoubleParser : BaseTestClass
     {
-      fixed (char* pa = a)
-      fixed (char* pb = b)
-      {
-        Assert.Equal(res, Utils.strncasecmp(pa, pb, len));
-      }
-    }
-
-    [Trait("Category", "Smoke Test")]
-    [Theory]
-    [InlineData("nan", double.NaN)]
-    [InlineData("inf", double.PositiveInfinity)]
-    [InlineData("+nan", double.NaN)]
-    [InlineData("-nan", double.NaN)]
-    [InlineData("+inf", double.PositiveInfinity)]
-    [InlineData("-inf", double.NegativeInfinity)]
-    [InlineData("infinity", double.PositiveInfinity)]
-    [InlineData("+infinity", double.PositiveInfinity)]
-    [InlineData("-infinity", double.NegativeInfinity)]
-    unsafe public void DoubleParser_HandleInvalidInput_works(string input, double sut)
-    {
-      fixed (char* p = input)
-      {
-        Assert.True(FastDoubleParser.TryHandleInvalidInput(p, p + input.Length, out int _, out double result));
-        Assert.Equal(sut, result);
-      }
-    }
-
-    [Fact]
-    public void NegativeZero() {
-
-      Assert.Equal(-0, FastDoubleParser.ParseDouble("-0"));
-    
-    }
-
-
-    [Fact]
-    private void Issue_74()
-    {
-      // Consumed=0 vs raising Exceptions
-      // Try parse should retrun false with consumed and result =0
-      Assert.False(FastDoubleParser.TryParseDouble("", out int nbChar, out double result));
-      Assert.Equal(0, nbChar);
-      Assert.Equal(0, result);
-
-      // as ParseDouble should throw with an empty input string
-      Assert.Throws<System.ArgumentException>(() => FastDoubleParser.ParseDouble(string.Empty));
-
-
-    }
-
-    [Fact]
-    unsafe public void ParseDouble_Throws_When_NULL() => Assert.Throws<System.ArgumentNullException>(() => FastDoubleParser.ParseDouble((string)null));
-
-    [Fact]
-    unsafe public void ParseDouble_Throws_When_Empty() => Assert.Throws<System.ArgumentException>(() => FastDoubleParser.ParseDouble(string.Empty));
-
-    [Theory]
-    [InlineData("some alpha")]
-    [InlineData("-")]
-    [InlineData("1ee10")]
-    unsafe public void ParseDouble_Throws_When_Invalid(string sut) => Assert.Throws<System.ArgumentException>(() => FastDoubleParser.ParseDouble(sut));
-
-
-    [Theory]
-    [InlineData("some alpha")]
-    [InlineData("")]
-    [InlineData(null)]
-    [InlineData("-")]
-    [InlineData("1ee10")]
-    public void TryParse_NeverThrows(string sut)
-    {
-
-      Assert.False(FastDoubleParser.TryParseDouble(sut, out _));
-
-
-    }
-
-
-
-
-    [SkippableFact]
-    unsafe public void ParseNumberString_Works_Scnenarios()
-    {
-
-
-      Skip.If(base.NoDiffToolDetected(), "No diff tool detected");
-
-      Dictionary<string, string> sut = new Dictionary<string, string>();
-
-      sut.Add("leading zeros", "001");
-      sut.Add("leading zeros neg", "-001");
-
-      sut.Add("zero", "0");
-
-      sut.Add("double", "0.00000000000000212312312");
-      sut.Add("double neg", "-0.00000000000000212312312");
-      sut.Add("int", "1");
-      sut.Add("int neg", "-1");
-
-      sut.Add("autreint ", "123124");
-      sut.Add("autreint neg", "-123124");
-
-      sut.Add("notation scientifique", "4.56E+2");
-      sut.Add("notation scientifique neg", "-4.56E-2");
-
-      sut.Add("notation scientifique 2", "4.5644E+2");
-      sut.Add("notation scientifique 2 neg", "-4.5644E-2");
-
-      sut.Add("notation scientifique 3", "4424.5644E+22");
-      sut.Add("notation scientifique 3 neg", "-4424.5644E-22");
-
-      sut.Add("notation scientifique 4", "4424.5644E+223");
-      sut.Add("notation scientifique 4 neg", "-4424.5644E-223");
-      StringBuilder sb = new StringBuilder();
-
-      foreach (KeyValuePair<string, string> kv in sut)
-      {
-        sb.AppendLine($"Scenario : {kv.Key} ");
-        sb.AppendLine($"Valeur   : {kv.Value} ");
-
-        fixed (char* p = kv.Value)
+        public static readonly TheoryData<string, double> NonDecimalsData = new TheoryData<string, double>
         {
-          char* pend = p + kv.Value.Length;
-          var res = ParsedNumberString.ParseNumberString(p, pend);
+            { "nan", double.NaN },
+            { "inf", double.PositiveInfinity },
+            { "+nan", double.NaN },
+            { "-nan", double.NaN },
+            { "+inf", double.PositiveInfinity },
+            { "-inf", double.NegativeInfinity },
+            { "infinity", double.PositiveInfinity },
+            { "+infinity", double.PositiveInfinity },
+            { "-infinity", double.NegativeInfinity }
+        };
 
-          sb.AppendLine($"Resultat : {res.exponent} {res.mantissa} {res.negative} {res.valid}");
-          sb.AppendLine();
-        }
-      }
-
-      // We do not want to fail the tests when the user has not
-      // configured a diff tool.
-      try
-      {
-        VerifyData(sb.ToString());
-
-      }
-      catch (System.Exception ex)
-      {
-        Console.WriteLine(ex.Message);
-      }
-    }
-
-    [SkippableFact]
-    unsafe public void ParseNumber_Works_Scnenarios()
-    {
-      Skip.If(base.NoDiffToolDetected(), "No diff tool detected");
-
-
-      Dictionary<string, string> sut = new Dictionary<string, string>();
-
-      sut.Add("leading zeros", "001");
-      sut.Add("leading zeros neg", "-001");
-
-      sut.Add("zero", "0");
-
-      sut.Add("double", "0.00000000000000212312312");
-      sut.Add("double neg", "-0.00000000000000212312312");
-      sut.Add("int", "1");
-      sut.Add("int neg", "-1");
-
-      sut.Add("autreint ", "123124");
-      sut.Add("autreint neg", "-123124");
-
-      sut.Add("notation scientifique", "4.56E+2");
-      sut.Add("notation scientifique neg", "-4.56E-2");
-
-      sut.Add("notation scientifique 2", "4.5644E+2");
-      sut.Add("notation scientifique 2 neg", "-4.5644E-2");
-
-      sut.Add("notation scientifique 3", "4424.5644E+22");
-      sut.Add("notation scientifique 3 neg", "-4424.5644E-22");
-
-      sut.Add("notation scientifique 4", "4424.5644E+223");
-      sut.Add("notation scientifique 4 neg", "-4424.5644E-223");
-      StringBuilder sb = new StringBuilder();
-
-      foreach (KeyValuePair<string, string> kv in sut)
-      {
-        sb.AppendLine($"Scenario : {kv.Key} ");
-        sb.AppendLine($"Valeur   : {kv.Value} ");
-
-        fixed (char* p = kv.Value)
+        [InlineData("a", "A", 1, true)]
+        [InlineData("a", "a", 1, true)]
+        [InlineData("a", "b", 1, false)]
+        [Theory]
+        unsafe public void Test1(string a, string b, int len, bool res)
         {
-          char* pend = p + kv.Value.Length;
-          var res = FastDoubleParser.ParseDouble(p, pend);
-
-          sb.AppendLine($"Resultat : {res}");
-          sb.AppendLine();
+            fixed (char* pa = a)
+            fixed (char* pb = b)
+            {
+                Assert.Equal(res, Utils.strncasecmp(pa, pb, len));
+            }
         }
-      }
 
-      // We do not want to fail the tests when the user has not
-      // configured a diff tool.
-      try
-      {
-        VerifyData(sb.ToString());
-      }
-      catch (System.Exception ex)
-      {
-        Console.WriteLine(ex.Message);
-      }
-    }
-
-    [Trait("Category", "Smoke Test")]
-    [Fact]
-    public void cas_compute_float_64_1()
-    {
-      for (int p = -306; p <= 308; p++)
-      {
-        if (p == 23)
-          p++;
-
-        var am = FastDoubleParser.ComputeFloat(q: p, w: 1);
-
-        double? d = FastDoubleParser.ToFloat(false, am);
-
-        if (!d.HasValue)
-          throw new ApplicationException($"Can't parse p=> {p}");
-
-        if (d != testing_power_of_ten[p + 307])
-          throw new ApplicationException($"bad parsing p=> {p}");
-      }
-    }
-
-    [Trait("Category", "Smoke Test")]
-    [Fact]
-    unsafe public void cas_compute_float_64_2()
-    {
-      for (int p = -1000; p <= 308; p++)
-      {
-        string sut = $"1e{p}";
-        fixed (char* pstart = sut)
+        [Trait("Category", "Smoke Test")]
+        [Theory]
+        [MemberData(nameof(NonDecimalsData))]
+        unsafe public void DoubleParser_HandleInvalidInput_works(string input, double sut)
         {
-          double? d = FastDoubleParser.ParseDouble(pstart, pstart + sut.Length);
-
-          if (!d.HasValue)
-          {
-            throw new ApplicationException($"Can't parse p=> 1e{p}");
-          }
-
-          double expected = ((p >= -307) ? testing_power_of_ten[p + 307] : Math.Pow(10, p));
-          Assert.Equal(expected, d.Value);
+            fixed (char* p = input)
+            {
+                Assert.True(FastDoubleParser.TryHandleInvalidInput(p, p + input.Length, out int _, out double result));
+                Assert.Equal(sut, result);
+            }
         }
-      }
-    }
 
-    private static double[] testing_power_of_ten =  {
+        [Trait("Category", "Smoke Test")]
+        [Theory]
+        [MemberData(nameof(NonDecimalsData))]
+        public unsafe void DoubleParser_NonDecimals_String(string input, double expected)
+        {
+            var actual = FastDoubleParser.ParseDouble(input);
+            Assert.Equal(expected, actual);
+        }
+
+        [Trait("Category", "Smoke Test")]
+        [Theory]
+        [MemberData(nameof(NonDecimalsData))]
+        public unsafe void DoubleParser_NonDecimals_Span(string input, double expected)
+        {
+            var actual = FastDoubleParser.ParseDouble(input.AsSpan());
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void NegativeZero()
+        {
+
+            Assert.Equal(-0, FastDoubleParser.ParseDouble("-0"));
+
+        }
+
+
+        [Fact]
+        private void Issue_74()
+        {
+            // Consumed=0 vs raising Exceptions
+            // Try parse should retrun false with consumed and result =0
+            Assert.False(FastDoubleParser.TryParseDouble("", out int nbChar, out double result));
+            Assert.Equal(0, nbChar);
+            Assert.Equal(0, result);
+
+            // as ParseDouble should throw with an empty input string
+            Assert.Throws<System.ArgumentException>(() => FastDoubleParser.ParseDouble(string.Empty));
+
+
+        }
+
+        [Fact]
+        unsafe public void ParseDouble_Throws_When_NULL() => Assert.Throws<System.ArgumentNullException>(() => FastDoubleParser.ParseDouble((string)null));
+
+        [Fact]
+        unsafe public void ParseDouble_Throws_When_Empty() => Assert.Throws<System.ArgumentException>(() => FastDoubleParser.ParseDouble(string.Empty));
+
+        [Theory]
+        [InlineData("some alpha")]
+        [InlineData("-")]
+        [InlineData("1ee10")]
+        unsafe public void ParseDouble_Throws_When_Invalid(string sut) => Assert.Throws<System.ArgumentException>(() => FastDoubleParser.ParseDouble(sut));
+
+
+        [Theory]
+        [InlineData("some alpha")]
+        [InlineData("")]
+        [InlineData(null)]
+        [InlineData("-")]
+        [InlineData("1ee10")]
+        public void TryParse_NeverThrows(string sut)
+        {
+
+            Assert.False(FastDoubleParser.TryParseDouble(sut, out _));
+
+
+        }
+
+
+
+
+        [SkippableFact]
+        unsafe public void ParseNumberString_Works_Scnenarios()
+        {
+
+
+            Skip.If(base.NoDiffToolDetected(), "No diff tool detected");
+
+            Dictionary<string, string> sut = new Dictionary<string, string>();
+
+            sut.Add("leading zeros", "001");
+            sut.Add("leading zeros neg", "-001");
+
+            sut.Add("zero", "0");
+
+            sut.Add("double", "0.00000000000000212312312");
+            sut.Add("double neg", "-0.00000000000000212312312");
+            sut.Add("int", "1");
+            sut.Add("int neg", "-1");
+
+            sut.Add("autreint ", "123124");
+            sut.Add("autreint neg", "-123124");
+
+            sut.Add("notation scientifique", "4.56E+2");
+            sut.Add("notation scientifique neg", "-4.56E-2");
+
+            sut.Add("notation scientifique 2", "4.5644E+2");
+            sut.Add("notation scientifique 2 neg", "-4.5644E-2");
+
+            sut.Add("notation scientifique 3", "4424.5644E+22");
+            sut.Add("notation scientifique 3 neg", "-4424.5644E-22");
+
+            sut.Add("notation scientifique 4", "4424.5644E+223");
+            sut.Add("notation scientifique 4 neg", "-4424.5644E-223");
+            StringBuilder sb = new StringBuilder();
+
+            foreach (KeyValuePair<string, string> kv in sut)
+            {
+                sb.AppendLine($"Scenario : {kv.Key} ");
+                sb.AppendLine($"Valeur   : {kv.Value} ");
+
+                fixed (char* p = kv.Value)
+                {
+                    char* pend = p + kv.Value.Length;
+                    var res = ParsedNumberString.ParseNumberString(p, pend);
+
+                    sb.AppendLine($"Resultat : {res.exponent} {res.mantissa} {res.negative} {res.valid}");
+                    sb.AppendLine();
+                }
+            }
+
+            // We do not want to fail the tests when the user has not
+            // configured a diff tool.
+            try
+            {
+                VerifyData(sb.ToString());
+
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        [SkippableFact]
+        unsafe public void ParseNumber_Works_Scnenarios()
+        {
+            Skip.If(base.NoDiffToolDetected(), "No diff tool detected");
+
+
+            Dictionary<string, string> sut = new Dictionary<string, string>();
+
+            sut.Add("leading zeros", "001");
+            sut.Add("leading zeros neg", "-001");
+
+            sut.Add("zero", "0");
+
+            sut.Add("double", "0.00000000000000212312312");
+            sut.Add("double neg", "-0.00000000000000212312312");
+            sut.Add("int", "1");
+            sut.Add("int neg", "-1");
+
+            sut.Add("autreint ", "123124");
+            sut.Add("autreint neg", "-123124");
+
+            sut.Add("notation scientifique", "4.56E+2");
+            sut.Add("notation scientifique neg", "-4.56E-2");
+
+            sut.Add("notation scientifique 2", "4.5644E+2");
+            sut.Add("notation scientifique 2 neg", "-4.5644E-2");
+
+            sut.Add("notation scientifique 3", "4424.5644E+22");
+            sut.Add("notation scientifique 3 neg", "-4424.5644E-22");
+
+            sut.Add("notation scientifique 4", "4424.5644E+223");
+            sut.Add("notation scientifique 4 neg", "-4424.5644E-223");
+            StringBuilder sb = new StringBuilder();
+
+            foreach (KeyValuePair<string, string> kv in sut)
+            {
+                sb.AppendLine($"Scenario : {kv.Key} ");
+                sb.AppendLine($"Valeur   : {kv.Value} ");
+
+                fixed (char* p = kv.Value)
+                {
+                    char* pend = p + kv.Value.Length;
+                    var res = FastDoubleParser.ParseDouble(p, pend);
+
+                    sb.AppendLine($"Resultat : {res}");
+                    sb.AppendLine();
+                }
+            }
+
+            // We do not want to fail the tests when the user has not
+            // configured a diff tool.
+            try
+            {
+                VerifyData(sb.ToString());
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        [Trait("Category", "Smoke Test")]
+        [Fact]
+        public void cas_compute_float_64_1()
+        {
+            for (int p = -306; p <= 308; p++)
+            {
+                if (p == 23)
+                    p++;
+
+                var am = FastDoubleParser.ComputeFloat(q: p, w: 1);
+
+                double? d = FastDoubleParser.ToFloat(false, am);
+
+                if (!d.HasValue)
+                    throw new ApplicationException($"Can't parse p=> {p}");
+
+                if (d != testing_power_of_ten[p + 307])
+                    throw new ApplicationException($"bad parsing p=> {p}");
+            }
+        }
+
+        [Trait("Category", "Smoke Test")]
+        [Fact]
+        unsafe public void cas_compute_float_64_2()
+        {
+            for (int p = -1000; p <= 308; p++)
+            {
+                string sut = $"1e{p}";
+                fixed (char* pstart = sut)
+                {
+                    double? d = FastDoubleParser.ParseDouble(pstart, pstart + sut.Length);
+
+                    if (!d.HasValue)
+                    {
+                        throw new ApplicationException($"Can't parse p=> 1e{p}");
+                    }
+
+                    double expected = ((p >= -307) ? testing_power_of_ten[p + 307] : Math.Pow(10, p));
+                    Assert.Equal(expected, d.Value);
+                }
+            }
+        }
+
+        private static double[] testing_power_of_ten =  {
     1e-307, 1e-306, 1e-305, 1e-304, 1e-303, 1e-302, 1e-301, 1e-300, 1e-299,
     1e-298, 1e-297, 1e-296, 1e-295, 1e-294, 1e-293, 1e-292, 1e-291, 1e-290,
     1e-289, 1e-288, 1e-287, 1e-286, 1e-285, 1e-284, 1e-283, 1e-282, 1e-281,
@@ -337,113 +361,113 @@ namespace TestcsFastFloat.Tests.Basic
     1e305,  1e306,  1e307,  1e308};
 
 
-    [Fact]
-    public void ParseDouble_CharConsumed_Throws_OnlyAlpha()
-    {
-      int nbCarConsumed;
-      Assert.Throws<System.ArgumentException>(() => FastDoubleParser.ParseDouble("some alpha", out nbCarConsumed));
+        [Fact]
+        public void ParseDouble_CharConsumed_Throws_OnlyAlpha()
+        {
+            int nbCarConsumed;
+            Assert.Throws<System.ArgumentException>(() => FastDoubleParser.ParseDouble("some alpha", out nbCarConsumed));
+        }
+
+
+
+
+
+        [SkippableFact]
+        public void ParseDouble_CharConsumed_Works_Scenarios()
+        {
+            Skip.If(base.NoDiffToolDetected(), "No diff tool detected");
+
+            Dictionary<string, string> sut = new Dictionary<string, string>();
+
+            sut.Add("leading zeros", "001");
+            sut.Add("leading zeros neg", "-001");
+            sut.Add("leading spaces", "   1");
+            sut.Add("zero", "0");
+            sut.Add("double", "0.00000000000000212312312");
+            sut.Add("double neg", "-0.00000000000000212312312");
+            sut.Add("int", "1");
+            sut.Add("int neg", "-1");
+
+            sut.Add("autreint ", "123124");
+            sut.Add("autreint neg", "-123124");
+
+            sut.Add("notation scientifique", "4.56E+2");
+            sut.Add("notation scientifique neg", "-4.56E-2");
+
+            sut.Add("notation scientifique 2", "4.5644E+2");
+            sut.Add("notation scientifique 2 neg", "-4.5644E-2");
+
+            sut.Add("notation scientifique 3", "4424.5644E+22");
+            sut.Add("notation scientifique 3 neg", "-4424.5644E-22");
+
+            sut.Add("notation scientifique 4", "4424.5644E+223");
+            sut.Add("notation scientifique 4 neg", "-4424.5644E-223");
+
+            sut.Add("with trailling alpha", "4424.5644E+223 some alpha");
+
+
+
+            sut.Add("nan", "nan");
+            sut.Add("inf", "inf");
+            sut.Add("+nan", "+nan");
+            sut.Add("-nan", "-nan");
+            sut.Add("+inf", "+inf");
+            sut.Add("-inf", "-inf");
+            sut.Add("infinity", "infinity");
+            sut.Add("+infinity", "+infinity");
+            sut.Add("-infinity", "-infinity");
+
+
+
+            StringBuilder sb = new StringBuilder();
+
+            foreach (KeyValuePair<string, string> kv in sut)
+            {
+                sb.AppendLine($"Scenario : {kv.Key} ");
+                sb.AppendLine($"Value   : {kv.Value} ");
+
+                int nbCarConsumed = 0;
+
+                var res = FastDoubleParser.ParseDouble(kv.Value, out nbCarConsumed);
+
+                sb.AppendLine($"Result : {res.ToString(CultureInfo.InvariantCulture)} :  Consumed :  {nbCarConsumed}");
+                sb.AppendLine();
+            }
+
+            VerifyData(sb.ToString());
+
+
+        }
+
+
+
+
+        [Trait("Category", "Smoke Test")]
+        [SkippableFact]
+        public void ParseDouble_charConsumed_WholeString()
+        {
+            Skip.If(base.NoDiffToolDetected(), "No diff tool detected");
+
+            string sut = "1.23213 321e10 3132e-1";
+            StringBuilder sb = new StringBuilder();
+
+            long pos = 0;
+
+            while (pos < sut.Length)
+            {
+                int nbCarConsumed;
+                var res = FastDoubleParser.ParseDouble(sut.AsSpan().Slice((int)pos), out nbCarConsumed);
+                sb.AppendLine($"Sut :{sut.Substring((int)pos)}  Result : {res.ToString(CultureInfo.InvariantCulture)} :  Consumed :  {nbCarConsumed}");
+                pos += nbCarConsumed;
+
+            }
+
+            VerifyData(sb.ToString());
+
+
+        }
+
+
+
     }
-
-
-
-
-
-    [SkippableFact]
-    public void ParseDouble_CharConsumed_Works_Scenarios()
-    {
-      Skip.If(base.NoDiffToolDetected(), "No diff tool detected");
-
-      Dictionary<string, string> sut = new Dictionary<string, string>();
-
-      sut.Add("leading zeros", "001");
-      sut.Add("leading zeros neg", "-001");
-      sut.Add("leading spaces", "   1");
-      sut.Add("zero", "0");
-      sut.Add("double", "0.00000000000000212312312");
-      sut.Add("double neg", "-0.00000000000000212312312");
-      sut.Add("int", "1");
-      sut.Add("int neg", "-1");
-
-      sut.Add("autreint ", "123124");
-      sut.Add("autreint neg", "-123124");
-
-      sut.Add("notation scientifique", "4.56E+2");
-      sut.Add("notation scientifique neg", "-4.56E-2");
-
-      sut.Add("notation scientifique 2", "4.5644E+2");
-      sut.Add("notation scientifique 2 neg", "-4.5644E-2");
-
-      sut.Add("notation scientifique 3", "4424.5644E+22");
-      sut.Add("notation scientifique 3 neg", "-4424.5644E-22");
-
-      sut.Add("notation scientifique 4", "4424.5644E+223");
-      sut.Add("notation scientifique 4 neg", "-4424.5644E-223");
-
-      sut.Add("with trailling alpha", "4424.5644E+223 some alpha");
-
-
-
-      sut.Add("nan", "nan");
-      sut.Add("inf", "inf");
-      sut.Add("+nan", "+nan");
-      sut.Add("-nan", "-nan");
-      sut.Add("+inf", "+inf");
-      sut.Add("-inf", "-inf");
-      sut.Add("infinity", "infinity");
-      sut.Add("+infinity", "+infinity");
-      sut.Add("-infinity", "-infinity");
-
-
-
-      StringBuilder sb = new StringBuilder();
-
-      foreach (KeyValuePair<string, string> kv in sut)
-      {
-        sb.AppendLine($"Scenario : {kv.Key} ");
-        sb.AppendLine($"Value   : {kv.Value} ");
-
-        int nbCarConsumed = 0;
-
-        var res = FastDoubleParser.ParseDouble(kv.Value, out nbCarConsumed);
-
-        sb.AppendLine($"Result : {res.ToString(CultureInfo.InvariantCulture)} :  Consumed :  { nbCarConsumed }");
-        sb.AppendLine();
-      }
-
-      VerifyData(sb.ToString());
-
-
-    }
-
-
-
-
-    [Trait("Category", "Smoke Test")]
-    [SkippableFact]
-    public void ParseDouble_charConsumed_WholeString()
-    {
-      Skip.If(base.NoDiffToolDetected(), "No diff tool detected");
-
-      string sut = "1.23213 321e10 3132e-1";
-      StringBuilder sb = new StringBuilder();
-
-      long pos = 0;
-      
-      while (pos < sut.Length)
-      {
-        int nbCarConsumed;
-        var res = FastDoubleParser.ParseDouble(sut.AsSpan().Slice((int)pos), out nbCarConsumed);
-        sb.AppendLine($"Sut :{sut.Substring((int)pos)}  Result : {res.ToString(CultureInfo.InvariantCulture)} :  Consumed :  { nbCarConsumed }");
-        pos += nbCarConsumed;
-      
-      }
-
-      VerifyData(sb.ToString());
-
-
-    }
-
-
-
-  }
 }

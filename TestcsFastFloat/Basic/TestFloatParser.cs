@@ -9,26 +9,48 @@ namespace TestcsFastFloat.Tests.Basic
 {
   public class TestFloatParser : BaseTestClass
   {
- 
+    public static readonly TheoryData<string, float> NonDecimalsData = new TheoryData<string, float>
+    {
+        { "nan", float.NaN },
+        { "inf", float.PositiveInfinity },
+        { "+nan", float.NaN },
+        { "-nan", float.NaN },
+        { "+inf", float.PositiveInfinity },
+        { "-inf", float.NegativeInfinity },
+        { "infinity", float.PositiveInfinity },
+        { "+infinity", float.PositiveInfinity },
+        { "-infinity", float.NegativeInfinity }
+    };
+
 
     [Trait("Category", "Smoke Test")]
     [Theory]
-    [InlineData("nan", float.NaN)]
-    [InlineData("inf", float.PositiveInfinity)]
-    [InlineData("+nan", float.NaN)]
-    [InlineData("-nan", float.NaN)]
-    [InlineData("+inf", float.PositiveInfinity)]
-    [InlineData("-inf", float.NegativeInfinity)]
-    [InlineData("infinity", float.PositiveInfinity)]
-    [InlineData("+infinity", float.PositiveInfinity)]
-    [InlineData("-infinity", float.NegativeInfinity)]
-    unsafe public void FastDoubleParser_HandleInvalidInput_works(string input, float sut)
+    [MemberData(nameof(NonDecimalsData))]
+    unsafe public void FastFloatParser_HandleInvalidInput_works(string input, float sut)
     {
       fixed (char* p = input)
       {
-        Assert.True(FastDoubleParser.TryHandleInvalidInput(p, p + input.Length, out int _, out double result));
+        Assert.True(FastFloatParser.TryHandleInvalidInput(p, p + input.Length, out int _, out float result));
         Assert.Equal(sut, (float)result);
       }
+    }
+
+    [Trait("Category", "Smoke Test")]
+    [Theory]
+    [MemberData(nameof(NonDecimalsData))]
+    public unsafe void FloatParser_NonDecimals_String(string input, float expected)
+    {
+        var actual = FastFloatParser.ParseFloat(input);
+        Assert.Equal(expected, actual);
+    }
+
+    [Trait("Category", "Smoke Test")]
+    [Theory]
+    [MemberData(nameof(NonDecimalsData))]
+    public unsafe void FloatParser_NonDecimals_Span(string input, float expected)
+    {
+        var actual = FastFloatParser.ParseFloat(input.AsSpan());
+        Assert.Equal(expected, actual);
     }
 
     [Theory]

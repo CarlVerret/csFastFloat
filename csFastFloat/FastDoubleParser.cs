@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using csFastFloat.Structures;
-using System.Globalization;
 using csFastFloat.Constants;
-using System.Diagnostics.CodeAnalysis;
+using csFastFloat.Structures;
 
 namespace csFastFloat
 {
@@ -347,7 +346,10 @@ namespace csFastFloat
       {
         if (!TryParseNumber(pStart, pStart + (uint)s.Length, out characters_consumed, out double value, styles, decimal_separator))
         {
-          ThrowArgumentException();
+            if (!TryHandleInvalidInput(pStart, pStart + (uint)s.Length, out characters_consumed, out value))
+            {
+                ThrowArgumentException();
+            }
         }
 
         return value;
