@@ -55,7 +55,7 @@ namespace csFastFloat
     /// <returns></returns>
     internal static double FastPath(ParsedNumberString pns)
     {
-      double value = (double)pns.mantissa;
+      double value = pns.mantissa;
       if (pns.exponent < 0)
       {
         value /= Exact_power_of_ten(-pns.exponent);
@@ -607,7 +607,7 @@ namespace csFastFloat
 
       answer.mantissa = product.high >> (upperbit + 64 - DoubleBinaryConstants.mantissa_explicit_bits - 3);
 
-      answer.power2 = (int)(Utils.power((int)(q)) + upperbit - lz - DoubleBinaryConstants.minimum_exponent);
+      answer.power2 = Utils.power((int)q) + upperbit - lz - DoubleBinaryConstants.minimum_exponent;
       if (answer.power2 <= 0)
       { // we have a subnormal?
         // Here have that answer.power2 <= 0 so -answer.power2 >= 0
@@ -716,7 +716,7 @@ namespace csFastFloat
           answer.mantissa = 0;
           return answer;
         }
-        exp2 += (int)(shift);
+        exp2 += shift;
       }
       // We shift left toward [1/2 ... 1].
       while (d.decimal_point <= 0)
@@ -747,7 +747,7 @@ namespace csFastFloat
           answer.mantissa = 0;
           return answer;
         }
-        exp2 -= (int)(shift);
+        exp2 -= shift;
       }
       // We are now in the range [1/2 ... 1] but the binary format uses [1 ... 2].
       exp2--;
@@ -756,7 +756,7 @@ namespace csFastFloat
 
       while ((min_exp + 1) > exp2)
       {
-        int n = (int)((min_exp + 1) - exp2);
+        int n = (min_exp + 1) - exp2;
         if (n > max_shift)
         {
           n = max_shift;
@@ -772,7 +772,7 @@ namespace csFastFloat
       }
 
       int mantissa_size_in_bits = DoubleBinaryConstants.mantissa_explicit_bits + 1;
-      d.decimal_left_shift((int)mantissa_size_in_bits);
+      d.decimal_left_shift(mantissa_size_in_bits);
 
       ulong mantissa = d.round();
       // It is possible that we have an overflow, in which case we need
