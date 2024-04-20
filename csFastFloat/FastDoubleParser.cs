@@ -860,6 +860,21 @@ namespace csFastFloat
           }
         }
       }
+      else if(last - first >= 1)
+      {
+        if (Utils.strncasecmp(first, "∞", 1))
+        {
+          characters_consumed = 1;
+          result = DoubleBinaryConstants.PositiveInfinity;
+          return true;
+        }
+        if ((last - first >= 2) && Utils.strncasecmp(first, "-∞", 2))
+        {
+          characters_consumed = 2;
+          result = DoubleBinaryConstants.NegativeInfinity;
+          return true;
+        }
+      }
 
       return false;
     }

@@ -22,7 +22,9 @@ namespace TestcsFastFloat.Tests.Basic
         { "-inf", double.NegativeInfinity },
         { "infinity", double.PositiveInfinity },
         { "+infinity", double.PositiveInfinity },
-        { "-infinity", double.NegativeInfinity }
+        { "-infinity", double.NegativeInfinity },
+        { "∞", double.PositiveInfinity },
+        { "-∞", double.NegativeInfinity },
     };
 
     [InlineData("a", "A", 1, true)]
