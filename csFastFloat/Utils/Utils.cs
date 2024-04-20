@@ -27,7 +27,7 @@ namespace csFastFloat
       19, 27, 23, 06, 26, 05, 04, 31
     };
 #endif
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static uint parse_eight_digits_unrolled(ulong val)
     {
@@ -41,16 +41,16 @@ namespace csFastFloat
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static  uint parse_eight_digits_unrolled(byte* chars)
+    internal static uint parse_eight_digits_unrolled(byte* chars)
     {
       ulong val = Unsafe.ReadUnaligned<ulong>(chars);
       return parse_eight_digits_unrolled(val);
     }
 
-    
+
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static  bool is_made_of_eight_digits_fast(byte* chars)
+    internal static bool is_made_of_eight_digits_fast(byte* chars)
     {
       ulong val = Unsafe.ReadUnaligned<ulong>(chars);
       // We only enable paths depending on this function on little endian
@@ -68,7 +68,7 @@ namespace csFastFloat
       cMinus0 = cc;
       return res;
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static bool is_integer(byte c, out uint cMinus0)
     {
@@ -77,7 +77,7 @@ namespace csFastFloat
       cMinus0 = cc;
       return res;
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static value128 compute_product_approximation(int bitPrecision, long q, ulong w)
     {
@@ -147,19 +147,19 @@ namespace csFastFloat
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static bool is_ascii_space(char c)
     {
-        // ROS for one byte types can be read directly from metadata avoiding the array allocation.
-        ReadOnlySpan<bool> table = new bool[] {
+      // ROS for one byte types can be read directly from metadata avoiding the array allocation.
+      ReadOnlySpan<bool> table = new bool[] {
             false, false, false, false, false, false, false, false, false, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false, false, true};
-        // Avoid bound checking.
-        return (c >32) ? false : Unsafe.AddByteOffset(ref MemoryMarshal.GetReference(table), (nint)c);
+      // Avoid bound checking.
+      return (c > 32) ? false : Unsafe.AddByteOffset(ref MemoryMarshal.GetReference(table), (nint)c);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static bool is_space(byte c)
     {
-        // ROS for one byte types can be read directly from metadata avoiding the array allocation.
-        ReadOnlySpan<bool> table = new bool[] {
+      // ROS for one byte types can be read directly from metadata avoiding the array allocation.
+      ReadOnlySpan<bool> table = new bool[] {
             false, false, false, false, false, false, false, false, false, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
@@ -171,13 +171,13 @@ namespace csFastFloat
             false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
-        
-        // Avoid bound checking.
-        return Unsafe.AddByteOffset(ref MemoryMarshal.GetReference(table), (nint)c);
+
+      // Avoid bound checking.
+      return Unsafe.AddByteOffset(ref MemoryMarshal.GetReference(table), (nint)c);
     }
 
     [ExcludeFromCodeCoverage]
-    internal static  bool strncasecmp(char* input1, string input2, int length)
+    internal static bool strncasecmp(char* input1, string input2, int length)
     {
       fixed (char* p2 = input2)
       {
@@ -185,7 +185,7 @@ namespace csFastFloat
       }
     }
 
-    internal static  bool strncasecmp(char* input1, char* input2, int length)
+    internal static bool strncasecmp(char* input1, char* input2, int length)
     {
       int running_diff = 0;
 
@@ -195,7 +195,7 @@ namespace csFastFloat
       }
       return (running_diff == 0) || (running_diff == 32);
     }
-    internal static  bool strncasecmp(byte* input1, ReadOnlySpan<byte> input2, int length)
+    internal static bool strncasecmp(byte* input1, ReadOnlySpan<byte> input2, int length)
     {
       int running_diff = 0;
 
@@ -206,7 +206,7 @@ namespace csFastFloat
       return (running_diff == 0) || (running_diff == 32);
     }
 
-    
+
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int LeadingZeroCount(ulong value)
@@ -244,7 +244,7 @@ namespace csFastFloat
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static  float Int32BitsToSingle(int value)
+    public static float Int32BitsToSingle(int value)
 #if HAS_BITOPERATIONS
       => BitConverter.Int32BitsToSingle(value);
 #else
@@ -264,7 +264,7 @@ namespace csFastFloat
     /// <param name="value">out : parsed value</param>
     /// <returns>bool : succes of operation : true meaning the sequence contains at least 8 consecutive digits</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static  bool TryParseEightConsecutiveDigits_SIMD(char* start, out uint value)
+    internal static bool TryParseEightConsecutiveDigits_SIMD(char* start, out uint value)
     {
 
       // escape if SIMD functions aren't available.
@@ -280,7 +280,7 @@ namespace csFastFloat
       Vector128<short> ascii0 = Vector128.Create((short)(48 + short.MinValue));
       Vector128<short> after_ascii9 = Vector128.Create((short)(short.MinValue + 9));
       Vector128<short> a = Sse41.Subtract(raw, ascii0);
-      Vector128<short> b = Sse41.CompareLessThan( after_ascii9, a);
+      Vector128<short> b = Sse41.CompareLessThan(after_ascii9, a);
 
       if (!Sse41.TestZ(b, b))
       {
@@ -293,7 +293,7 @@ namespace csFastFloat
       Vector128<short> mul2 = Vector128.Create(0x00FA61A8, 0x0001000A, 0, 0).AsInt16();
 
       //  extract the low bytes of each 16-bit word
-      var vb = Sse41.Shuffle( a.AsByte(), Vector128.Create(0, 2, 4, 6, 8, 10, 12, 14, 0, 2, 4, 6, 8, 10, 12, 14).AsByte());
+      var vb = Sse41.Shuffle(a.AsByte(), Vector128.Create(0, 2, 4, 6, 8, 10, 12, 14, 0, 2, 4, 6, 8, 10, 12, 14).AsByte());
       Vector128<int> v = Sse2.MultiplyAddAdjacent(Ssse3.MultiplyAddAdjacent(mul1, vb.AsSByte()), mul2);
       v = Sse2.Add(Sse2.Add(v, v), Sse2.Shuffle(v, 1));
       value = (uint)v.GetElement(0);
@@ -302,7 +302,7 @@ namespace csFastFloat
 
     }
 
-  
+
 #endif
 
   }

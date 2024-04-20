@@ -1,10 +1,10 @@
-﻿using System;
+﻿using csFastFloat.Constants;
+using csFastFloat.Structures;
+using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using csFastFloat.Constants;
-using csFastFloat.Structures;
 
 namespace csFastFloat
 {
@@ -42,7 +42,7 @@ namespace csFastFloat
       ulong word = am.mantissa;
       word |= (ulong)(uint)(am.power2) << FloatBinaryConstants.mantissa_explicit_bits;
       word = negative ? word | ((ulong)(1) << FloatBinaryConstants.sign_index) : word;
-      uint truncated_word = (uint) word;
+      uint truncated_word = (uint)word;
       return Utils.Int32BitsToSingle((int)truncated_word);
     }
 
@@ -74,7 +74,7 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>bool : true is sucessfuly parsed</returns>
-    public static  bool TryParseFloat(string s, out float result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+    public static bool TryParseFloat(string s, out float result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
       => TryParseFloat(s.AsSpan(), out _, out result, styles, decimal_separator);
 
     /// <summary>
@@ -87,7 +87,7 @@ namespace csFastFloat
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>bool : true is sucessfuly parsed</returns>
     /// <returns></returns>
-    public static  bool TryParseFloat(string s, out int characters_consumed, out float result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+    public static bool TryParseFloat(string s, out int characters_consumed, out float result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
     => TryParseFloat(s.AsSpan(), out characters_consumed, out result, styles, decimal_separator);
 
 
@@ -99,14 +99,14 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>bool : true is sucessfuly parsed</returns>
-    public static  bool TryParseFloat(ReadOnlySpan<char> s, out float result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+    public static bool TryParseFloat(ReadOnlySpan<char> s, out float result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
     {
 
       fixed (char* pStart = s)
       {
         if (!TryParseNumber(pStart, pStart + (uint)s.Length, out _, out result, styles, decimal_separator))
         {
-          return TryHandleInvalidInput(pStart, pStart + (uint)s.Length, out _, out  result);
+          return TryHandleInvalidInput(pStart, pStart + (uint)s.Length, out _, out result);
         }
 
         return true;
@@ -123,7 +123,7 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>bool : true is sucessfuly parsed</returns>
-    public static  bool TryParseFloat(ReadOnlySpan<char> s, out int characters_consumed, out float result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+    public static bool TryParseFloat(ReadOnlySpan<char> s, out int characters_consumed, out float result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
     {
       fixed (char* pStart = s)
       {
@@ -147,7 +147,7 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>bool : true is sucessfuly parsed</returns>
-    public static  bool TryParseFloat(char* first, char* last, out float result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+    public static bool TryParseFloat(char* first, char* last, out float result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
     {
 
       if (!TryParseNumber(first, last, out _, out result, styles, decimal_separator))
@@ -169,7 +169,7 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>bool : true is sucessfuly parsed</returns>
-    public static  bool TryParseFloat(char* first, char* last, out int characters_consumed, out float result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+    public static bool TryParseFloat(char* first, char* last, out int characters_consumed, out float result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
     {
       if (!TryParseNumber(first, last, out characters_consumed, out result, styles, decimal_separator))
       {
@@ -190,7 +190,7 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>bool : true is sucessfuly parsed</returns>
-    public static  bool TryParseFloat(ReadOnlySpan<byte> s, out float result, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
+    public static bool TryParseFloat(ReadOnlySpan<byte> s, out float result, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
     {
       fixed (byte* pStart = s)
       {
@@ -211,7 +211,7 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>bool : true is sucessfuly parsed</returns>
-    public static  bool TryParseFloat(ReadOnlySpan<byte> s, out int characters_consumed, out float result, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
+    public static bool TryParseFloat(ReadOnlySpan<byte> s, out int characters_consumed, out float result, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
     {
       fixed (byte* pStart = s)
       {
@@ -236,7 +236,7 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>bool : true is sucessfuly parsed</returns>
-    public static  bool TryParseFloat(byte* first, byte* last, out float result, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
+    public static bool TryParseFloat(byte* first, byte* last, out float result, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
     {
       if (!TryParseNumber(first, last, out _, out result, styles, decimal_separator))
       {
@@ -257,7 +257,7 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>bool : true is sucessfuly parsed</returns>
-    public static  bool TryParseFloat(byte* first, byte* last, out int characters_consumed, out float result, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
+    public static bool TryParseFloat(byte* first, byte* last, out int characters_consumed, out float result, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
     {
       if (!TryParseNumber(first, last, out characters_consumed, out result, styles, decimal_separator))
       {
@@ -277,7 +277,7 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>parsed float value </returns>
-    public static  float ParseFloat(string s, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+    public static float ParseFloat(string s, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
     => ParseFloat(s, out int _, styles, decimal_separator);
 
     /// <summary>
@@ -288,7 +288,7 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>parsed float value </returns>
-    public static  float ParseFloat(string s, out int characters_consumed, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+    public static float ParseFloat(string s, out int characters_consumed, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
     {
       if (s == null)
       {
@@ -319,7 +319,7 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>parsed float value </returns>
-    public static  float ParseFloat(ReadOnlySpan<char> s, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+    public static float ParseFloat(ReadOnlySpan<char> s, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
       => ParseFloat(s, out int _, styles, decimal_separator);
 
     /// <summary>
@@ -330,7 +330,7 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>parsed float value </returns>
-    public static  float ParseFloat(ReadOnlySpan<char> s, out int characters_consumed, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+    public static float ParseFloat(ReadOnlySpan<char> s, out int characters_consumed, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
     {
       if (s == null)
       {
@@ -361,7 +361,7 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>parsed float value </returns>
-    public static  float ParseFloat(char* first, char* last, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+    public static float ParseFloat(char* first, char* last, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
       => ParseFloat(first, last, out int _, styles, decimal_separator);
 
     /// <summary>
@@ -371,7 +371,7 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>parsed float value </returns>
-    public static  float ParseFloat(ReadOnlySpan<byte> s, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
+    public static float ParseFloat(ReadOnlySpan<byte> s, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
       => ParseFloat(s, out int _, styles, decimal_separator);
 
     /// <summary>
@@ -382,7 +382,7 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>parsed float value </returns>
-    public static  float ParseFloat(ReadOnlySpan<byte> s, out int characters_consumed, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
+    public static float ParseFloat(ReadOnlySpan<byte> s, out int characters_consumed, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
     {
       fixed (byte* pStart = s)
       {
@@ -400,7 +400,7 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>parsed float value </returns>
-    public static  float ParseFloat(char* first, char* last, out int characters_consumed, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+    public static float ParseFloat(char* first, char* last, out int characters_consumed, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
     {
 
 
@@ -425,7 +425,7 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>parsed float value </returns>
-    public static  float ParseFloat(byte* first, byte* last, out int characters_consumed, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
+    public static float ParseFloat(byte* first, byte* last, out int characters_consumed, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
     {
       if (TryParseFloat(first, last, out characters_consumed, out float result, styles, decimal_separator))
       {
@@ -449,7 +449,7 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>bool:  true indicates a succesful parsing</returns>
-    internal static  bool TryParseNumber(char* first, char* last, out int characters_consumed, out float result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+    internal static bool TryParseNumber(char* first, char* last, out int characters_consumed, out float result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
     {
       characters_consumed = 0;
       result = 0;
@@ -489,7 +489,7 @@ namespace csFastFloat
       // If we called compute_float<binary_format<T>>(pns.exponent, pns.mantissa) and we have an invalid power (am.power2 < 0),
       // then we need to go the long way around again. This is very uncommon.
       if (am.power2 < 0) { am = ParseLongMantissa(first, last, decimal_separator); }
-      result =  ToFloat(pns.negative, am); 
+      result = ToFloat(pns.negative, am);
       return true;
     }
 
@@ -503,11 +503,11 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// /// <returns>bool:  true indicates a succesful parsing</returns>
-    internal static  bool TryParseNumber(byte* first, byte* last, out int characters_consumed, out float result, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
+    internal static bool TryParseNumber(byte* first, byte* last, out int characters_consumed, out float result, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
     {
       characters_consumed = 0;
       result = 0;
-      int  leading_spaces = 0;
+      int leading_spaces = 0;
 
       while ((first != last) && Utils.is_space(*first))
       {
@@ -523,7 +523,7 @@ namespace csFastFloat
       {
         return false;
       }
-      characters_consumed = pns.characters_consumed+ leading_spaces;
+      characters_consumed = pns.characters_consumed + leading_spaces;
 
       // Next is Clinger's fast path.
       if (FloatBinaryConstants.min_exponent_fast_path <= pns.exponent && pns.exponent <= FloatBinaryConstants.max_exponent_fast_path && pns.mantissa <= FloatBinaryConstants.max_mantissa_fast_path && !pns.too_many_digits)
@@ -800,14 +800,14 @@ namespace csFastFloat
     }
 
     // UTF-16 inputs
-    internal static  AdjustedMantissa ParseLongMantissa(char* first, char* last, char decimal_separator)
+    internal static AdjustedMantissa ParseLongMantissa(char* first, char* last, char decimal_separator)
     {
       DecimalInfo d = DecimalInfo.parse_decimal(first, last, decimal_separator);
       return ComputeFloat(d);
     }
 
     // UTF-8/ASCII inputs
-    internal static  AdjustedMantissa ParseLongMantissa(byte* first, byte* last, byte decimal_separator)
+    internal static AdjustedMantissa ParseLongMantissa(byte* first, byte* last, byte decimal_separator)
     {
       DecimalInfo d = DecimalInfo.parse_decimal(first, last, decimal_separator);
       return ComputeFloat(d);
@@ -815,7 +815,7 @@ namespace csFastFloat
 
 
 
-    internal static  bool TryHandleInvalidInput(char* first, char* last, out int characters_consumed, out float result)
+    internal static bool TryHandleInvalidInput(char* first, char* last, out int characters_consumed, out float result)
     {
       result = 0;
       characters_consumed = 0;
@@ -868,7 +868,7 @@ namespace csFastFloat
       return false;
     }
 
-    internal static  bool TryHandleInvalidInput(byte* first, byte* last, out int characters_consumed, out float result)
+    internal static bool TryHandleInvalidInput(byte* first, byte* last, out int characters_consumed, out float result)
     {
       // C# does not (yet) allow literal ASCII strings (it uses UTF-16), so
       // we need to use byte arrays.
