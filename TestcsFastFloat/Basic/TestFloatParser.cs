@@ -19,7 +19,9 @@ namespace TestcsFastFloat.Tests.Basic
         { "-inf", float.NegativeInfinity },
         { "infinity", float.PositiveInfinity },
         { "+infinity", float.PositiveInfinity },
-        { "-infinity", float.NegativeInfinity }
+        { "-infinity", float.NegativeInfinity },
+        { "∞", float.PositiveInfinity },
+        { "-∞", float.NegativeInfinity },
     };
 
 
