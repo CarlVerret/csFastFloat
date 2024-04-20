@@ -1,10 +1,8 @@
-﻿using csFastFloat;
+﻿using ApprovalTests.Namers;
+using csFastFloat;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using TestcsFastFloat.Tests;
 using Xunit;
 
@@ -14,6 +12,13 @@ namespace TestcsFastFloat.suppl_tests
 
   public class Strtod_tests : BaseTestClass
   {
+
+#if NET5_0
+    const string Version = "5.0";
+#else
+    const string Version = "8.0";
+#endif
+
 #if NET5_0_OR_GREATER
 
     /// <summary>
@@ -88,11 +93,16 @@ namespace TestcsFastFloat.suppl_tests
         }
         fs.Close();
 
-        ApprovalTests.Approvals.Verify(sb.ToString());
+        using (ApprovalResults.ForScenario(Version))
+        {
+          ApprovalTests.Approvals.Verify(sb.ToString());
+
+        }
+
 
       }
 
-     
+
     }
 #endif
   }
