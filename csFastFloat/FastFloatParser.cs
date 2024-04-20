@@ -301,7 +301,10 @@ namespace csFastFloat
       {
         if (!TryParseNumber(pStart, pStart + (uint)s.Length, out characters_consumed, out float value, styles, decimal_separator))
         {
-          ThrowArgumentException();
+          if (!TryHandleInvalidInput(pStart, pStart + (uint)s.Length, out characters_consumed, out value))
+          {
+            ThrowArgumentException();
+          }
         }
 
         return value;
@@ -340,7 +343,10 @@ namespace csFastFloat
       {
         if (!TryParseNumber(pStart, pStart + (uint)s.Length, out characters_consumed, out float value, styles, decimal_separator))
         {
-          ThrowArgumentException();
+          if (!TryHandleInvalidInput(pStart, pStart + (uint)s.Length, out characters_consumed, out value))
+          {
+            ThrowArgumentException();
+          }
         }
 
         return value;

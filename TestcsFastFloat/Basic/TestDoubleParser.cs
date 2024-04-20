@@ -12,37 +12,60 @@ namespace TestcsFastFloat.Tests.Basic
 
   public class TestDoubleParser : BaseTestClass
   {
+    public static readonly TheoryData<string, double> NonDecimalsData = new TheoryData<string, double>
+    {
+        { "nan", double.NaN },
+        { "inf", double.PositiveInfinity },
+        { "+nan", double.NaN },
+        { "-nan", double.NaN },
+        { "+inf", double.PositiveInfinity },
+        { "-inf", double.NegativeInfinity },
+        { "infinity", double.PositiveInfinity },
+        { "+infinity", double.PositiveInfinity },
+        { "-infinity", double.NegativeInfinity }
+    };
+
     [InlineData("a", "A", 1, true)]
     [InlineData("a", "a", 1, true)]
     [InlineData("a", "b", 1, false)]
     [Theory]
     unsafe public void Test1(string a, string b, int len, bool res)
     {
-      fixed (char* pa = a)
-      fixed (char* pb = b)
-      {
-        Assert.Equal(res, Utils.strncasecmp(pa, pb, len));
-      }
+        fixed (char* pa = a)
+        fixed (char* pb = b)
+        {
+            Assert.Equal(res, Utils.strncasecmp(pa, pb, len));
+        }
     }
 
     [Trait("Category", "Smoke Test")]
     [Theory]
-    [InlineData("nan", double.NaN)]
-    [InlineData("inf", double.PositiveInfinity)]
-    [InlineData("+nan", double.NaN)]
-    [InlineData("-nan", double.NaN)]
-    [InlineData("+inf", double.PositiveInfinity)]
-    [InlineData("-inf", double.NegativeInfinity)]
-    [InlineData("infinity", double.PositiveInfinity)]
-    [InlineData("+infinity", double.PositiveInfinity)]
-    [InlineData("-infinity", double.NegativeInfinity)]
+    [MemberData(nameof(NonDecimalsData))]
     unsafe public void DoubleParser_HandleInvalidInput_works(string input, double sut)
     {
-      fixed (char* p = input)
-      {
-        Assert.True(FastDoubleParser.TryHandleInvalidInput(p, p + input.Length, out int _, out double result));
-        Assert.Equal(sut, result);
-      }
+        fixed (char* p = input)
+        {
+            Assert.True(FastDoubleParser.TryHandleInvalidInput(p, p + input.Length, out int _, out double result));
+            Assert.Equal(sut, result);
+        }
+    }
+
+    [Trait("Category", "Smoke Test")]
+    [Theory]
+    [MemberData(nameof(NonDecimalsData))]
+    public unsafe void DoubleParser_NonDecimals_String(string input, double expected)
+    {
+        var actual = FastDoubleParser.ParseDouble(input);
+        Assert.Equal(expected, actual);
+    }
+
+    [Trait("Category", "Smoke Test")]
+    [Theory]
+    [MemberData(nameof(NonDecimalsData))]
+    public unsafe void DoubleParser_NonDecimals_Span(string input, double expected)
+    {
+        var actual = FastDoubleParser.ParseDouble(input.AsSpan());
+        Assert.Equal(expected, actual);
     }
 
     [Fact]
