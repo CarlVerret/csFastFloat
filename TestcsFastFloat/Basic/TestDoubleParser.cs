@@ -31,11 +31,11 @@ namespace TestcsFastFloat.Tests.Basic
     [Theory]
     unsafe public void Test1(string a, string b, int len, bool res)
     {
-        fixed (char* pa = a)
-        fixed (char* pb = b)
-        {
-            Assert.Equal(res, Utils.strncasecmp(pa, pb, len));
-        }
+      fixed (char* pa = a)
+      fixed (char* pb = b)
+      {
+        Assert.Equal(res, Utils.strncasecmp(pa, pb, len));
+      }
     }
 
     [Trait("Category", "Smoke Test")]
@@ -43,11 +43,11 @@ namespace TestcsFastFloat.Tests.Basic
     [MemberData(nameof(NonDecimalsData))]
     unsafe public void DoubleParser_HandleInvalidInput_works(string input, double sut)
     {
-        fixed (char* p = input)
-        {
-            Assert.True(FastDoubleParser.TryHandleInvalidInput(p, p + input.Length, out int _, out double result));
-            Assert.Equal(sut, result);
-        }
+      fixed (char* p = input)
+      {
+        Assert.True(FastDoubleParser.TryHandleInvalidInput(p, p + input.Length, out int _, out double result));
+        Assert.Equal(sut, result);
+      }
     }
 
     [Trait("Category", "Smoke Test")]
@@ -55,8 +55,8 @@ namespace TestcsFastFloat.Tests.Basic
     [MemberData(nameof(NonDecimalsData))]
     public unsafe void DoubleParser_NonDecimals_String(string input, double expected)
     {
-        var actual = FastDoubleParser.ParseDouble(input);
-        Assert.Equal(expected, actual);
+      var actual = FastDoubleParser.ParseDouble(input);
+      Assert.Equal(expected, actual);
     }
 
     [Trait("Category", "Smoke Test")]
@@ -64,15 +64,16 @@ namespace TestcsFastFloat.Tests.Basic
     [MemberData(nameof(NonDecimalsData))]
     public unsafe void DoubleParser_NonDecimals_Span(string input, double expected)
     {
-        var actual = FastDoubleParser.ParseDouble(input.AsSpan());
-        Assert.Equal(expected, actual);
+      var actual = FastDoubleParser.ParseDouble(input.AsSpan());
+      Assert.Equal(expected, actual);
     }
 
     [Fact]
-    public void NegativeZero() {
+    public void NegativeZero()
+    {
 
       Assert.Equal(-0, FastDoubleParser.ParseDouble("-0"));
-    
+
     }
 
 
@@ -429,7 +430,7 @@ namespace TestcsFastFloat.Tests.Basic
 
         var res = FastDoubleParser.ParseDouble(kv.Value, out nbCarConsumed);
 
-        sb.AppendLine($"Result : {res.ToString(CultureInfo.InvariantCulture)} :  Consumed :  { nbCarConsumed }");
+        sb.AppendLine($"Result : {res.ToString(CultureInfo.InvariantCulture)} :  Consumed :  {nbCarConsumed}");
         sb.AppendLine();
       }
 
@@ -451,14 +452,14 @@ namespace TestcsFastFloat.Tests.Basic
       StringBuilder sb = new StringBuilder();
 
       long pos = 0;
-      
+
       while (pos < sut.Length)
       {
         int nbCarConsumed;
         var res = FastDoubleParser.ParseDouble(sut.AsSpan().Slice((int)pos), out nbCarConsumed);
-        sb.AppendLine($"Sut :{sut.Substring((int)pos)}  Result : {res.ToString(CultureInfo.InvariantCulture)} :  Consumed :  { nbCarConsumed }");
+        sb.AppendLine($"Sut :{sut.Substring((int)pos)}  Result : {res.ToString(CultureInfo.InvariantCulture)} :  Consumed :  {nbCarConsumed}");
         pos += nbCarConsumed;
-      
+
       }
 
       VerifyData(sb.ToString());

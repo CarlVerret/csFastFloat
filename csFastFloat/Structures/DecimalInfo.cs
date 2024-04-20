@@ -1,10 +1,10 @@
-﻿using System;
+﻿using csFastFloat.Constants;
+using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
-using csFastFloat.Constants;
 
 namespace csFastFloat.Structures
 {
@@ -136,7 +136,7 @@ namespace csFastFloat.Structures
       uint num_new_digits = x_a >> 11;
       uint pow5_a = 0x7FF & x_a;
       uint pow5_b = 0x7FF & x_b;
-      
+
       // byte* pow5 = (byte*)number_of_digits_decimal_left_shift_table_powers_of_5[pow5_a];
       int i = 0;
       uint n = pow5_b - pow5_a;

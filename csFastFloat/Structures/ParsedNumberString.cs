@@ -6,7 +6,7 @@ namespace csFastFloat.Structures
   {
     internal long exponent;
     internal ulong mantissa;
-  
+
     internal int characters_consumed;
     internal bool negative;
     internal bool valid;
@@ -14,7 +14,7 @@ namespace csFastFloat.Structures
 
     // UTF-16 inputs involving SIMD within  eval_parse_eight_digits_simd when HAS_INTRINSICS
 
-    internal static  ParsedNumberString ParseNumberString(char* p, char* pend, NumberStyles expectedFormat = NumberStyles.Float, char decimal_separator = '.')
+    internal static ParsedNumberString ParseNumberString(char* p, char* pend, NumberStyles expectedFormat = NumberStyles.Float, char decimal_separator = '.')
     {
       ParsedNumberString answer = new ParsedNumberString();
 
@@ -124,7 +124,7 @@ namespace csFastFloat.Structures
         if ((expectedFormat.IsSet(NumberStyles.AllowExponent)) && !(expectedFormat.IsSet(NumberStyles.AllowDecimalPoint))) { return answer; }
       }
       answer.valid = true;
-      answer.characters_consumed = (int) (p - pstart);
+      answer.characters_consumed = (int)(p - pstart);
 
       // If we frequently had to deal with long strings of digits,
       // we could extend our code by using a 128-bit integer instead
@@ -179,7 +179,7 @@ namespace csFastFloat.Structures
     }
 
     // UTF-8 / ASCII inputs.
-    internal static  ParsedNumberString ParseNumberString(byte* p, byte* pend, NumberStyles expectedFormat = NumberStyles.Float, byte decimal_separator = (byte)'.')
+    internal static ParsedNumberString ParseNumberString(byte* p, byte* pend, NumberStyles expectedFormat = NumberStyles.Float, byte decimal_separator = (byte)'.')
     {
       ParsedNumberString answer = new ParsedNumberString();
 
@@ -220,7 +220,8 @@ namespace csFastFloat.Structures
         {
           i = i * 100000000 + Utils.parse_eight_digits_unrolled(p);
           p += 8;
-          if ((p + 8 <= pend) && Utils.is_made_of_eight_digits_fast(p)) {
+          if ((p + 8 <= pend) && Utils.is_made_of_eight_digits_fast(p))
+          {
             i = i * 100000000 + Utils.parse_eight_digits_unrolled(p);
             p += 8;
           }
@@ -283,7 +284,7 @@ namespace csFastFloat.Structures
         if (expectedFormat.IsSet(NumberStyles.AllowExponent) && !expectedFormat.IsSet(NumberStyles.AllowDecimalPoint)) { return answer; }
       }
       answer.valid = true;
-      answer.characters_consumed = (int) (p - pstart);
+      answer.characters_consumed = (int)(p - pstart);
 
       // If we frequently had to deal with long strings of digits,
       // we could extend our code by using a 128-bit integer instead

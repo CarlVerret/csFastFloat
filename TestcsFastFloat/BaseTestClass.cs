@@ -14,17 +14,17 @@ namespace TestcsFastFloat.Tests
 
 
 
-        if (!string.IsNullOrEmpty(scenarioName))
-        {
-          using (ApprovalResults.ForScenario(scenarioName))
-          {
-            Approvals.Verify(data);
-          }
-        }
-        else
+      if (!string.IsNullOrEmpty(scenarioName))
+      {
+        using (ApprovalResults.ForScenario(scenarioName))
         {
           Approvals.Verify(data);
         }
+      }
+      else
+      {
+        Approvals.Verify(data);
+      }
 
 
 
