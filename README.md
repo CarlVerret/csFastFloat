@@ -24,16 +24,16 @@ Intel Xeon Gold 6338 CPU 2.00GHz, 2 CPU, 128 logical and 64 physical cores
 
 Job=.NET 9.0  Runtime=.NET 9.0  
 
-| Method                              | FileName           | Mean        | Min         | Ratio | MFloat/s | MB/s     |
-|------------------------------------ |------------------- |------------:|------------:|------:|---------:|---------:|
-| FastFloat.TryParseDouble()          | data/canada.txt    |  2,618.8 us |  2,614.8 us |  0.23 |    42.50 |   798.54 |
-| Double.Parse()                      | data/canada.txt    | 11,216.7 us | 11,191.3 us |  1.00 |     9.93 |   186.57 |
-|                                     |                    |             |             |       |          |          |
-| FastFloat.TryParseDouble()          | data/mesh.txt      |    957.3 us |    949.3 us |  0.24 |    76.92 |   653.13 |
-| Double.Parse()                      | data/mesh.txt      |  4,016.3 us |  4,005.7 us |  1.00 |    18.23 |   154.78 |
-|                                     |                    |             |             |       |          |          |
-| FastFloat.TryParseDouble()          | data/synthetic.txt |  3,141.1 us |  3,136.1 us |  0.22 |    47.83 |   899.86 |
-| Double.Parse()                      | data/synthetic.txt | 14,575.3 us | 14,541.5 us |  1.00 |    10.32 |   194.07 |
+| Method                              | FileName           | Mean        | Min         | MFloat/s | MB/s     |
+|------------------------------------ |------------------- |------------:|------------:|---------:|---------:|
+| FastFloat.TryParseDouble()          | data/canada.txt    |  2,618.8 us |  2,614.8 us |    42.50 |   798.54 |
+| Double.Parse()                      | data/canada.txt    | 11,216.7 us | 11,191.3 us |     9.93 |   186.57 |
+|                                     |                    |             |             |          |          |
+| FastFloat.TryParseDouble()          | data/mesh.txt      |    957.3 us |    949.3 us |    76.92 |   653.13 |
+| Double.Parse()                      | data/mesh.txt      |  4,016.3 us |  4,005.7 us |    18.23 |   154.78 |
+|                                     |                    |             |             |          |          |
+| FastFloat.TryParseDouble()          | data/synthetic.txt |  3,141.1 us |  3,136.1 us |    47.83 |   899.86 |
+| Double.Parse()                      | data/synthetic.txt | 14,575.3 us | 14,541.5 us |    10.32 |   194.07 |
 
 ```
 
