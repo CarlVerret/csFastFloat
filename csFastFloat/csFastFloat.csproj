@@ -15,26 +15,23 @@
     <Title>csFastFloat : a fast and accurate float parser</Title>
 
     <LangVersion>9</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Version>4.1.5</Version>
+
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)'!='netstandard2.0'">
     <DefineConstants>$(DefineConstants);HAS_BITOPERATIONS;HAS_INTRINSICS</DefineConstants>
   </PropertyGroup>
-    
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <DocumentationFile>bin\Release\$(TargetFramework)\csFastFloat.xml</DocumentationFile>
   </PropertyGroup>
-
 
   <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
     <PackageReference Include="System.Memory" Version="4.6.0" />
@@ -45,6 +42,6 @@
     <Compile Remove="Enums\**" />
     <EmbeddedResource Remove="Enums\**" />
     <None Remove="Enums\**" />
-		<None Include="docs\readme.md" Pack="true" PackagePath="\" />
+    <None Include="docs\readme.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 </Project>
