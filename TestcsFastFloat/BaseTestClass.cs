@@ -36,7 +36,7 @@ namespace TestcsFastFloat.Tests
 
 
 
-    public bool NoDiffToolDetected() => !DiffEngine.DiffTools.TryFind("txt", out _);
+    public bool NoDiffToolDetected() => !DiffEngine.DiffTools.TryFindByExtension("txt", out _);
 
 
     /// @Credit Dmitry Bychenko

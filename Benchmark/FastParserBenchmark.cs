@@ -18,7 +18,7 @@ namespace csFastFloat.Benchmark
 {
 
   //[MemoryDiagnoser]
-  [SimpleJob(RuntimeMoniker.NetCoreApp50)]
+  [SimpleJob(RuntimeMoniker.Net90)]
 [Config(typeof(Config))]
 public class FFBenchmark
 {

@@ -13,10 +13,13 @@ namespace TestcsFastFloat.suppl_tests
   public class Strtod_tests : BaseTestClass
   {
 
-#if NET5_0
-    const string Version = "5.0";
-#else
+#if NET8_0
     const string Version = "8.0";
+
+#endif
+
+#if NET9_0
+    const string Version = "9.0";
 #endif
 
 #if NET5_0_OR_GREATER
