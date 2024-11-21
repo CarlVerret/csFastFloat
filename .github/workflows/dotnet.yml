@@ -33,7 +33,7 @@ jobs:
       run: dotnet build --no-restore  --configuration Release -p:ContinuousIntegrationBuild=true
     
     - name: Unit tests
-      run: dotnet test  --verbosity m --no-build 
+      run: dotnet test  --verbosity m
       continue-on-error: false
       
     - name: Publish packages
