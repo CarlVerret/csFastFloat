@@ -14,32 +14,28 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-  
+
     - uses: actions/checkout@v4
 
-    - name: Setup .NET 8.0
-      uses: actions/setup-dotnet@v1
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.0.x
-       
-    - name: Setup .NET 9.0
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 9.0.x
-        
+        dotnet-version: |
+          8.0.x
+          9.0.x
+
     - name: Restore dependencies
       run: dotnet restore
-      
+
     - name: Build
       run: dotnet build --no-restore  --configuration Release -p:ContinuousIntegrationBuild=true
-    
+
     - name: Unit tests
-      run: dotnet test  --verbosity m
+      run: dotnet test --no-build --configuration Release --verbosity m
       continue-on-error: false
-      
+
     - name: Publish packages
       uses: actions/upload-artifact@v4
       with:
         name: packages
         path: '**/*.*nupkg'
-    
