@@ -1,13 +1,10 @@
 # csFastFloat : a fast and accurate float parser
 [![.NET](https://github.com/CarlVerret/csFastFloat/actions/workflows/dotnet.yml/badge.svg)](https://github.com/CarlVerret/csFastFloat/actions/workflows/dotnet.yml)
 
-C# port of Daniel Lemire's [fast_float](https://github.com/fastfloat/fast_float) fully ported from C++ to C#. In older versions (5.0 and under) it is up to 9 times faster than the standard library in some cases while providing exact results.
+C# port of Daniel Lemire's [fast_float](https://github.com/fastfloat/fast_float) fully ported from C++ to C#. In older versions (5.0 and under) it is up to 9 times faster than the standard library in some cases while providing exact results. An important portion of our work had been merged to .NET Runtime within version 7.0 of the .NET Framework. Yet the csFastFloat library remains substantially faster (e.g., 3 or 4 times faster) than the .NET Runtime in some instances.
 
-# Note
-
-An important portion of our work had been merged to .NET Runtime within version 7.0 of the .NET Framework.
-
-
+The csFastFloat library is used by [Sep](https://github.com/nietras/Sep) which might be
+the  World's Fastest .NET CSV Parser.
 
 # Benchmarks
 
