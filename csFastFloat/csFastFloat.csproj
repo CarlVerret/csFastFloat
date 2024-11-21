@@ -9,14 +9,14 @@
     <RepositoryUrl>https://github.com/CarlVerret/csFastFloat</RepositoryUrl>
     <PackageTags>C# Double Float Parsing</PackageTags>
 	  <PackageReadmeFile>readme.md</PackageReadmeFile>
-    <AssemblyVersion>4.1.4.0</AssemblyVersion>
-    <FileVersion>4.1.4.0</FileVersion>
+    <AssemblyVersion>4.1.5.0</AssemblyVersion>
+    <FileVersion>4.1.5.0</FileVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Title>csFastFloat : a fast and accurate float parser</Title>
 
     <LangVersion>9</LangVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Version>4.1.4</Version>
+    <Version>4.1.5</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)'!='netstandard2.0'">
