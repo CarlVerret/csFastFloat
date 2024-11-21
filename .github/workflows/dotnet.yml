@@ -6,7 +6,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Setup .NET 8.0
       uses: actions/setup-dotnet@v1
@@ -25,5 +25,10 @@ jobs:
     - name: Unit tests
       run: dotnet test  --verbosity m --no-build 
       continue-on-error: false
-
+      
+    - name: Publish packages
+      uses: actions/upload-artifact@v4
+      with:
+        name: packages
+        path: '**/*.*nupkg'
     
