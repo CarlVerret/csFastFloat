@@ -2,6 +2,7 @@ using csFastFloat;
 using csFastFloat.Structures;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using Xunit;
 
@@ -22,6 +23,18 @@ namespace TestcsFastFloat.Tests.Basic
         { "-infinity", float.NegativeInfinity }
     };
 
+    [Fact]
+    unsafe public void FastFloatParser_ThousandSeparator()
+    {
+      var culture = CultureInfo.InvariantCulture;
+      var input = "1,234,567.89";
+      fixed (char* p = input)
+      {
+        var bcl = float.Parse(input, culture);
+        var csff = FastFloatParser.ParseFloat(input);
+        Assert.Equal(bcl, csff);
+      }
+    }
 
     [Trait("Category", "Smoke Test")]
     [Theory]
