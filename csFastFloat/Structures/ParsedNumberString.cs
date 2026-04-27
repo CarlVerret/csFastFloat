@@ -14,7 +14,7 @@ namespace csFastFloat.Structures
 
     // UTF-16 inputs involving SIMD within  eval_parse_eight_digits_simd when HAS_INTRINSICS
 
-    internal static ParsedNumberString ParseNumberString(char* p, char* pend, NumberStyles expectedFormat = NumberStyles.Float, char decimal_separator = '.')
+    internal static ParsedNumberString ParseNumberString(char* p, char* pend, NumberStyles expectedFormat = NumberStyles.Float, char decimal_separator = '.', char thousands_separator = ',')
     {
       ParsedNumberString answer = new ParsedNumberString();
 
@@ -34,19 +34,40 @@ namespace csFastFloat.Structures
           return answer;
         }
       }
+      // Thousands separators (group separators) are accepted only when the
+      // AllowThousands style is set and the separator differs from the
+      // decimal separator. They are permitted between digits in the integer
+      // part only.
+      bool allow_thousands = expectedFormat.IsSet(NumberStyles.AllowThousands)
+                             && thousands_separator != decimal_separator;
       char* start_digits = p;
 
       ulong i = 0; // an unsigned int avoids signed overflows (which are bad)
+      long integer_digit_count = 0;
 
-      while ((p != pend) && Utils.is_integer(*p, out uint cMinus0))
+      while (p != pend)
       {
-        // a multiplication by 10 is cheaper than an arbitrary integer
-        // multiplication
-        i = 10 * i + (ulong)cMinus0; // might overflow, we will handle the overflow later
-        ++p;
+        if (Utils.is_integer(*p, out uint cMinus0))
+        {
+          // a multiplication by 10 is cheaper than an arbitrary integer
+          // multiplication
+          i = 10 * i + (ulong)cMinus0; // might overflow, we will handle the overflow later
+          ++p;
+          ++integer_digit_count;
+        }
+        else if (allow_thousands && *p == thousands_separator
+                 && integer_digit_count > 0
+                 && (p + 1) != pend && Utils.is_integer(*(p + 1), out uint _))
+        {
+          ++p; // skip a thousands separator that lies strictly between digits
+        }
+        else
+        {
+          break;
+        }
       }
       char* end_of_integer_part = p;
-      long digit_count = (long)(end_of_integer_part - start_digits);
+      long digit_count = integer_digit_count;
       long exponent = 0;
 
       if ((p != pend) && (*p == decimal_separator))
@@ -138,7 +159,7 @@ namespace csFastFloat.Structures
         // We need to be mindful of the case where we only have zeroes...
         // E.g., 0.000000000...000.
         char* start = start_digits;
-        while ((start != pend) && (*start == '0' || *start == decimal_separator))
+        while ((start != pend) && (*start == '0' || *start == decimal_separator || (allow_thousands && *start == thousands_separator)))
         {
           if (*start == '0') { digit_count--; }
           start++;
@@ -149,15 +170,25 @@ namespace csFastFloat.Structures
           // Let us start again, this time, avoiding overflows.
           i = 0;
           p = start_digits;
+          long re_read_integer_digits = 0;
           const ulong minimal_nineteen_digit_integer = 1000000000000000000;
-          while ((i < minimal_nineteen_digit_integer) && (p != pend) && Utils.is_integer(*p, out uint cMinus0))
+          while ((i < minimal_nineteen_digit_integer) && (p != pend))
           {
-            i = i * 10 + (ulong)cMinus0;
-            ++p;
+            if (Utils.is_integer(*p, out uint cMinus0))
+            {
+              i = i * 10 + (ulong)cMinus0;
+              ++p;
+              ++re_read_integer_digits;
+            }
+            else if (allow_thousands && *p == thousands_separator)
+            {
+              ++p;
+            }
+            else { break; }
           }
           if (i >= minimal_nineteen_digit_integer)
           { // We have a big integers
-            exponent = end_of_integer_part - p + exp_number;
+            exponent = (integer_digit_count - re_read_integer_digits) + exp_number;
           }
           else
           { // We have a value with a fractional component.
@@ -179,7 +210,7 @@ namespace csFastFloat.Structures
     }
 
     // UTF-8 / ASCII inputs.
-    internal static ParsedNumberString ParseNumberString(byte* p, byte* pend, NumberStyles expectedFormat = NumberStyles.Float, byte decimal_separator = (byte)'.')
+    internal static ParsedNumberString ParseNumberString(byte* p, byte* pend, NumberStyles expectedFormat = NumberStyles.Float, byte decimal_separator = (byte)'.', byte thousands_separator = (byte)',')
     {
       ParsedNumberString answer = new ParsedNumberString();
 
@@ -199,19 +230,40 @@ namespace csFastFloat.Structures
           return answer;
         }
       }
+      // Thousands separators (group separators) are accepted only when the
+      // AllowThousands style is set and the separator differs from the
+      // decimal separator. They are permitted between digits in the integer
+      // part only.
+      bool allow_thousands = expectedFormat.IsSet(NumberStyles.AllowThousands)
+                             && thousands_separator != decimal_separator;
       byte* start_digits = p;
 
       ulong i = 0; // an unsigned int avoids signed overflows (which are bad)
+      long integer_digit_count = 0;
 
-      while ((p != pend) && Utils.is_integer(*p, out uint digit))
+      while (p != pend)
       {
-        // a multiplication by 10 is cheaper than an arbitrary integer
-        // multiplication
-        i = 10 * i + digit; // might overflow, we will handle the overflow later
-        ++p;
+        if (Utils.is_integer(*p, out uint digit))
+        {
+          // a multiplication by 10 is cheaper than an arbitrary integer
+          // multiplication
+          i = 10 * i + digit; // might overflow, we will handle the overflow later
+          ++p;
+          ++integer_digit_count;
+        }
+        else if (allow_thousands && *p == thousands_separator
+                 && integer_digit_count > 0
+                 && (p + 1) != pend && Utils.is_integer(*(p + 1), out uint _))
+        {
+          ++p; // skip a thousands separator that lies strictly between digits
+        }
+        else
+        {
+          break;
+        }
       }
       byte* end_of_integer_part = p;
-      long digit_count = (long)(end_of_integer_part - start_digits);
+      long digit_count = integer_digit_count;
       long exponent = 0;
       if ((p != pend) && (*p == decimal_separator))
       {
@@ -298,7 +350,7 @@ namespace csFastFloat.Structures
         // We need to be mindful of the case where we only have zeroes...
         // E.g., 0.000000000...000.
         byte* start = start_digits;
-        while ((start != pend) && (*start == '0' || *start == decimal_separator))
+        while ((start != pend) && (*start == '0' || *start == decimal_separator || (allow_thousands && *start == thousands_separator)))
         {
           if (*start == '0') { digit_count--; }
           start++;
@@ -309,15 +361,25 @@ namespace csFastFloat.Structures
           // Let us start again, this time, avoiding overflows.
           i = 0;
           p = start_digits;
+          long re_read_integer_digits = 0;
           const ulong minimal_nineteen_digit_integer = 1000000000000000000;
-          while ((i < minimal_nineteen_digit_integer) && (p != pend) && Utils.is_integer(*p, out uint digit))
+          while ((i < minimal_nineteen_digit_integer) && (p != pend))
           {
-            i = i * 10 + digit;
-            ++p;
+            if (Utils.is_integer(*p, out uint digit))
+            {
+              i = i * 10 + digit;
+              ++p;
+              ++re_read_integer_digits;
+            }
+            else if (allow_thousands && *p == thousands_separator)
+            {
+              ++p;
+            }
+            else { break; }
           }
           if (i >= minimal_nineteen_digit_integer)
           { // We have a big integers
-            exponent = end_of_integer_part - p + exp_number;
+            exponent = (integer_digit_count - re_read_integer_digits) + exp_number;
           }
           else
           { // We have a value with a fractional component.

@@ -77,8 +77,8 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>bool : true is sucessfuly parsed</returns>
-    public static bool TryParseDouble(string s, out double result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
-      => TryParseDouble(s.AsSpan(), out _, out result, styles, decimal_separator);
+    public static bool TryParseDouble(string s, out double result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.', char thousands_separator = ',')
+      => TryParseDouble(s.AsSpan(), out _, out result, styles, decimal_separator, thousands_separator);
 
     /// <summary>
     /// Try parsing a double from a UTF-16 encoded string in the given number style, counting number of consumed characters
@@ -90,8 +90,8 @@ namespace csFastFloat
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>bool : true is sucessfuly parsed</returns>
     /// <returns></returns>
-    public static bool TryParseDouble(string s, out int characters_consumed, out double result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
-    => TryParseDouble(s.AsSpan(), out characters_consumed, out result, styles, decimal_separator);
+    public static bool TryParseDouble(string s, out int characters_consumed, out double result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.', char thousands_separator = ',')
+    => TryParseDouble(s.AsSpan(), out characters_consumed, out result, styles, decimal_separator, thousands_separator);
 
 
     /// <summary>
@@ -102,12 +102,12 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>bool : true is sucessfuly parsed</returns>
-    public static bool TryParseDouble(ReadOnlySpan<char> s, out double result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+    public static bool TryParseDouble(ReadOnlySpan<char> s, out double result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.', char thousands_separator = ',')
     {
 
       fixed (char* pStart = s)
       {
-        if (!TryParseNumber(pStart, pStart + (uint)s.Length, out _, out result, styles, decimal_separator))
+        if (!TryParseNumber(pStart, pStart + (uint)s.Length, out _, out result, styles, decimal_separator, thousands_separator))
         {
           return TryHandleInvalidInput(pStart, pStart + (uint)s.Length, out _, out result);
         }
@@ -126,11 +126,11 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>bool : true is sucessfuly parsed</returns>
-    public static bool TryParseDouble(ReadOnlySpan<char> s, out int characters_consumed, out double result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+    public static bool TryParseDouble(ReadOnlySpan<char> s, out int characters_consumed, out double result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.', char thousands_separator = ',')
     {
       fixed (char* pStart = s)
       {
-        if (!TryParseNumber(pStart, pStart + (uint)s.Length, out characters_consumed, out result, styles, decimal_separator))
+        if (!TryParseNumber(pStart, pStart + (uint)s.Length, out characters_consumed, out result, styles, decimal_separator, thousands_separator))
         {
           return TryHandleInvalidInput(pStart, pStart + (uint)s.Length, out characters_consumed, out result);
         }
@@ -150,10 +150,10 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>bool : true is sucessfuly parsed</returns>
-    public static bool TryParseDouble(char* first, char* last, out double result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+    public static bool TryParseDouble(char* first, char* last, out double result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.', char thousands_separator = ',')
     {
 
-      if (!TryParseNumber(first, last, out _, out result, styles, decimal_separator))
+      if (!TryParseNumber(first, last, out _, out result, styles, decimal_separator, thousands_separator))
       {
         return TryHandleInvalidInput(first, last, out _, out result);
       }
@@ -172,9 +172,9 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>bool : true is sucessfuly parsed</returns>
-    public static bool TryParseDouble(char* first, char* last, out int characters_consumed, out double result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+    public static bool TryParseDouble(char* first, char* last, out int characters_consumed, out double result, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.', char thousands_separator = ',')
     {
-      if (!TryParseNumber(first, last, out characters_consumed, out result, styles, decimal_separator))
+      if (!TryParseNumber(first, last, out characters_consumed, out result, styles, decimal_separator, thousands_separator))
       {
         return TryHandleInvalidInput(first, last, out characters_consumed, out result);
       }
@@ -193,11 +193,11 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>bool : true is sucessfuly parsed</returns>
-    public static bool TryParseDouble(ReadOnlySpan<byte> s, out double result, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
+    public static bool TryParseDouble(ReadOnlySpan<byte> s, out double result, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.', byte thousands_separator = (byte)',')
     {
       fixed (byte* pStart = s)
       {
-        if (!TryParseNumber(pStart, pStart + (uint)s.Length, out _, out result, styles, decimal_separator))
+        if (!TryParseNumber(pStart, pStart + (uint)s.Length, out _, out result, styles, decimal_separator, thousands_separator))
         {
           return TryHandleInvalidInput(pStart, pStart, out _, out result);
         }
@@ -214,11 +214,11 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>bool : true is sucessfuly parsed</returns>
-    public static bool TryParseDouble(ReadOnlySpan<byte> s, out int characters_consumed, out double result, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
+    public static bool TryParseDouble(ReadOnlySpan<byte> s, out int characters_consumed, out double result, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.', byte thousands_separator = (byte)',')
     {
       fixed (byte* pStart = s)
       {
-        if (!TryParseNumber(pStart, pStart + (uint)s.Length, out characters_consumed, out result, styles, decimal_separator))
+        if (!TryParseNumber(pStart, pStart + (uint)s.Length, out characters_consumed, out result, styles, decimal_separator, thousands_separator))
         {
           return TryHandleInvalidInput(pStart, pStart + (uint)s.Length, out _, out result);
         }
@@ -239,9 +239,9 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>bool : true is sucessfuly parsed</returns>
-    public static bool TryParseDouble(byte* first, byte* last, out double result, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
+    public static bool TryParseDouble(byte* first, byte* last, out double result, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.', byte thousands_separator = (byte)',')
     {
-      if (!TryParseNumber(first, last, out _, out result, styles, decimal_separator))
+      if (!TryParseNumber(first, last, out _, out result, styles, decimal_separator, thousands_separator))
       {
         return TryHandleInvalidInput(first, last, out _, out result);
       }
@@ -260,9 +260,9 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>bool : true is sucessfuly parsed</returns>
-    public static bool TryParseDouble(byte* first, byte* last, out int characters_consumed, out double result, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
+    public static bool TryParseDouble(byte* first, byte* last, out int characters_consumed, out double result, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.', byte thousands_separator = (byte)',')
     {
-      if (!TryParseNumber(first, last, out characters_consumed, out result, styles, decimal_separator))
+      if (!TryParseNumber(first, last, out characters_consumed, out result, styles, decimal_separator, thousands_separator))
       {
         return TryHandleInvalidInput(first, last, out characters_consumed, out result);
       }
@@ -280,8 +280,8 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>parsed double value </returns>
-    public static double ParseDouble(string s, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
-    => ParseDouble(s, out int _, styles, decimal_separator);
+    public static double ParseDouble(string s, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.', char thousands_separator = ',')
+    => ParseDouble(s, out int _, styles, decimal_separator, thousands_separator);
 
     /// <summary>
     /// Parses double from a UTF-16 encoded string in the given number style counting number of characters consumed
@@ -291,7 +291,7 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>parsed double value </returns>
-    public static double ParseDouble(string s, out int characters_consumed, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+    public static double ParseDouble(string s, out int characters_consumed, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.', char thousands_separator = ',')
     {
       if (s == null)
       {
@@ -302,7 +302,7 @@ namespace csFastFloat
 
       fixed (char* pStart = s)
       {
-        if (!TryParseNumber(pStart, pStart + (uint)s.Length, out characters_consumed, out double value, styles, decimal_separator))
+        if (!TryParseNumber(pStart, pStart + (uint)s.Length, out characters_consumed, out double value, styles, decimal_separator, thousands_separator))
         {
           if (!TryHandleInvalidInput(pStart, pStart + (uint)s.Length, out characters_consumed, out value))
           {
@@ -322,8 +322,8 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>parsed double value </returns>
-    public static double ParseDouble(ReadOnlySpan<char> s, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
-      => ParseDouble(s, out int _, styles, decimal_separator);
+    public static double ParseDouble(ReadOnlySpan<char> s, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.', char thousands_separator = ',')
+      => ParseDouble(s, out int _, styles, decimal_separator, thousands_separator);
 
     /// <summary>
     /// Parses double from am UTF-16 encoded readonly span of chars in the given number style counting number of characters consumed
@@ -333,7 +333,7 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>parsed double value </returns>
-    public static double ParseDouble(ReadOnlySpan<char> s, out int characters_consumed, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+    public static double ParseDouble(ReadOnlySpan<char> s, out int characters_consumed, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.', char thousands_separator = ',')
     {
       if (s == null)
       {
@@ -344,7 +344,7 @@ namespace csFastFloat
 
       fixed (char* pStart = s)
       {
-        if (!TryParseNumber(pStart, pStart + (uint)s.Length, out characters_consumed, out double value, styles, decimal_separator))
+        if (!TryParseNumber(pStart, pStart + (uint)s.Length, out characters_consumed, out double value, styles, decimal_separator, thousands_separator))
         {
           if (!TryHandleInvalidInput(pStart, pStart + (uint)s.Length, out characters_consumed, out value))
           {
@@ -364,8 +364,8 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>parsed double value </returns>
-    public static double ParseDouble(char* first, char* last, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
-      => ParseDouble(first, last, out int _, styles, decimal_separator);
+    public static double ParseDouble(char* first, char* last, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.', char thousands_separator = ',')
+      => ParseDouble(first, last, out int _, styles, decimal_separator, thousands_separator);
 
     /// <summary>
     /// Parses double from a UTF-8 encoded readonly span of bytes  in the given number style
@@ -374,8 +374,8 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>parsed double value </returns>
-    public static double ParseDouble(ReadOnlySpan<byte> s, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
-      => ParseDouble(s, out int _, styles, decimal_separator);
+    public static double ParseDouble(ReadOnlySpan<byte> s, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.', byte thousands_separator = (byte)',')
+      => ParseDouble(s, out int _, styles, decimal_separator, thousands_separator);
 
     /// <summary>
     /// Parses double from a UTF-8 encoded readonly span of bytes in the given number style counting number of characters consumed
@@ -385,11 +385,11 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>parsed double value </returns>
-    public static double ParseDouble(ReadOnlySpan<byte> s, out int characters_consumed, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
+    public static double ParseDouble(ReadOnlySpan<byte> s, out int characters_consumed, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.', byte thousands_separator = (byte)',')
     {
       fixed (byte* pStart = s)
       {
-        return ParseDouble(pStart, pStart + s.Length, out characters_consumed, styles, decimal_separator);
+        return ParseDouble(pStart, pStart + s.Length, out characters_consumed, styles, decimal_separator, thousands_separator);
       }
     }
 
@@ -403,11 +403,11 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>parsed double value </returns>
-    public static double ParseDouble(char* first, char* last, out int characters_consumed, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.')
+    public static double ParseDouble(char* first, char* last, out int characters_consumed, NumberStyles styles = NumberStyles.Float, char decimal_separator = '.', char thousands_separator = ',')
     {
 
 
-      if (!TryParseNumber(first, last, out characters_consumed, out double value, styles, decimal_separator))
+      if (!TryParseNumber(first, last, out characters_consumed, out double value, styles, decimal_separator, thousands_separator))
       {
         if (!TryHandleInvalidInput(first, last, out characters_consumed, out value))
         {
@@ -428,9 +428,9 @@ namespace csFastFloat
     /// <param name="styles">allowed styles for the input string</param>
     /// <param name="decimal_separator">decimal separator to be used</param>
     /// <returns>parsed double value </returns>
-    public static double ParseDouble(byte* first, byte* last, out int characters_consumed, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.')
+    public static double ParseDouble(byte* first, byte* last, out int characters_consumed, NumberStyles styles = NumberStyles.Float, byte decimal_separator = (byte)'.', byte thousands_separator = (byte)',')
     {
-      if (TryParseDouble(first, last, out characters_consumed, out double result, styles, decimal_separator))
+      if (TryParseDouble(first, last, out characters_consumed, out double result, styles, decimal_separator, thousands_separator))
       {
         return result;
       }
@@ -452,7 +452,7 @@ namespace csFastFloat
 
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static bool TryParseNumber(char* first, char* last, out int characters_consumed, out double value, NumberStyles expectedFormat = NumberStyles.Float, char decimal_separator = '.')
+    internal static bool TryParseNumber(char* first, char* last, out int characters_consumed, out double value, NumberStyles expectedFormat = NumberStyles.Float, char decimal_separator = '.', char thousands_separator = ',')
     {
       int leading_spaces = 0;
       characters_consumed = 0;
@@ -467,7 +467,7 @@ namespace csFastFloat
       {
         return false;
       }
-      ParsedNumberString pns = ParsedNumberString.ParseNumberString(first, last, expectedFormat, decimal_separator);
+      ParsedNumberString pns = ParsedNumberString.ParseNumberString(first, last, expectedFormat, decimal_separator, thousands_separator);
       if (!pns.valid)
       {
         return false;
@@ -507,26 +507,28 @@ namespace csFastFloat
     /// <returns>double : parsed value</returns>
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static bool TryParseNumber(byte* first, byte* last, out int characters_consumed, out double value, NumberStyles expectedFormat = NumberStyles.Float, byte decimal_separator = (byte)'.')
+    internal static bool TryParseNumber(byte* first, byte* last, out int characters_consumed, out double value, NumberStyles expectedFormat = NumberStyles.Float, byte decimal_separator = (byte)'.', byte thousands_separator = (byte)',')
     {
 
       value = 0;
       characters_consumed = 0;
+      int leading_spaces = 0;
 
       while ((first != last) && Utils.is_space(*first))
       {
         first++;
+        leading_spaces++;
       }
       if (first == last)
       {
         return false;
       }
-      ParsedNumberString pns = ParsedNumberString.ParseNumberString(first, last, expectedFormat, decimal_separator);
+      ParsedNumberString pns = ParsedNumberString.ParseNumberString(first, last, expectedFormat, decimal_separator, thousands_separator);
       if (!pns.valid)
       {
         return false;
       }
-      characters_consumed = pns.characters_consumed;
+      characters_consumed = pns.characters_consumed + leading_spaces;
 
       // Next is Clinger's fast path.
       if (DoubleBinaryConstants.min_exponent_fast_path <= pns.exponent && pns.exponent <= DoubleBinaryConstants.max_exponent_fast_path && pns.mantissa <= DoubleBinaryConstants.max_mantissa_fast_path && !pns.too_many_digits)

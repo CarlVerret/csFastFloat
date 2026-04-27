@@ -24,6 +24,11 @@ jobs:
           8.0.x
           9.0.x
 
+    - name: Install Mono (for .NET Framework 4.7.2 test host)
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y mono-complete
+
     - name: Restore dependencies
       run: dotnet restore
 
