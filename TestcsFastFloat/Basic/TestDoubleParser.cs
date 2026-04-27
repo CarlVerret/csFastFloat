@@ -291,6 +291,107 @@ namespace TestcsFastFloat.Tests.Basic
       }
     }
 
+    [Theory]
+    [InlineData("  1", 3)]
+    [InlineData("   -1.5", 7)]
+    [InlineData(" \t 2.5e3 trailing", 8)]
+    [InlineData("1.5", 3)]
+    public void TryParseDouble_String_CharsConsumed_IncludesLeadingWhitespace(string input, int expectedConsumed)
+    {
+      Assert.True(FastDoubleParser.TryParseDouble(input, out int consumed, out double _));
+      Assert.Equal(expectedConsumed, consumed);
+    }
+
+    [Theory]
+    [InlineData("  1", 3)]
+    [InlineData("   -1.5", 7)]
+    [InlineData(" \t 2.5e3 trailing", 8)]
+    public unsafe void TryParseDouble_CharPointer_CharsConsumed_IncludesLeadingWhitespace(string input, int expectedConsumed)
+    {
+      fixed (char* p = input)
+      {
+        Assert.True(FastDoubleParser.TryParseDouble(p, p + input.Length, out int consumed, out double _));
+        Assert.Equal(expectedConsumed, consumed);
+      }
+    }
+
+    [Theory]
+    [InlineData("  1", 3)]
+    [InlineData("   -1.5", 7)]
+    [InlineData(" \t 2.5e3 trailing", 8)]
+    public unsafe void TryParseDouble_BytePointer_CharsConsumed_IncludesLeadingWhitespace(string input, int expectedConsumed)
+    {
+      byte[] bytes = Encoding.ASCII.GetBytes(input);
+      fixed (byte* p = bytes)
+      {
+        Assert.True(FastDoubleParser.TryParseDouble(p, p + bytes.Length, out int consumed, out double _));
+        Assert.Equal(expectedConsumed, consumed);
+      }
+    }
+
+    [Fact]
+    public void TryParseDouble_ConsumedCount_AdvancesPastWholeInput()
+    {
+      string sut = "  1.5 -2.25e1 7";
+      int pos = 0;
+      int parsed = 0;
+      while (pos < sut.Length
+             && FastDoubleParser.TryParseDouble(sut.AsSpan(pos), out int consumed, out double _))
+      {
+        Assert.True(consumed > 0);
+        pos += consumed;
+        parsed++;
+      }
+      Assert.Equal(3, parsed);
+      Assert.Equal(sut.Length, pos);
+    }
+
+    [Theory]
+    [InlineData("1,234,567.89", 1234567.89)]
+    [InlineData("1,234", 1234.0)]
+    [InlineData("12,345.5", 12345.5)]
+    [InlineData("-1,234.5", -1234.5)]
+    [InlineData("1,234,567,890,123,456,789,012,345", 1234567890123456789012345d)]
+    public void ParseDouble_AllowThousands_MatchesBcl(string input, double expected)
+    {
+      var styles = NumberStyles.Float | NumberStyles.AllowThousands;
+      var bcl = double.Parse(input, styles, CultureInfo.InvariantCulture);
+      Assert.Equal(expected, bcl);
+
+      var ff = FastDoubleParser.ParseDouble(input, styles);
+      Assert.Equal(bcl, ff);
+    }
+
+    [Fact]
+    public void ParseDouble_NoAllowThousands_StopsAtSeparator()
+    {
+      Assert.True(FastDoubleParser.TryParseDouble("1,234.5", out int consumed, out double result));
+      Assert.Equal(1d, result);
+      Assert.Equal(1, consumed);
+    }
+
+    [Fact]
+    public void ParseDouble_AllowThousands_CustomSeparator()
+    {
+      // European convention: '.' as thousands, ',' as decimal.
+      var styles = NumberStyles.Float | NumberStyles.AllowThousands;
+      var ff = FastDoubleParser.ParseDouble("1.234.567,89", styles, decimal_separator: ',', thousands_separator: '.');
+      Assert.Equal(1234567.89, ff);
+    }
+
+    [Fact]
+    public unsafe void ParseDouble_AllowThousands_BytePointer()
+    {
+      byte[] bytes = Encoding.ASCII.GetBytes("1,234,567.89");
+      var styles = NumberStyles.Float | NumberStyles.AllowThousands;
+      fixed (byte* p = bytes)
+      {
+        Assert.True(FastDoubleParser.TryParseDouble(p, p + bytes.Length, out int consumed, out double result, styles));
+        Assert.Equal(1234567.89, result);
+        Assert.Equal(bytes.Length, consumed);
+      }
+    }
+
     private static double[] testing_power_of_ten =  {
     1e-307, 1e-306, 1e-305, 1e-304, 1e-303, 1e-302, 1e-301, 1e-300, 1e-299,
     1e-298, 1e-297, 1e-296, 1e-295, 1e-294, 1e-293, 1e-292, 1e-291, 1e-290,

@@ -2,6 +2,7 @@ using csFastFloat;
 using csFastFloat.Structures;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using Xunit;
 
@@ -258,6 +259,126 @@ namespace TestcsFastFloat.Tests.Basic
       {
         Console.WriteLine(ex.Message);
       }
+    }
+
+    [Theory]
+    [InlineData("  1", 3)]
+    [InlineData("   -1.5", 7)]
+    [InlineData(" \t 2.5e3 trailing", 8)]
+    [InlineData("1.5", 3)]
+    public void TryParseFloat_String_CharsConsumed_IncludesLeadingWhitespace(string input, int expectedConsumed)
+    {
+      Assert.True(FastFloatParser.TryParseFloat(input, out int consumed, out float _));
+      Assert.Equal(expectedConsumed, consumed);
+    }
+
+    [Theory]
+    [InlineData("  1", 3)]
+    [InlineData("   -1.5", 7)]
+    [InlineData(" \t 2.5e3 trailing", 8)]
+    public unsafe void TryParseFloat_CharPointer_CharsConsumed_IncludesLeadingWhitespace(string input, int expectedConsumed)
+    {
+      fixed (char* p = input)
+      {
+        Assert.True(FastFloatParser.TryParseFloat(p, p + input.Length, out int consumed, out float _));
+        Assert.Equal(expectedConsumed, consumed);
+      }
+    }
+
+    [Theory]
+    [InlineData("  1", 3)]
+    [InlineData("   -1.5", 7)]
+    [InlineData(" \t 2.5e3 trailing", 8)]
+    public unsafe void TryParseFloat_BytePointer_CharsConsumed_IncludesLeadingWhitespace(string input, int expectedConsumed)
+    {
+      byte[] bytes = Encoding.ASCII.GetBytes(input);
+      fixed (byte* p = bytes)
+      {
+        Assert.True(FastFloatParser.TryParseFloat(p, p + bytes.Length, out int consumed, out float _));
+        Assert.Equal(expectedConsumed, consumed);
+      }
+    }
+
+    [Fact]
+    public void TryParseFloat_ConsumedCount_AdvancesPastWholeInput()
+    {
+      // Walking the whole string using consumed count should land exactly at the end.
+      string sut = "  1.5 -2.25e1 7";
+      int pos = 0;
+      int parsed = 0;
+      while (pos < sut.Length
+             && FastFloatParser.TryParseFloat(sut.AsSpan(pos), out int consumed, out float _))
+      {
+        Assert.True(consumed > 0);
+        pos += consumed;
+        parsed++;
+      }
+      Assert.Equal(3, parsed);
+      Assert.Equal(sut.Length, pos);
+    }
+
+    [Theory]
+    [InlineData("1,234,567.89", 1234567.89f)]
+    [InlineData("1,234", 1234f)]
+    [InlineData("12,345.5", 12345.5f)]
+    [InlineData("-1,234.5", -1234.5f)]
+    public void ParseFloat_AllowThousands_MatchesBcl(string input, float expected)
+    {
+      var styles = NumberStyles.Float | NumberStyles.AllowThousands;
+      var bcl = float.Parse(input, styles, CultureInfo.InvariantCulture);
+      Assert.Equal(expected, bcl);
+
+      var ff = FastFloatParser.ParseFloat(input, styles);
+      Assert.Equal(bcl, ff);
+    }
+
+    [Fact]
+    public void ParseFloat_AllowThousands_FromPR110()
+    {
+      // The exact case from PR #110.
+      var styles = NumberStyles.Float | NumberStyles.AllowThousands;
+      var bcl = float.Parse("1,234,567.89", styles, CultureInfo.InvariantCulture);
+      var ff = FastFloatParser.ParseFloat("1,234,567.89", styles);
+      Assert.Equal(bcl, ff);
+    }
+
+    [Fact]
+    public void ParseFloat_NoAllowThousands_StopsAtSeparator()
+    {
+      // Without AllowThousands, the comma is not part of the number — parsing stops at it.
+      Assert.True(FastFloatParser.TryParseFloat("1,234.5", out int consumed, out float result));
+      Assert.Equal(1f, result);
+      Assert.Equal(1, consumed);
+    }
+
+    [Fact]
+    public void ParseFloat_AllowThousands_CustomSeparator()
+    {
+      // European convention: '.' as thousands, ',' as decimal.
+      var styles = NumberStyles.Float | NumberStyles.AllowThousands;
+      var ff = FastFloatParser.ParseFloat("1.234.567,89", styles, decimal_separator: ',', thousands_separator: '.');
+      Assert.Equal(1234567.89f, ff);
+    }
+
+    [Fact]
+    public void ParseFloat_AllowThousands_RejectsLeadingSeparator()
+    {
+      // BCL rejects a leading comma even with AllowThousands; we should too.
+      var styles = NumberStyles.Float | NumberStyles.AllowThousands;
+      Assert.Throws<FormatException>(() => float.Parse(",234", styles, CultureInfo.InvariantCulture));
+      Assert.False(FastFloatParser.TryParseFloat(",234", out _, out float _, styles));
+    }
+
+    [Fact]
+    public void ParseFloat_AllowThousands_RequiresSeparatorBetweenDigits()
+    {
+      // We require thousands separators to lie strictly between digits; "1,,234" stops
+      // parsing at the first comma (since the next char is not a digit), so we consume
+      // only "1". This is intentionally stricter than the very permissive BCL behavior.
+      var styles = NumberStyles.Float | NumberStyles.AllowThousands;
+      Assert.True(FastFloatParser.TryParseFloat("1,,234", out int consumed, out float result, styles));
+      Assert.Equal(1f, result);
+      Assert.Equal(1, consumed);
     }
 
     private static float[] testing_power_of_ten_float =  {

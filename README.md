@@ -95,6 +95,33 @@ For UTF-8 or ASCII inputs, you may pass a `ReadOnlySpan<byte>` argument. You can
 an optional `out int characters_consumed` parameter to track the number of characters consumed
 by the number pattern.
 
+## Thousands separators
+
+To match the behaviour of `Double.Parse` / `Single.Parse` on inputs such as `"1,234,567.89"`,
+pass `NumberStyles.AllowThousands`. The separator defaults to `,` and can be overridden via
+the optional `thousands_separator` parameter (e.g. for the European convention where the
+decimal separator is `,` and the thousands separator is `.`):
+
+```C#
+using System.Globalization;
+using csFastFloat;
+
+// Invariant culture: "," as thousands, "." as decimal.
+double a = FastDoubleParser.ParseDouble(
+    "1,234,567.89",
+    NumberStyles.Float | NumberStyles.AllowThousands);                // 1234567.89
+
+// European convention: "." as thousands, "," as decimal.
+double b = FastDoubleParser.ParseDouble(
+    "1.234.567,89",
+    NumberStyles.Float | NumberStyles.AllowThousands,
+    decimal_separator: ',',
+    thousands_separator: '.');                                        // 1234567.89
+```
+
+Without `AllowThousands`, the parser stops at the first separator (so `"1,234"` parses as
+`1` with `characters_consumed == 1`), preserving the prior default behaviour.
+
 
 
 
