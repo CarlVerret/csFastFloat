@@ -169,7 +169,6 @@ namespace csFastFloat
             false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
 
       // Avoid bound checking.
@@ -215,12 +214,12 @@ namespace csFastFloat
       return System.Numerics.BitOperations.LeadingZeroCount(value);
 #else
       uint hi = (uint)(value >> 32);
- 
+  
       if (hi == 0)
       {
         return 32 + Log2SoftwareFallback((uint)value);
       }
- 
+  
       return Log2SoftwareFallback(hi);
       
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -265,17 +264,22 @@ namespace csFastFloat
     /// <returns>bool : succes of operation : true meaning the sequence contains at least 8 consecutive digits</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static bool TryParseEightConsecutiveDigits_SIMD(char* start, out uint value)
+      => TryParseEightConsecutiveDigits_SIMD(start, out value, out _);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static bool TryParseEightConsecutiveDigits_SIMD(char* start, out uint value, out int consumed)
     {
 
       // escape if SIMD functions aren't available.
       if (!Sse41.IsSupported)
       {
         value = 0;
+        consumed = 0;
         return false;
       }
 
-
       value = 0;
+      consumed = 0;
       Vector128<short> raw = Sse41.LoadDquVector128((short*)start);
       Vector128<short> ascii0 = Vector128.Create((short)(48 + short.MinValue));
       Vector128<short> after_ascii9 = Vector128.Create((short)(short.MinValue + 9));
@@ -297,6 +301,7 @@ namespace csFastFloat
       Vector128<int> v = Sse2.MultiplyAddAdjacent(Ssse3.MultiplyAddAdjacent(mul1, vb.AsSByte()), mul2);
       v = Sse2.Add(Sse2.Add(v, v), Sse2.Shuffle(v, 1));
       value = (uint)v.GetElement(0);
+      consumed = 8;
 
       return true;
 
