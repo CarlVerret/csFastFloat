@@ -47,6 +47,35 @@ namespace TestcsFastFloat.Basic.SIMD
 
     }
 
+    [SkippableFact]
+    public unsafe void EvalAndParseEightDigits_SIMD_ReportsConsumedCount()
+    {
+      Skip.If(!Sse41.IsSupported, "No SIMD support");
+
+      fixed (char* pos = "12345678")
+      {
+        Assert.True(Utils.TryParseEightConsecutiveDigits_SIMD(pos, out uint value, out int consumed));
+        Assert.Equal(12345678u, value);
+        Assert.Equal(8, consumed);
+      }
+
+      fixed (char* pos = "1234567.")
+      {
+        Assert.False(Utils.TryParseEightConsecutiveDigits_SIMD(pos, out uint _, out int consumed));
+        Assert.Equal(0, consumed);
+      }
+    }
+
+    [SkippableFact]
+    public void ParseDouble_Through_SIMD_falls_back_on_decimal_point()
+    {
+      Skip.If(!Sse41.IsSupported, "No SIMD support");
+
+      string sut = "12345678.12345678";
+      double expected = 12345678.12345678d;
+      double actual = FastDoubleParser.ParseDouble(sut);
+      Assert.Equal(expected, actual, 10);
+    }
 
 
 
@@ -112,6 +141,7 @@ namespace TestcsFastFloat.Basic.SIMD
 
 
     }
+
 
 
 
